@@ -1,0 +1,2 @@
+id,bot_id,action_type,result,details,rubro,tenant_id,hash_signature,timestamp
+1,2,NEW_LEAD_CAPTURED,SUCCESS,Sesin: SESS_777 | Puntos: 30 | Escalado: False,General,MASTER,5c535f6ac040f2517ad95279cdb5a6911e5dba9c2c229ff0f3293af587b95968,2026-04-19 23:19:25
