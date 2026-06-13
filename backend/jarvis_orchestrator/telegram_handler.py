@@ -30,6 +30,16 @@ def process_telegram_update(update: dict):
     chat_id = message.get("chat", {}).get("id")
     text = message.get("text", "")
     
+    # Seguridad: Solo responder si el chat_id es el permitido (o si aún no se ha configurado ninguno)
+    allowed_chat_id = os.getenv("TELEGRAM_ALLOWED_CHAT_ID")
+    if allowed_chat_id and str(chat_id) != allowed_chat_id:
+        print(f"⚠️ Intento de acceso no autorizado desde chat_id: {chat_id}")
+        return
+    
+    # Si es el primer mensaje y no hay chat_id configurado, lo mostramos en consola para que el admin lo guarde
+    if not allowed_chat_id:
+        print(f"🔐 NUEVO CHAT DETECTADO. Si eres tú, copia este número en TELEGRAM_ALLOWED_CHAT_ID: {chat_id}")
+
     if chat_id and text:
         handle_incoming_message(chat_id, text)
 
