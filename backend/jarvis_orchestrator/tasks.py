@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from models import TaskCreate, TaskResponse, TaskStatus
 from db import create_task, get_task, update_task_status, get_next_pending_task
 import os
-from whatsapp_handler import process_whatsapp_message, handle_incoming_message
+from telegram_handler import process_telegram_update, send_telegram_message
 
 router = APIRouter()
 
@@ -31,25 +31,18 @@ def update_task(task_id: str, status: TaskStatus, error_details: str = None, res
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
     return updated
 
-@router.post("/whatsapp/webhook")
-def whatsapp_webhook(body: dict):
+@router.post("/telegram/webhook")
+def telegram_webhook(body: dict):
     """
-    Endpoint que recibe los mensajes de WhatsApp desde Meta.
+    Endpoint que recibe los mensajes desde Telegram.
     """
-    from_number, text = process_whatsapp_message(body)
-    if from_number and text:
-        # Crear una tarea en segundo plano (podríamos usar BackgroundTasks)
-        # Por simplicidad, respondemos inmediatamente y procesamos después
-        handle_incoming_message(from_number, text)
-        return {"status": "processed"}
-    return {"status": "ignored"}
+    process_telegram_update(body)
+    return {"status": "processed"}
 
-@router.get("/whatsapp/webhook")
-def verify_webhook(hub_mode: str = None, hub_challenge: str = None, hub_verify_token: str = None):
+@router.post("/telegram/send")
+def send_telegram_msg(chat_id: int, text: str):
     """
-    Verificación del webhook para Meta (requiere token de verificación).
+    Envía un mensaje de Telegram a un chat_id específico.
     """
-    VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "jarvis_ax_verify")
-    if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
-        return int(hub_challenge) if hub_challenge else "ok"
-    return "Verification failed", 403
+    result = send_telegram_message(chat_id, text)
+    return result
