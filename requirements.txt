@@ -16,3 +16,4 @@ fpdf2
 fish-audio-sdk
 beautifulsoup4
 ddgs
+playwright

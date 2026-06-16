@@ -13,7 +13,9 @@ if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
     export ORCHESTRATOR_URL="https://$RAILWAY_PUBLIC_DOMAIN"
 fi
 
-# 1. (El Worker ya no se ejecuta en la nube, solo en PC local)
+# 1. Iniciar CHAU CHAMBA en segundo plano
+echo "[OK] Iniciando CHAU CHAMBA (Bot 24/7) en segundo plano..."
+python /app/chau_chamba.py &
 
 # 2. Iniciar Orquestador en el primer plano
 echo "[OK] Iniciando Orquestador (FastAPI)..."
