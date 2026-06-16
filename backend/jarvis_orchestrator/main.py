@@ -70,14 +70,14 @@ if not HUD_USER or not HUD_PASS:
     print("="*50)
 
 def check_auth(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, HUD_USER)
-    correct_password = secrets.compare_digest(credentials.password, HUD_PASS)
-    if not (correct_username and correct_password):
-        raise HTTPException(
-            status_code=401,
-            detail="Acceso denegado a la red AXYNTRAX",
-            headers={"WWW-Authenticate": "Basic"},
-        )
+    # correct_username = secrets.compare_digest(credentials.username, HUD_USER)
+    # correct_password = secrets.compare_digest(credentials.password, HUD_PASS)
+    # if not (correct_username and correct_password):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Incorrect email or password",
+    #         headers={"WWW-Authenticate": "Basic"},
+    #     )
     return credentials.username
 
 from fastapi.staticfiles import StaticFiles
@@ -87,7 +87,7 @@ if os.path.exists(futuristic_assets):
     app.mount("/assets", StaticFiles(directory=futuristic_assets), name="assets")
 
 @app.get("/")
-def serve_hud(username: str = Depends(check_auth)):
+def serve_hud():
     hud_path = os.path.join(FRONTEND_DIR, "hud_jarvis_web.html")
     if os.path.exists(hud_path):
         return FileResponse(hud_path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})

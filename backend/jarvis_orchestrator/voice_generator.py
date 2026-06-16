@@ -27,12 +27,11 @@ def generar_audio(texto: str, archivo_salida: str = None) -> str:
         try:
             session = Session(apikey=FISH_API_KEY)
             audio = b""
-            with session.tts(TTSRequest(
+            for chunk in session.tts(TTSRequest(
                 reference_id=FISH_JARVIS_ID,
                 text=texto
-            )) as response:
-                for chunk in response:
-                    audio += chunk
+            )):
+                audio += chunk
             with open(archivo_salida, "wb") as f:
                 f.write(audio)
             return archivo_salida
