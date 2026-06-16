@@ -12,7 +12,12 @@ supabase: Client = create_client(url, key)
 def create_task(payload: TaskCreate) -> TaskResponse:
     run_id = uuid4()
     now = datetime.utcnow()
-    plan = generate_plan(payload.task.objective, payload.task.module, payload.task.phase, payload.task.action_type)
+    try:
+        supabase.table("agent_sessions").insert({"id": str(payload.session_id), "status": "active"}).execute()
+    except Exception as e:
+        print(f"[BD ERROR] Insertando agent_sessions: {e}")
+    preferred_api = getattr(payload, 'preferred_api', None)
+    plan = generate_plan(payload.task.objective, payload.task.module, payload.task.phase, payload.task.action_type, preferred_api=preferred_api)
     task_data = {
         "id": str(run_id),
         "session_id": str(payload.session_id),
@@ -50,8 +55,8 @@ def get_task(task_id: str) -> TaskResponse | None:
     data = res.data
     snapshot = RunSnapshot(
         id=data["id"], phase=data["phase"], module=data["module"], objective=data["objective"],
-        risk_level=data["risk_level"], status=data.get("result", "pending"),
-        changes_summary=data.get("changes_summary", []), files_allowed=data.get("files_allowed", []),
+        risk_level=data["risk_level"], status=data.get("result") or "pending",
+        changes_summary=data.get("changes_summary", []) or [], files_allowed=data.get("files_allowed", []) or [],
         todo_next=data.get("todo_next", []), created_at=datetime.fromisoformat(data["started_at"]),
     )
     return TaskResponse(task_id=data["id"], status=snapshot.status, plan=data.get("plan"), run_snapshot=snapshot)
@@ -72,3 +77,34 @@ def update_task_status(task_id: str, status: str, result: str = None, error_deta
         updates["completed_at"] = datetime.utcnow().isoformat()
     supabase.table("agent_runs").update(updates).eq("id", task_id).execute()
     return get_task(task_id)
+
+def save_message(session_id: str, role: str, content: str, model_used: str = None):
+    """Guarda un mensaje en la memoria persistente de la corporación."""
+    try:
+        # Asegurar que la sesión exista para no violar la FK
+        try:
+            supabase.table("agent_sessions").insert({"id": str(session_id), "status": "active"}).execute()
+        except Exception as e:
+            print(f"[BD ERROR] Creando sesión en save_message: {e}")
+
+        data = {
+            "session_id": str(session_id),
+            "role": role,
+            "content": content,
+            "created_at": datetime.utcnow().isoformat()
+        }
+        if model_used:
+            data["model_used"] = model_used
+        supabase.table("agent_messages").insert(data).execute()
+    except Exception as e:
+        print(f"[!] Error guardando mensaje en memoria: {e}")
+
+def get_chat_history(session_id: str, limit: int = 10) -> list:
+    """Recupera la memoria reciente de una sesión."""
+    try:
+        res = supabase.table("agent_messages").select("role, content").eq("session_id", str(session_id)).order("created_at", desc=True).limit(limit).execute()
+        if res.data:
+            return res.data[::-1] # Orden cronológico
+    except Exception as e:
+        print(f"[!] Error leyendo memoria: {e}")
+    return []

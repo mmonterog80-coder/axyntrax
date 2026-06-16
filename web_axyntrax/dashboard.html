@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de control - AXYNTRAX</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="icon" href="assets/imagenes/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AXYNTRAX</div>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="pages/acerca.html">Acerca</a></li>
+                <li><a href="pages/soluciones.html">Soluciones</a></li>
+                <li><a href="pages/blog.html">Blog</a></li>
+                <li><a href="pages/contacto.html">Contacto</a></li>
+                <li><a href="#" id="logout-btn">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Bienvenido, <span id="user-email"></span></h1>
+        <section>
+            <h2>Órdenes a JARVIS (Control remoto)</h2>
+            <textarea id="comando" placeholder="Ej: Mueve el mouse a 500,300" rows="3" cols="50"></textarea><br>
+            <button id="enviar-orden" class="btn">Enviar orden</button>
+            <p id="respuesta" style="margin-top: 10px; color: #00ff88; font-weight: bold;"></p>
+        </section>
+        <section style="margin-top: 20px;">
+            <h2>Tu suscripción</h2>
+            <div class="card" style="margin: 10px 0;">
+                <p>Plan: <strong style="color:#ff6b00;">Básico (MYPE)</strong> – S/ 234/mes</p>
+                <p>Próximo pago: 15/07/2026</p>
+            </div>
+        </section>
+    </main>
+    <script>
+        const SUPABASE_URL = 'https://qatawtbfrfreakdbluat.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhdGF3dGJmcmZyZWFrZGJsdWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODE0ODksImV4cCI6MjA5Mjk1NzQ4OX0.Z8VoCjIrYrlNpDZ_Yi6M1CQ8hPjZ_DOXV66UY4LqVYI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const ORCHESTRATOR_URL = 'https://jarvis-ax-cloud-production.up.railway.app';
+
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                const legacy = localStorage.getItem('supabase_session');
+                if(!legacy) window.location.href = 'login.html';
+                else document.getElementById('user-email').innerText = JSON.parse(legacy).email;
+            } else {
+                document.getElementById('user-email').innerText = session.user.email;
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            localStorage.removeItem('supabase_session');
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('enviar-orden').addEventListener('click', async () => {
+            const comando = document.getElementById('comando').value;
+            if (!comando) return;
+            document.getElementById('respuesta').innerText = 'Enviando...';
+            try {
+                const res = await fetch(`${ORCHESTRATOR_URL}/tasks/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_id: crypto.randomUUID(),
+                        origin: 'dashboard_web',
+                        task: {
+                            phase: 1,
+                            module: 'remote',
+                            action_type: 'execute',
+                            objective: comando,
+                            context: { model_preference: 'auto' }
+                        }
+                    })
+                });
+                const data = await res.json();
+                document.getElementById('respuesta').innerText = data.plan || 'Orden enviada a la cola. Revisando...';
+            } catch (err) {
+                document.getElementById('respuesta').innerText = 'Error de conexión: ' + err.message;
+            }
+        });
+
+        checkSession();
+    </script>
+</body>
+</html>

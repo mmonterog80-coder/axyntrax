@@ -1,0 +1,5 @@
+{
+  "id": "266_1781487059",
+  "orden": "comando_cmd",
+  "cmd": "cd /d C:\\AXYNTRAX\\backend && dir hallucination_validator /s /b"
+}

@@ -4,3 +4,15 @@ pydantic
 python-dotenv
 supabase
 requests
+openai
+aiohttp
+python-telegram-bot
+pygame
+redis
+websockets
+apscheduler
+facebook-business>=19.0.0
+fpdf2
+fish-audio-sdk
+beautifulsoup4
+ddgs

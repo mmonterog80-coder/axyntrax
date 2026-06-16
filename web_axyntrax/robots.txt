@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /pages/
+Allow: /pricing.html
+Allow: /contacto.html
+
+Disallow: /dashboard.html
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.vercel/
+
+Sitemap: https://www.axyntrax-automation.net/sitemap.xml

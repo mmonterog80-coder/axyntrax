@@ -1,77 +1,99 @@
-import os, sys, asyncio, signal, time, requests, re
-from pathlib import Path
+import os, time, json, pyautogui, subprocess
+import websocket
+import threading
 from dotenv import load_dotenv
-from system_tools import SystemTools
 
-load_dotenv(dotenv_path=r"C:\AXYNTRAX\.env")
-ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://localhost:8000")
-WORKER_ID = os.getenv("WORKER_ID", "worker_1")
-POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", "5"))
+load_dotenv()
 
-def get_next_task():
+WS_URL = os.getenv("WS_URL", "ws://127.0.0.1:8000/ws")
+EDGE_SECRET_TOKEN = os.getenv("EDGE_SECRET_TOKEN", "axyntrax-edge-super-secret-2026")
+
+def log(m):
+    timestamp = time.strftime('%H:%M:%S')
+    msg = f"[{timestamp}] {m}"
+    print(msg)
+    return msg
+
+def execute_command(orden_str, ws):
     try:
-        r = requests.get(f"{ORCHESTRATOR_URL}/tasks/next", timeout=5)
-        if r.status_code == 200: return r.json()
-    except: pass
-    return None
+        orden = json.loads(orden_str)
+        id_orden = str(orden.get("id", "none"))
+        accion = orden.get("orden", orden.get("type"))
+        
+        session_logs = [log(f"Orden Edge recibida por WS (ID {id_orden}): {accion}")]
+        pyautogui.FAILSAFE = False
+        has_error = False
+        
+        try:
+            if accion == "log":
+                msg_text = orden.get("payload", {}).get("message", orden.get("message", ""))
+                session_logs.append(log(f">>> {msg_text}"))
+            elif accion == "mover_mouse":
+                pyautogui.moveTo(orden.get("x",100), orden.get("y",100), duration=0.5)
+                session_logs.append(log(f"Éxito: Mouse movido a ({orden.get('x',100)},{orden.get('y',100)})"))
+            elif accion == "abrir_notepad":
+                subprocess.Popen("notepad.exe")
+                session_logs.append(log("Éxito: Bloc de notas abierto"))
+            elif accion == "comando_cmd":
+                cmd = orden.get("cmd", "")
+                res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+                session_logs.append(log(f"Comando '{cmd}' finalizado. Exit Code: {res.returncode}"))
+                if res.stdout: session_logs.append(f"STDOUT:\n{res.stdout[:500]}")
+                if res.stderr: 
+                    session_logs.append(f"STDERR:\n{res.stderr[:500]}")
+                    if res.returncode != 0:
+                        has_error = True
+            elif accion == "dev_agent":
+                # Futuro Agente de Desarrollo que usará RAG y escribirá código autónomo
+                session_logs.append(log("Llamando a DevAgent Local... (Próxima Fase)"))
+            elif accion == "pc_control":
+                action = orden.get("payload", {}).get("action")
+                if action == "write_file":
+                    with open(orden.get("payload", {}).get("path"), "w", encoding="utf-8") as f:
+                        f.write(orden.get("payload", {}).get("content", ""))
+                    session_logs.append(log("Éxito: Archivo escrito correctamente en PC Local."))
+            else:
+                session_logs.append(log(f"Advertencia: Acción '{accion}' no reconocida."))
+                
+        except Exception as ex:
+            session_logs.append(log(f"Error ejecutando la orden: {ex}"))
+            has_error = True
+        
+        # Enviar resultado de vuelta
+        respuesta = {"id": id_orden, "output": "\n".join(session_logs), "error": has_error}
+        ws.send(json.dumps(respuesta))
+        
+    except Exception as e:
+        log(f"Error procesando comando: {e}")
 
-def update_task(task_id, status, result=None, error=None):
-    payload = {"status": status}
-    if result: payload["result"] = result
-    if error: payload["error_details"] = error
-    try: requests.patch(f"{ORCHESTRATOR_URL}/tasks/{task_id}/status", params=payload, timeout=5)
-    except: pass
+def on_message(ws, message):
+    log(f"Mensaje WS: {message}")
+    # Run command in thread so it doesn't block the WebSocket connection
+    threading.Thread(target=execute_command, args=(message, ws)).start()
 
-async def execute_task(task):
-    tid = task['task_id']
-    plan = task.get('plan') or ''
-    workspace = Path("C:\\AXYNTRAX\\workspace")
-    workspace.mkdir(exist_ok=True)
+def on_error(ws, error):
+    log(f"Error en WS: {error}")
 
-    # 1. Intentar extraer código C++ del plan
-    code_match = re.search(r'```(?:cpp|c\+\+)?\s*\n(.*?)```', plan, re.DOTALL | re.IGNORECASE)
-    if code_match:
-        code = code_match.group(1).strip()
-        if not code:
-            update_task(tid, "failed", error="El bloque de código C++ está vacío")
-            return
-        file_path = workspace / f"task_{tid[:8]}.cpp"
-        SystemTools.write_file(str(file_path), code)
-        out = workspace / f"task_{tid[:8]}.exe"
-        compiler = os.getenv("WORKER_COMPILER", "g++")
-        ret, out_str, err = await SystemTools.run_cmd(f"{compiler} {file_path} -o {out}", cwd=str(workspace))
-        if ret == 0:
-            update_task(tid, "completed", result=f"Compilado: {out}")
-        else:
-            update_task(tid, "failed", error=err)
-        return
+def on_close(ws, close_status_code, close_msg):
+    log("Conexión WebSocket cerrada. Reconectando en 5s...")
 
-    # 2. Si no hay código, ¿es un comando ejecutable?
-    if plan and not plan.startswith("Aquí") and not plan.startswith("Error") and len(plan) < 500:
-        # Ejecutar como comando
-        ret, out, err = await SystemTools.run_cmd(plan, cwd=str(workspace))
-        if ret == 0:
-            update_task(tid, "completed", result=out)
-        else:
-            update_task(tid, "failed", error=err)
-        return
+def on_open(ws):
+    log("Túnel WebSocket establecido exitosamente.")
+    # Autenticación inmediata
+    ws.send(f"AUTH:{EDGE_SECRET_TOKEN}")
+    log("Token de autenticación enviado.")
 
-    # 3. Si es solo texto conversacional o un plan no ejecutable
-    update_task(tid, "failed", error="El plan no contiene código compilable ni un comando ejecutable. El worker solo procesa código C++ o comandos directos.")
-
-async def main_loop():
-    print(f"[WORKER {WORKER_ID}] Escuchando tareas...")
+def start_worker():
+    log("Worker EDGE Iniciado - Conectando al túnel WebSocket en la Nube")
+    websocket.enableTrace(False)
     while True:
-        task = get_next_task()
-        if task:
-            print(f"[WORKER] Tarea recibida: {task['task_id']}")
-            await execute_task(task)
-        await asyncio.sleep(POLL_INTERVAL)
+        ws = websocket.WebSocketApp(WS_URL,
+                                  on_open=on_open,
+                                  on_message=on_message,
+                                  on_error=on_error,
+                                  on_close=on_close)
+        ws.run_forever()
+        time.sleep(5)
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    def shutdown(): loop.stop()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        try: loop.add_signal_handler(sig, shutdown)
-        except: pass
-    loop.run_until_complete(main_loop())
+    start_worker()

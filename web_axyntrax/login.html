@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | AXYNTRAX Automation</title>
+    <meta name="description" content="Accede a tu panel de control de AXYNTRAX Automation. Gestiona tus agentes IA y automatizaciones empresariales.">
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" integrity="sha384-3vqG8DAiNt9VQpJvAMm2RI9YNrPYFoKbdC1VFZbMBPaEXIlNIbyAhEVKvxoXBRf" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+        body { background-color: #030014; color: #e2e8f0; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass { background: rgba(10,10,25,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(0,255,255,0.2); }
+        .cyber-bg { background: radial-gradient(ellipse at 50% 0%, rgba(0,255,255,0.08) 0%, transparent 60%), #030014; }
+        input[type="email"], input[type="password"], input[type="text"] {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,255,0.2);
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: rgba(0,255,255,0.7); box-shadow: 0 0 0 2px rgba(0,255,255,0.1); }
+        input[aria-invalid="true"] { border-color: rgba(239,68,68,0.7); }
+        label { display: block; font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; }
+        .glow-btn { background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); transition: all 0.3s ease; }
+        .glow-btn:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(0,242,254,0.4); }
+        .glow-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .strength-bar { height: 4px; border-radius: 2px; transition: all 0.3s; }
+    </style>
+</head>
+<body class="cyber-bg">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50">Saltar al contenido</a>
+
+    <nav class="w-full bg-black/50 backdrop-blur-md border-b border-cyan-500/20 py-4 px-8 flex justify-between items-center">
+        <a href="index.html" class="font-orbitron font-bold text-xl text-white">AXY<span class="text-cyan-400">NTRAX</span></a>
+        <a href="registro.html" class="text-sm font-orbitron text-cyan-400 border border-cyan-500/30 px-4 py-2 rounded hover:bg-cyan-500/10 transition">Crear Cuenta</a>
+    </nav>
+
+    <main id="main-content" class="flex-1 flex items-center justify-center px-4 py-16">
+        <div class="w-full max-w-md">
+            <div class="glass rounded-2xl p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-4">
+                        <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                    </div>
+                    <h1 class="font-orbitron text-2xl font-bold text-white">Iniciar Sesión</h1>
+                    <p class="text-gray-500 text-sm mt-1">Accede a tu panel de control</p>
+                </div>
+
+                <!-- Rate limit notice -->
+                <div id="lockout-notice" class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-xs text-center">
+                    🔒 Demasiados intentos fallidos. Espera <span id="lockout-timer">30</span> segundos.
+                </div>
+
+                <form id="login-form" novalidate autocomplete="on" aria-label="Formulario de inicio de sesión">
+                    <!-- Honeypot anti-bot (invisible para humanos) -->
+                    <div style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true">
+                        <input type="text" name="_honeypot" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email">Correo electrónico <span class="text-red-400" aria-label="requerido">*</span></label>
+                        <input type="email" id="email" name="email" required
+                               autocomplete="email"
+                               placeholder="tu@empresa.com"
+                               aria-describedby="email-error"
+                               aria-required="true">
+                        <p id="email-error" class="hidden text-red-400 text-xs mt-1" role="alert"></p>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="password" class="mb-0">Contraseña <span class="text-red-400" aria-label="requerido">*</span></label>
+                            <a href="pages/recuperar-contrasena.html" class="text-xs text-cyan-400 hover:underline">¿Olvidaste tu contraseña?</a>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" required
+                                   autocomplete="current-password"
+                                   placeholder="••••••••"
+                                   aria-describedby="password-error"
+                                   aria-required="true">
+                            <button type="button" id="toggle-pwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-cyan-400 transition" aria-label="Mostrar contraseña">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
+                        <p id="password-error" class="hidden text-red-400 text-xs mt-1" role="alert"></p>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="flex items-center gap-2 mb-6 mt-4">
+                        <input type="checkbox" id="remember" name="remember" class="w-4 h-4 accent-cyan-400">
+                        <label for="remember" class="text-sm text-gray-400 cursor-pointer mb-0">Mantener sesión iniciada</label>
+                    </div>
+
+                    <!-- Error general -->
+                    <div id="general-error" class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center" role="alert"></div>
+
+                    <button type="submit" id="submit-btn" class="glow-btn w-full py-3 rounded-lg font-orbitron font-bold text-black tracking-widest text-sm">
+                        <span id="btn-text">ACCEDER AL SISTEMA</span>
+                        <span id="btn-spinner" class="hidden">⏳ Verificando...</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-500 text-sm">¿No tienes cuenta? <a href="registro.html" class="text-cyan-400 hover:underline font-semibold">Crear cuenta gratis</a></p>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-white/5 text-center">
+                    <p class="text-gray-700 text-xs">
+                        Al acceder, aceptas nuestros <a href="pages/terminos.html" class="text-gray-500 hover:text-cyan-400 underline">Términos</a> y <a href="pages/politica-privacidad.html" class="text-gray-500 hover:text-cyan-400 underline">Política de Privacidad</a>
+                    </p>
+                    <p class="text-gray-700 text-xs mt-2">⚠️ Aviso IA (EU AI Act): Esta plataforma usa Inteligencia Artificial.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4 border-t border-white/5 bg-black/30">
+        <p class="text-gray-700 text-xs">© 2026 AXYNTRAX Automation — Arequipa, Perú</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://qatawtbfrfreakdbluat.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhdGF3dGJmcmZyZWFrZGJsdWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODE0ODksImV4cCI6MjA5Mjk1NzQ4OX0.Z8VoCjIrYrlNpDZ_Yi6M1CQ8hPjZ_DOXV66UY4LqVYI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Rate limiting (frontend layer)
+        const MAX_ATTEMPTS = 5;
+        const LOCKOUT_SECONDS = 30;
+        let attempts = parseInt(sessionStorage.getItem('ax_login_attempts') || '0');
+        let lockedUntil = parseInt(sessionStorage.getItem('ax_locked_until') || '0');
+
+        function isLocked() { return Date.now() < lockedUntil; }
+
+        function checkLockout() {
+            if (isLocked()) {
+                const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+                document.getElementById('lockout-notice').classList.remove('hidden');
+                document.getElementById('lockout-timer').textContent = remaining;
+                document.getElementById('submit-btn').disabled = true;
+                setTimeout(checkLockout, 1000);
+                if (remaining <= 0) {
+                    document.getElementById('lockout-notice').classList.add('hidden');
+                    document.getElementById('submit-btn').disabled = false;
+                    attempts = 0;
+                    sessionStorage.removeItem('ax_login_attempts');
+                    sessionStorage.removeItem('ax_locked_until');
+                }
+            }
+        }
+        checkLockout();
+
+        // Password toggle
+        document.getElementById('toggle-pwd').addEventListener('click', function() {
+            const pwd = document.getElementById('password');
+            const isHidden = pwd.type === 'password';
+            pwd.type = isHidden ? 'text' : 'password';
+            this.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        });
+
+        // Email validation
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showFieldError(fieldId, errorId, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            field.setAttribute('aria-invalid', 'true');
+            error.textContent = message;
+            error.classList.remove('hidden');
+        }
+
+        function clearFieldError(fieldId, errorId) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            field.removeAttribute('aria-invalid');
+            error.classList.add('hidden');
+        }
+
+        // Live validation
+        document.getElementById('email').addEventListener('blur', function() {
+            if (!validateEmail(this.value)) showFieldError('email', 'email-error', 'Ingresa un correo electrónico válido');
+            else clearFieldError('email', 'email-error');
+        });
+
+        // Form submit
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Honeypot check
+            if (document.querySelector('input[name="_honeypot"]').value) return;
+
+            // Lockout check
+            if (isLocked()) { checkLockout(); return; }
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errEl = document.getElementById('general-error');
+            let valid = true;
+
+            clearFieldError('email', 'email-error');
+            clearFieldError('password', 'password-error');
+            errEl.classList.add('hidden');
+
+            if (!validateEmail(email)) {
+                showFieldError('email', 'email-error', 'Ingresa un correo electrónico válido');
+                valid = false;
+            }
+            if (password.length < 6) {
+                showFieldError('password', 'password-error', 'La contraseña debe tener al menos 6 caracteres');
+                valid = false;
+            }
+            if (!valid) return;
+
+            // Loading state
+            document.getElementById('btn-text').classList.add('hidden');
+            document.getElementById('btn-spinner').classList.remove('hidden');
+            document.getElementById('submit-btn').disabled = true;
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) {
+                    attempts++;
+                    sessionStorage.setItem('ax_login_attempts', attempts);
+                    if (attempts >= MAX_ATTEMPTS) {
+                        lockedUntil = Date.now() + LOCKOUT_SECONDS * 1000;
+                        sessionStorage.setItem('ax_locked_until', lockedUntil);
+                        checkLockout();
+                    }
+                    errEl.textContent = 'Correo o contraseña incorrectos. Intento ' + attempts + '/' + MAX_ATTEMPTS + '.';
+                    errEl.classList.remove('hidden');
+                } else {
+                    attempts = 0;
+                    sessionStorage.removeItem('ax_login_attempts');
+                    sessionStorage.removeItem('ax_locked_until');
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (err) {
+                errEl.textContent = 'Error de conexión. Por favor intenta de nuevo.';
+                errEl.classList.remove('hidden');
+            } finally {
+                document.getElementById('btn-text').classList.remove('hidden');
+                document.getElementById('btn-spinner').classList.add('hidden');
+                document.getElementById('submit-btn').disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

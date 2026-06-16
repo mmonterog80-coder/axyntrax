@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPA — Data Processing Agreement | AXYNTRAX Automation</title>
+    <meta name="description" content="Acuerdo de Procesamiento de Datos (DPA) de AXYNTRAX Automation. Cumplimiento GDPR para clientes empresariales EU/UK.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@300;400;600&display=swap');
+        body { background-color: #030014; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        h2 { font-size: 1.1rem; font-weight: 700; color: #22d3ee; margin-top: 2rem; margin-bottom: 0.5rem; }
+        p, li { color: #94a3b8; line-height: 1.8; margin-bottom: 0.75rem; font-size: 0.9rem; }
+        ul { list-style: disc; padding-left: 1.5rem; }
+        ol { list-style: decimal; padding-left: 1.5rem; }
+        a { color: #22d3ee; text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th { background: rgba(0,255,255,0.1); color: #22d3ee; padding: 0.75rem; text-align: left; border: 1px solid rgba(0,255,255,0.2); font-size: 0.8rem; }
+        td { padding: 0.75rem; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50">Saltar al contenido</a>
+    <nav class="w-full bg-black/60 border-b border-cyan-500/20 py-4 px-8 flex justify-between items-center">
+        <a href="../index.html" class="font-orbitron font-bold text-white text-xl no-underline">AXY<span class="text-cyan-400">NTRAX</span></a>
+        <a href="../index.html" class="text-sm text-gray-400 hover:text-cyan-400 transition no-underline">← Volver al Inicio</a>
+    </nav>
+
+    <main id="main-content" class="max-w-4xl mx-auto px-6 py-16">
+        <h1 class="font-orbitron text-3xl font-bold text-white mb-2">Data Processing Agreement (DPA)</h1>
+        <p class="text-cyan-400 text-sm mb-2">Acuerdo de Procesamiento de Datos — GDPR Art. 28</p>
+        <p class="text-gray-500 text-sm mb-8">Última actualización: 14 de junio de 2026 | Versión 1.0</p>
+
+        <p>Este Acuerdo de Procesamiento de Datos ("DPA") es parte del contrato de servicio entre <strong>AXYNTRAX Automation</strong> ("Procesador") y el Cliente ("Controlador"), y se aplica cuando el Cliente transmite datos personales a AXYNTRAX para el procesamiento en nombre del Cliente.</p>
+        <p>Este DPA cumple con los requisitos del <strong>Art. 28 del GDPR</strong> (UE 2016/679).</p>
+
+        <h2>1. Definiciones</h2>
+        <ul>
+            <li><strong>"Datos Personales":</strong> cualquier información que identifique o haga identificable a una persona física.</li>
+            <li><strong>"Procesador":</strong> AXYNTRAX Automation, quien procesa datos en nombre del Controlador.</li>
+            <li><strong>"Controlador":</strong> el Cliente, quien determina los fines y medios del tratamiento.</li>
+            <li><strong>"Subprocesador":</strong> tercero que procesa datos en nombre del Procesador.</li>
+        </ul>
+
+        <h2>2. Objeto y Naturaleza del Procesamiento</h2>
+        <p>AXYNTRAX procesará datos personales únicamente para prestar los servicios descritos en el contrato principal, siguiendo las instrucciones documentadas del Controlador.</p>
+
+        <h2>3. Tipos de Datos y Categorías de Interesados</h2>
+        <table>
+            <thead><tr><th>Tipos de Datos</th><th>Categorías de Interesados</th></tr></thead>
+            <tbody>
+                <tr><td>Nombre, correo electrónico, empresa, cargo</td><td>Empleados y contactos del Cliente</td></tr>
+                <tr><td>Datos de conversaciones (WhatsApp, CRM)</td><td>Clientes finales del Cliente</td></tr>
+                <tr><td>Logs de uso de plataforma, IPs</td><td>Usuarios de la plataforma AXYNTRAX</td></tr>
+            </tbody>
+        </table>
+
+        <h2>4. Obligaciones del Procesador (AXYNTRAX)</h2>
+        <ol>
+            <li>Procesar datos únicamente bajo instrucción documentada del Controlador.</li>
+            <li>Garantizar que el personal autorizado se comprometa a guardar confidencialidad.</li>
+            <li>Implementar medidas técnicas y organizativas apropiadas (cifrado en tránsito y reposo, control de acceso).</li>
+            <li>Notificar al Controlador sin demora indebida (máx. 72h) ante cualquier brecha de seguridad.</li>
+            <li>Asistir al Controlador en el cumplimiento de los derechos de los interesados (acceso, rectificación, supresión).</li>
+            <li>Suprimir o devolver todos los datos personales al finalizar el contrato, según elección del Controlador.</li>
+            <li>Proporcionar toda la información necesaria para demostrar el cumplimiento del Art. 28 GDPR.</li>
+        </ol>
+
+        <h2>5. Subprocesadores Autorizados</h2>
+        <table>
+            <thead><tr><th>Subprocesador</th><th>Finalidad</th><th>País</th><th>Garantía</th></tr></thead>
+            <tbody>
+                <tr><td>Supabase Inc.</td><td>Base de datos y autenticación</td><td>EE.UU.</td><td>SCCs (Cláusulas Contractuales Tipo)</td></tr>
+                <tr><td>Vercel Inc.</td><td>Hospedaje de frontend</td><td>EE.UU.</td><td>SCCs</td></tr>
+                <tr><td>Railway Corp.</td><td>Hospedaje de backend</td><td>EE.UU.</td><td>SCCs</td></tr>
+                <tr><td>OpenRouter Inc.</td><td>Acceso a APIs de modelos de IA</td><td>EE.UU.</td><td>SCCs</td></tr>
+            </tbody>
+        </table>
+        <p>AXYNTRAX notificará al Controlador con al menos 14 días de antelación antes de añadir o sustituir un Subprocesador, dando oportunidad de oposición.</p>
+
+        <h2>6. Transferencias Internacionales</h2>
+        <p>Cuando los datos se transfieran fuera del Espacio Económico Europeo (EEE), AXYNTRAX garantizará que se aplican mecanismos de transferencia adecuados conforme al GDPR, incluyendo Cláusulas Contractuales Tipo (SCCs) de la Comisión Europea.</p>
+
+        <h2>7. Seguridad del Tratamiento</h2>
+        <p>AXYNTRAX implementa las siguientes medidas técnicas y organizativas:</p>
+        <ul>
+            <li>Cifrado TLS 1.3 en todas las comunicaciones (HTTPS obligatorio).</li>
+            <li>Cifrado en reposo de bases de datos.</li>
+            <li>Control de acceso basado en roles (RBAC) y autenticación.</li>
+            <li>Registro de auditoría (audit logs) de accesos y cambios.</li>
+            <li>Monitoreo continuo de seguridad y gestión de incidentes.</li>
+        </ul>
+
+        <h2>8. Auditoría</h2>
+        <p>El Controlador tiene derecho a realizar auditorías del cumplimiento de este DPA, previa notificación de 30 días y durante horario laboral normal, sin perturbar las operaciones del servicio.</p>
+
+        <h2>9. Duración y Terminación</h2>
+        <p>Este DPA tiene la misma duración que el contrato de servicio principal. Tras su terminación, AXYNTRAX suprimirá todos los datos personales dentro de los 30 días siguientes, salvo que la ley exija su conservación.</p>
+
+        <h2>10. Firma y Aceptación</h2>
+        <p>La aceptación de los Términos de Servicio de AXYNTRAX Automation constituye la aceptación de este DPA. Para empresas que requieren un DPA firmado físicamente o electrónicamente, contactar: <a href="mailto:legal@axyntrax-automation.net">legal@axyntrax-automation.net</a></p>
+    </main>
+
+    <footer class="w-full text-center py-8 border-t border-white/5 mt-8">
+        <p class="text-gray-600 text-sm">© 2026 AXYNTRAX Automation | <a href="politica-privacidad.html" class="text-gray-500 hover:text-cyan-400">Privacidad</a> | <a href="terminos.html" class="text-gray-500 hover:text-cyan-400">Términos</a></p>
+    </footer>
+</body>
+</html>

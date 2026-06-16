@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | AXYNTRAX Automation — Habla con Ventas</title>
+    <meta name="description" content="Contáctanos para automatizar tu empresa con IA. Respuesta en menos de 24h. WhatsApp, email y formulario disponibles.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Contacto | AXYNTRAX Automation">
+    <meta property="og:description" content="¿Listo para automatizar tu empresa? Habla con nuestro equipo.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.axyntrax-automation.net/contacto.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+        body { background-color: #030014; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass-card { background: rgba(10,10,25,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0,255,255,0.2); }
+        input, textarea, select { background: rgba(0,0,0,0.4); border: 1px solid rgba(0,255,255,0.2); color: #e2e8f0; border-radius: 0.5rem; padding: 0.75rem 1rem; width: 100%; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+        input:focus, textarea:focus, select:focus { border-color: rgba(0,255,255,0.6); }
+        label { display: block; font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50">Saltar al contenido</a>
+
+    <nav class="relative z-50 w-full bg-black/60 border-b border-cyan-500/20 py-4 px-8 flex justify-between items-center">
+        <a href="index.html" class="font-orbitron font-bold text-xl text-white">AXY<span class="text-cyan-400">NTRAX</span></a>
+        <div class="flex gap-6">
+            <a href="index.html" class="text-sm font-orbitron text-gray-300 hover:text-cyan-400 transition">Inicio</a>
+            <a href="pricing.html" class="text-sm font-orbitron text-gray-300 hover:text-cyan-400 transition">Precios</a>
+        </div>
+    </nav>
+
+    <main id="main-content" class="max-w-5xl mx-auto px-6 py-20">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-orbitron px-4 py-2 rounded-full mb-6 tracking-widest">CONTACTO</span>
+            <h1 class="font-orbitron text-4xl font-black text-white mb-4">¿Listo para <span class="text-cyan-400">automatizar</span>?</h1>
+            <p class="text-gray-400 max-w-xl mx-auto">Cuéntanos tu caso. Respondemos en menos de 24 horas hábiles.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Contact Form -->
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="font-orbitron text-lg font-bold text-white mb-6">Envíanos un mensaje</h2>
+                <form id="contact-form" action="https://formspree.io/f/placeholder" method="POST" novalidate>
+                    <!-- Honeypot anti-bot -->
+                    <div style="display:none" aria-hidden="true">
+                        <label>No llenes este campo</label>
+                        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="nombre">Nombre completo *</label>
+                        <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Tu nombre">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email">Correo electrónico *</label>
+                        <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
+                    </div>
+                    <div class="mb-4">
+                        <label for="empresa">Empresa</label>
+                        <input type="text" id="empresa" name="empresa" autocomplete="organization" placeholder="Nombre de tu empresa">
+                    </div>
+                    <div class="mb-4">
+                        <label for="plan">Plan de interés</label>
+                        <select id="plan" name="plan">
+                            <option value="">Selecciona un plan</option>
+                            <option value="starter">Starter (S/.299/mes)</option>
+                            <option value="pro">Pro (S/.799/mes)</option>
+                            <option value="enterprise">Enterprise (Custom)</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label for="mensaje">Cuéntanos tu necesidad *</label>
+                        <textarea id="mensaje" name="mensaje" required rows="4" placeholder="¿Qué procesos quieres automatizar?"></textarea>
+                    </div>
+                    <div class="mb-6 flex items-start gap-3">
+                        <input type="checkbox" id="acepto-privacidad" name="acepto-privacidad" required class="mt-1 w-auto" style="width: auto;">
+                        <label for="acepto-privacidad" class="text-xs text-gray-500 cursor-pointer">Acepto la <a href="pages/politica-privacidad.html" class="text-cyan-400 underline">Política de Privacidad</a> y el tratamiento de mis datos según la Ley 29733.</label>
+                    </div>
+                    <button type="submit" id="submit-btn" class="w-full py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-orbitron font-bold text-sm hover:opacity-90 transition">ENVIAR MENSAJE</button>
+                    <div id="form-success" class="hidden mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm text-center">¡Mensaje enviado! Te contactamos en menos de 24h.</div>
+                    <div id="form-error" class="hidden mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">Por favor, completa todos los campos requeridos correctamente.</div>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="space-y-6">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-xl">💬</div>
+                        <h3 class="font-orbitron font-bold text-white">WhatsApp Directo</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Para respuesta inmediata habla con nuestro equipo de ventas.</p>
+                    <a href="https://wa.me/51999999999?text=Hola%20AXYNTRAX%2C%20quiero%20automatizar%20mi%20empresa" target="_blank" rel="noopener noreferrer" class="inline-block bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-2 rounded-lg text-sm font-orbitron hover:bg-green-500/20 transition">Abrir WhatsApp →</a>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center text-xl">📧</div>
+                        <h3 class="font-orbitron font-bold text-white">Email de Ventas</h3>
+                    </div>
+                    <a href="mailto:ventas@axyntrax-automation.net" class="text-cyan-400 text-sm underline">ventas@axyntrax-automation.net</a>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-xl">🏢</div>
+                        <h3 class="font-orbitron font-bold text-white">Información Legal</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">AXYNTRAX Automation<br>Arequipa, Perú<br>Email legal: <a href="mailto:legal@axyntrax-automation.net" class="text-cyan-400">legal@axyntrax-automation.net</a></p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 border-cyan-500/30">
+                    <p class="text-cyan-400 text-xs font-orbitron mb-2">AVISO IA (EU AI Act Art. 52)</p>
+                    <p class="text-gray-500 text-xs">Las respuestas de soporte pueden ser asistidas por sistemas de Inteligencia Artificial. Siempre tienes derecho a solicitar atención humana.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full text-center py-8 border-t border-white/5 mt-8">
+        <p class="text-gray-600 text-sm">© 2026 AXYNTRAX Automation — Arequipa, Perú | <a href="pages/politica-privacidad.html" class="text-gray-500 hover:text-cyan-400">Privacidad</a> | <a href="pages/terminos.html" class="text-gray-500 hover:text-cyan-400">Términos</a></p>
+    </footer>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const nombre = document.getElementById('nombre').value;
+            const mensaje = document.getElementById('mensaje').value;
+            const acepto = document.getElementById('acepto-privacidad').checked;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const errEl = document.getElementById('form-error');
+            const sucEl = document.getElementById('form-success');
+            if (!nombre || !emailRegex.test(email) || !mensaje || !acepto) {
+                errEl.classList.remove('hidden');
+                sucEl.classList.add('hidden');
+                return;
+            }
+            errEl.classList.add('hidden');
+            sucEl.classList.remove('hidden');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

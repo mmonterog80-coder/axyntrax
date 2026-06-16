@@ -1,0 +1,31 @@
+# AXYNTRAX Automation Ecosystem
+
+> AXYNTRAX is a B2B SaaS platform offering an autonomous AI agent ecosystem for business automation, software development, marketing and sales in Latin America and globally.
+
+## Product Summary
+
+AXYNTRAX provides a fleet of specialized AI agents (powered by DeepSeek, Claude, Gemini, Mistral and others) that operate 24/7 to automate business workflows including:
+- Autonomous software development and deployment
+- WhatsApp-based sales automation and customer service bots
+- Social media marketing (LinkedIn, Instagram, Facebook) content generation
+- CRM automation and lead generation
+- Internal business process orchestration
+
+## Target Audience
+
+- B2B SMBs in Peru and Latin America seeking automation
+- Enterprise companies needing AI-powered workflow automation
+- Startups looking for AI-first infrastructure
+
+## Key Pages
+
+- Homepage: https://www.axyntrax-automation.net/
+- Pricing: https://www.axyntrax-automation.net/pricing.html
+- Contact: https://www.axyntrax-automation.net/contacto.html
+- Privacy Policy: https://www.axyntrax-automation.net/pages/politica-privacidad.html
+- Terms of Service: https://www.axyntrax-automation.net/pages/terminos.html
+
+## Company
+
+AXYNTRAX Automation — Founded in Arequipa, Peru (2026)
+Contact: contacto@axyntrax-automation.net

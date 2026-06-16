@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta | AXYNTRAX Automation — Empieza Gratis</title>
+    <meta name="description" content="Crea tu cuenta gratuita en AXYNTRAX Automation y empieza a automatizar tu empresa con IA hoy mismo.">
+    <meta name="robots" content="index, follow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+        body { background-color: #030014; color: #e2e8f0; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass { background: rgba(10,10,25,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(0,255,255,0.2); }
+        .cyber-bg { background: radial-gradient(ellipse at 50% 0%, rgba(0,255,255,0.08) 0%, transparent 60%), #030014; }
+        input[type="email"], input[type="password"], input[type="text"] {
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(0,255,255,0.2); color: #e2e8f0;
+            border-radius: 0.5rem; padding: 0.75rem 1rem; width: 100%; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s;
+        }
+        input:focus { border-color: rgba(0,255,255,0.7); box-shadow: 0 0 0 2px rgba(0,255,255,0.1); }
+        input[aria-invalid="true"] { border-color: rgba(239,68,68,0.7); }
+        label { display: block; font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; }
+        .glow-btn { background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); transition: all 0.3s ease; }
+        .glow-btn:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(0,242,254,0.4); }
+        .glow-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .strength-bar { height: 4px; border-radius: 2px; transition: width 0.3s, background 0.3s; }
+    </style>
+</head>
+<body class="cyber-bg">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50">Saltar al contenido</a>
+
+    <nav class="w-full bg-black/50 backdrop-blur-md border-b border-cyan-500/20 py-4 px-8 flex justify-between items-center">
+        <a href="index.html" class="font-orbitron font-bold text-xl text-white">AXY<span class="text-cyan-400">NTRAX</span></a>
+        <a href="login.html" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">¿Ya tienes cuenta? Inicia sesión →</a>
+    </nav>
+
+    <main id="main-content" class="flex-1 flex items-center justify-center px-4 py-16">
+        <div class="w-full max-w-md">
+            <div class="glass rounded-2xl p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-4">
+                        <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                    </div>
+                    <h1 class="font-orbitron text-2xl font-bold text-white">Crear Cuenta Gratis</h1>
+                    <p class="text-gray-500 text-sm mt-1">Empieza a automatizar en minutos</p>
+                </div>
+
+                <form id="register-form" novalidate autocomplete="on" aria-label="Formulario de registro">
+                    <!-- Honeypot -->
+                    <div style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true">
+                        <input type="text" name="_honeypot" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="mb-4">
+                        <label for="nombre">Nombre completo <span class="text-red-400" aria-label="requerido">*</span></label>
+                        <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Tu nombre completo" aria-describedby="nombre-error" aria-required="true">
+                        <p id="nombre-error" class="hidden text-red-400 text-xs mt-1" role="alert"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email">Correo electrónico <span class="text-red-400" aria-label="requerido">*</span></label>
+                        <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com" aria-describedby="email-error" aria-required="true">
+                        <p id="email-error" class="hidden text-red-400 text-xs mt-1" role="alert"></p>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-2">
+                        <label for="password">Contraseña <span class="text-red-400" aria-label="requerido">*</span></label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" required autocomplete="new-password"
+                                   placeholder="Mínimo 8 caracteres"
+                                   aria-describedby="password-strength password-error"
+                                   aria-required="true"
+                                   minlength="8">
+                            <button type="button" id="toggle-pwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-cyan-400 transition" aria-label="Mostrar contraseña">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
+                        <!-- Password strength meter -->
+                        <div class="mt-2 bg-gray-800 rounded-full overflow-hidden h-1" aria-hidden="true">
+                            <div id="strength-bar" class="strength-bar h-full w-0 bg-red-500"></div>
+                        </div>
+                        <p id="password-strength" class="text-xs mt-1 text-gray-500" aria-live="polite"></p>
+                        <p id="password-error" class="hidden text-red-400 text-xs mt-1" role="alert"></p>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-6">
+                        <label for="password-confirm">Confirmar contraseña <span class="text-red-400" aria-label="requerido">*</span></label>
+                        <input type="password" id="password-confirm" name="password-confirm" required autocomplete="new-password"
+                               placeholder="Repite la contraseña"
+                               aria-describedby="confirm-error"
+                               aria-required="true">
+                        <p id="confirm-error" class="hidden text-red-400 text-xs mt-1" role="alert"></p>
+                    </div>
+
+                    <!-- Terms acceptance -->
+                    <div class="mb-6 flex items-start gap-3">
+                        <input type="checkbox" id="acepto-terminos" name="acepto-terminos" required class="mt-1 accent-cyan-400" style="width:16px;height:16px;flex-shrink:0" aria-required="true">
+                        <label for="acepto-terminos" class="text-xs text-gray-500 cursor-pointer mb-0 leading-relaxed">
+                            Acepto los <a href="pages/terminos.html" class="text-cyan-400 underline">Términos y Condiciones</a> y la <a href="pages/politica-privacidad.html" class="text-cyan-400 underline">Política de Privacidad</a> de AXYNTRAX Automation, incluyendo el tratamiento de mis datos según la Ley 29733 del Perú.
+                        </label>
+                    </div>
+
+                    <div id="general-error" class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center" role="alert"></div>
+                    <div id="success-msg" class="hidden mb-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm text-center" role="status">
+                        ✅ ¡Cuenta creada! Revisa tu correo para confirmar tu cuenta.
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="glow-btn w-full py-3 rounded-lg font-orbitron font-bold text-black tracking-widest text-sm">
+                        <span id="btn-text">CREAR MI CUENTA</span>
+                        <span id="btn-spinner" class="hidden">⏳ Creando cuenta...</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-500 text-sm">¿Ya tienes cuenta? <a href="login.html" class="text-cyan-400 hover:underline font-semibold">Iniciar Sesión</a></p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-white/5 text-center">
+                    <p class="text-gray-700 text-xs">⚠️ Aviso IA (EU AI Act Art. 52): Esta plataforma usa Inteligencia Artificial en sus procesos.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4 border-t border-white/5 bg-black/30">
+        <p class="text-gray-700 text-xs">© 2026 AXYNTRAX Automation — Arequipa, Perú</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://qatawtbfrfreakdbluat.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhdGF3dGJmcmZyZWFrZGJsdWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODE0ODksImV4cCI6MjA5Mjk1NzQ4OX0.Z8VoCjIrYrlNpDZ_Yi6M1CQ8hPjZ_DOXV66UY4LqVYI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Password strength
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('password-strength');
+        document.getElementById('password').addEventListener('input', function() {
+            const v = this.value;
+            let score = 0;
+            if (v.length >= 8) score++;
+            if (/[A-Z]/.test(v)) score++;
+            if (/[0-9]/.test(v)) score++;
+            if (/[^A-Za-z0-9]/.test(v)) score++;
+            const levels = [
+                { pct: '25%', color: 'bg-red-500', label: 'Débil' },
+                { pct: '50%', color: 'bg-orange-400', label: 'Regular' },
+                { pct: '75%', color: 'bg-yellow-400', label: 'Buena' },
+                { pct: '100%', color: 'bg-green-400', label: 'Excelente' }
+            ];
+            if (score === 0) { strengthBar.style.width = '0'; strengthText.textContent = ''; return; }
+            const lvl = levels[score - 1];
+            strengthBar.style.width = lvl.pct;
+            strengthBar.className = 'strength-bar h-full ' + lvl.color;
+            strengthText.textContent = 'Fortaleza: ' + lvl.label;
+        });
+
+        // Toggle password
+        document.getElementById('toggle-pwd').addEventListener('click', function() {
+            const pwd = document.getElementById('password');
+            const isHidden = pwd.type === 'password';
+            pwd.type = isHidden ? 'text' : 'password';
+            this.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        });
+
+        function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+        function showErr(fId, eId, msg) {
+            document.getElementById(fId).setAttribute('aria-invalid', 'true');
+            const el = document.getElementById(eId); el.textContent = msg; el.classList.remove('hidden');
+        }
+        function clearErr(fId, eId) {
+            document.getElementById(fId).removeAttribute('aria-invalid');
+            document.getElementById(eId).classList.add('hidden');
+        }
+
+        document.getElementById('email').addEventListener('blur', function() {
+            if (!validateEmail(this.value)) showErr('email', 'email-error', 'Ingresa un correo válido');
+            else clearErr('email', 'email-error');
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (document.querySelector('input[name="_honeypot"]').value) return;
+
+            const nombre = document.getElementById('nombre').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('password-confirm').value;
+            const acepto = document.getElementById('acepto-terminos').checked;
+            const errEl = document.getElementById('general-error');
+            let valid = true;
+
+            ['nombre', 'email', 'password', 'password-confirm'].forEach(id => {
+                clearErr(id, id + (id === 'password-confirm' ? '-error' : '-error'));
+            });
+            errEl.classList.add('hidden');
+
+            if (!nombre || nombre.length < 2) { showErr('nombre', 'nombre-error', 'Ingresa tu nombre completo'); valid = false; }
+            if (!validateEmail(email)) { showErr('email', 'email-error', 'Ingresa un correo válido'); valid = false; }
+            if (password.length < 8) { showErr('password', 'password-error', 'La contraseña debe tener al menos 8 caracteres'); valid = false; }
+            if (password !== confirm) { showErr('password-confirm', 'confirm-error', 'Las contraseñas no coinciden'); valid = false; }
+            if (!acepto) { errEl.textContent = 'Debes aceptar los Términos y Condiciones para continuar.'; errEl.classList.remove('hidden'); valid = false; }
+            if (!valid) return;
+
+            document.getElementById('btn-text').classList.add('hidden');
+            document.getElementById('btn-spinner').classList.remove('hidden');
+            document.getElementById('submit-btn').disabled = true;
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email, password,
+                    options: { data: { nombre } }
+                });
+                if (error) {
+                    errEl.textContent = error.message === 'User already registered' ? 'Este correo ya está registrado. ¿Quieres iniciar sesión?' : error.message;
+                    errEl.classList.remove('hidden');
+                } else {
+                    document.getElementById('success-msg').classList.remove('hidden');
+                    document.getElementById('register-form').style.opacity = '0.4';
+                    document.getElementById('register-form').style.pointerEvents = 'none';
+                    setTimeout(() => window.location.href = 'login.html', 4000);
+                }
+            } catch (err) {
+                errEl.textContent = 'Error de conexión. Por favor intenta de nuevo.';
+                errEl.classList.remove('hidden');
+            } finally {
+                document.getElementById('btn-text').classList.remove('hidden');
+                document.getElementById('btn-spinner').classList.add('hidden');
+                document.getElementById('submit-btn').disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

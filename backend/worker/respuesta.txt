@@ -1,0 +1,12 @@
+[17:16:32] Orden recibida (ID 1239_1781475389): comando_cmd
+[17:16:32] Comando 'cd /d C:\AXYNTRAX\backend\hallucination_validator && dir /b' finalizado.
+STDOUT:
+api_handler.py
+api_validator.py
+confidence_report.py
+knowledge_base.py
+requirements.txt
+validator.py
+venv
+__init__.py
+__pycache__

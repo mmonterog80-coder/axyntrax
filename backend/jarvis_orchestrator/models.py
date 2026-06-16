@@ -32,6 +32,7 @@ class TaskCreate(BaseModel):
     session_id: UUID
     origin: str
     task: TaskInner
+    preferred_api: Optional[str] = None  # IA preferida (deepseek, kimi, qwen, etc.)
 
 class RunSnapshot(BaseModel):
     id: UUID

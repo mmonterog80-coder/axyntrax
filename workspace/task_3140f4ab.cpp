@@ -1,0 +1,1 @@
+Para ver si el sistema lo reconoce como ejecutable válido:
