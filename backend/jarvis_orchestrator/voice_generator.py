@@ -1,7 +1,6 @@
 import os, logging
 from fish_audio_sdk import FishAudioClient, TTSRequest, AudioFormat
 logger = logging.getLogger(__name__)
-
 def generate_voice(text, output="response.mp3"):
     key = os.getenv("FISH_API_KEY")
     if not key:
