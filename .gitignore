@@ -26,3 +26,11 @@ __pycache__/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Entornos virtuales
+venv/
+backend/venv/
+backend/worker/venv/
+node_modules/
+__pycache__/
+*.pyc
