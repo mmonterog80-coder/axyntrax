@@ -1,18 +1,21 @@
 ﻿# Entornos virtuales
-backend/venv/
-backend/worker/venv/
 venv/
-env/
+*/venv/*
+**/*
+**/*
+**/**
 
-# Archivos de Python
+# Python
 __pycache__/
-*.py[cod]
-*.class
-*.so
+*.pyc
+*.py
+*.py
+*.egg-info/
+dist/
+build/
 
-# Variables de entorno
-.env
-.env.local
+# Node
+node_modules/
 
 # Logs
 *.log
@@ -20,17 +23,11 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# Sistema
+# OS
 .DS_Store
 Thumbs.db
 
-# Entornos virtuales
-venv/
-backend/venv/
-backend/worker/venv/
-node_modules/
-__pycache__/
-*.pyc
+# Env
+.env
+*.env.local
