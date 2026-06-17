@@ -12,7 +12,7 @@ import time
 load_dotenv(dotenv_path=r"C:\AXYNTRAX\.env")
 ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://localhost:8000")
 
-# Configuración de pantalla
+# ConfiguraciÃ³n de pantalla
 WIDTH, HEIGHT = 1024, 768
 BG_COLOR = (5, 5, 15)
 RING_COLOR = (0, 180, 220)
@@ -71,7 +71,7 @@ def send_task(command):
             return f"[{data.get('status', '?')}] {data.get('plan', 'Sin plan')}"
         return f"Error {r.status_code}"
     except Exception as e:
-        return f"Sin conexión: {e}"
+        return f"Sin conexiÃ³n: {e}"
 
 def draw_background(screen):
     cx, cy = screen.get_width()//2, screen.get_height()//2
@@ -148,7 +148,6 @@ def main():
                             if r"C:\AXYNTRAX\backend\jarvis_orchestrator" not in sys.path:
                                 sys.path.append(r"C:\AXYNTRAX\backend\jarvis_orchestrator")
                             try:
-                                from voice_generator import generar_y_reproducir
                                 generar_y_reproducir(resp)
                             except Exception as e:
                                 print("Error voz:", e)

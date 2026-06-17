@@ -1,6 +1,6 @@
 import os, subprocess
 
-# 1. Reparar voice_generator.py (versiÛn blindada)
+# 1. Reparar voice_generator.py (versi√≥n blindada)
 voice_path = r"backend\jarvis_orchestrator\voice_generator.py"
 os.makedirs(os.path.dirname(voice_path), exist_ok=True)
 with open(voice_path, 'w', encoding='utf-8') as f:
@@ -32,7 +32,7 @@ subprocess.run(["git", "commit", "-m", "CHAU CHAMBA cloud-ready (auto-push)"], s
 result = subprocess.run(["git", "push", "origin", "master"], shell=True, capture_output=True, text=True)
 print(result.stdout)
 print(result.stderr)
-print("Push completado. Railway desplegar· CHAU CHAMBA.")
+print("Push completado. Railway desplegar√° CHAU CHAMBA.")
 
 # 3. Reiniciar JARVIS
 subprocess.Popen([r"C:\AXYNTRAX\start_jarvis.bat"], shell=True)

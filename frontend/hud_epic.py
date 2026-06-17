@@ -55,8 +55,7 @@ class JarvisBackend(QObject):
                     self.consoleOutput.emit(f"[JARVIS]: {response}")
                     try:
                         sys.path.append(r"C:\AXYNTRAX\backend\jarvis_orchestrator")
-                        from voice_generator import reproducir_audio
-                        reproducir_audio(response)
+    pass  # voz eliminada
                     except:
                         pass
                 else:
@@ -74,7 +73,7 @@ if __name__ == "__main__":
     qml_path = os.path.join(os.path.dirname(__file__), "hud_epic.qml")
     engine.load(QUrl.fromLocalFile(qml_path))
     if not engine.rootObjects():
-        print("Error: rootObjects vacío. Falló la carga del QML.")
+        print("Error: rootObjects vacÃ­o. FallÃ³ la carga del QML.")
         sys.exit(-1)
     print("HUD INICIADO CORRECTAMENTE")
     sys.exit(app.exec())

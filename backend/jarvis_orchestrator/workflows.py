@@ -1,5 +1,5 @@
-﻿"""
-workflows.py â€” ImplementaciÃ³n de Flujos AutÃ³nomos ("Sistema Operativo" de AXYNTRAX Corp).
+"""
+workflows.py — Implementación de Flujos Autónomos ("Sistema Operativo" de AXYNTRAX Corp).
 """
 
 from plan_generator import generate_plan
@@ -9,7 +9,7 @@ import time
 def execute_revenue_autopilot(product_name: str) -> dict:
     """
     Flujo 1: Revenue Autopilot
-    1. PHOENIX (Marketing) genera la campaÃ±a.
+    1. PHOENIX (Marketing) genera la campaña.
     2. LEDGER (Finanzas) define el precio y ROI.
     3. SHIELD (Legal) redacta los T&C.
     """
@@ -18,7 +18,7 @@ def execute_revenue_autopilot(product_name: str) -> dict:
     # Paso 1: Marketing
     print(f"[REVENUE FLOW] Llamando a PHOENIX para {product_name}...")
     phoenix_result = generate_plan(
-        f"DiseÃ±a una campaÃ±a de marketing ultra-persuasiva y de 1 pÃ¡rrafo para vender el producto: {product_name}",
+        f"Diseña una campaña de marketing ultra-persuasiva y de 1 párrafo para vender el producto: {product_name}",
         action_type="execute",
         preferred_api=CORPORATE_STRUCTURE["PHOENIX"]["preferred_api"],
         override_persona=CORPORATE_STRUCTURE["PHOENIX"]["persona"]
@@ -28,7 +28,7 @@ def execute_revenue_autopilot(product_name: str) -> dict:
     # Paso 2: Finanzas
     print(f"[REVENUE FLOW] Llamando a LEDGER para {product_name}...")
     LEDGER_result = generate_plan(
-        f"Basado en esta campaÃ±a: '{phoenix_result}'. Define un precio estratÃ©gico, margen de ganancia proyectado y ROI esperado (sÃ© muy breve y numÃ©rico).",
+        f"Basado en esta campaña: '{phoenix_result}'. Define un precio estratégico, margen de ganancia proyectado y ROI esperado (sé muy breve y numérico).",
         action_type="execute",
         preferred_api=CORPORATE_STRUCTURE["LEDGER"]["preferred_api"],
         override_persona=CORPORATE_STRUCTURE["LEDGER"]["persona"]
@@ -50,16 +50,16 @@ def execute_revenue_autopilot(product_name: str) -> dict:
 def execute_product_pipeline(idea: str) -> dict:
     """
     Flujo 2: Product Pipeline
-    1. STARK (I+D) diseÃ±a la arquitectura.
+    1. STARK (I+D) diseña la arquitectura.
     2. ARC (Seguridad) revisa amenazas.
-    3. FORGE (IngenierÃ­a) genera la estructura inicial de cÃ³digo.
+    3. FORGE (Ingeniería) genera la estructura inicial de código.
     """
     results = {}
     
-    # Paso 1: DiseÃ±o
+    # Paso 1: Diseño
     print(f"[PRODUCT FLOW] Llamando a STARK para {idea}...")
     stark_result = generate_plan(
-        f"DiseÃ±a la arquitectura tÃ©cnica conceptual y roadmap de este producto tecnolÃ³gico: {idea} (En 3 puntos breves).",
+        f"Diseña la arquitectura técnica conceptual y roadmap de este producto tecnológico: {idea} (En 3 puntos breves).",
         action_type="execute",
         preferred_api=CORPORATE_STRUCTURE["STARK"]["preferred_api"],
         override_persona=CORPORATE_STRUCTURE["STARK"]["persona"]
@@ -69,17 +69,17 @@ def execute_product_pipeline(idea: str) -> dict:
     # Paso 2: Seguridad
     print(f"[PRODUCT FLOW] Llamando a ARC para revisar arquitectura...")
     ARC_result = generate_plan(
-        f"Revisa esta arquitectura: '{stark_result}'. Identifica la mayor vulnerabilidad de seguridad y cÃ³mo mitigarla. (1 pÃ¡rrafo estricto).",
+        f"Revisa esta arquitectura: '{stark_result}'. Identifica la mayor vulnerabilidad de seguridad y cómo mitigarla. (1 párrafo estricto).",
         action_type="execute",
         preferred_api=CORPORATE_STRUCTURE["ARC"]["preferred_api"],
         override_persona=CORPORATE_STRUCTURE["ARC"]["persona"]
     )
     results["ARC"] = ARC_result
     
-    # Paso 3: IngenierÃ­a
-    print(f"[PRODUCT FLOW] Llamando a FORGE para iniciar cÃ³digo...")
+    # Paso 3: Ingeniería
+    print(f"[PRODUCT FLOW] Llamando a FORGE para iniciar código...")
     forge_result = generate_plan(
-        f"Basado en la arquitectura: '{stark_result}' y la mitigaciÃ³n: '{ARC_result}'. Escribe un esqueleto de cÃ³digo Python que represente la clase principal de este sistema.",
+        f"Basado en la arquitectura: '{stark_result}' y la mitigación: '{ARC_result}'. Escribe un esqueleto de código Python que represente la clase principal de este sistema.",
         action_type="generate_code",
         preferred_api=CORPORATE_STRUCTURE["FORGE"]["preferred_api"],
         override_persona=CORPORATE_STRUCTURE["FORGE"]["persona"]

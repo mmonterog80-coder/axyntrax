@@ -18,7 +18,7 @@ class JarvisBackend(QObject):
         self._timer.timeout.connect(self.update_system_info)
         self._timer.start(2000)  # actualizar cada 2 segundos
 
-    # Señales que actualizarán la interfaz QML
+    # SeÃ±ales que actualizarÃ¡n la interfaz QML
     cpuChanged = Signal(float)
     ramChanged = Signal(float)
     statusChanged = Signal(str)
@@ -65,7 +65,6 @@ class JarvisBackend(QObject):
                         # Intentar reproducir voz
                         try:
                             sys.path.append(r"C:\AXYNTRAX\backend\jarvis_orchestrator")
-                            from voice_generator import generar_y_reproducir
                             generar_y_reproducir(response)
                         except:
                             pass

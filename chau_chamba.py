@@ -397,7 +397,7 @@ async def chau_chamba_loop():
     stealth = Stealth()
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True, slow_mo=50, channel="chrome")
+        browser = await p.chromium.launch(headless=True, slow_mo=50, )
         
         while True:
             hora_actual = datetime.datetime.now().hour

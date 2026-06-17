@@ -17,3 +17,6 @@ fish-audio-sdk
 beautifulsoup4
 ddgs
 playwright
+playwright-stealth 
+psutil
+fish-audio-sdk

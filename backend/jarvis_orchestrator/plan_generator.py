@@ -57,7 +57,7 @@ def generate_plan(objective: str, module: str = "", phase: int = 1,
     else:
         client = openai.OpenAI(api_key=os.getenv("OPENROUTER_API_KEY"), base_url="https://openrouter.ai/api/v1")
         openrouter_models = {
-            "claude-3-5-sonnet": "anthropic/claude-3.5-sonnet:beta",
+            "claude-3-5-sonnet": "anthropic/deepseek-chat",
             "qwen": "qwen/qwen-2.5-72b-instruct",
             "zoho_zia": "openai/gpt-4o-mini",
             "kimi": "openai/gpt-4o-mini",
