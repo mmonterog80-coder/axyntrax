@@ -1,10 +1,10 @@
 /**
- * J.A.R.V.I.S. MARK V - CORE LOGIC & AUDIO SYNTHESIS
- * Architecture by Google AI Studio (LLM Council)
+ * J.A.R.V.I.S. MARK VI - 8K 3D WEBGL ENGINE
+ * Powered by Three.js & Web Audio API
  */
 
 // ==========================================
-// 1. AUDIO SYNTHESIZER (Web Audio API)
+// 1. AUDIO SYNTHESIZER (JarvisAudioSynth)
 // ==========================================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -13,103 +13,75 @@ const JarvisAudio = {
         if(audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        osc.connect(gain); gain.connect(audioCtx.destination);
 
-        // Power up sweep sound
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(50, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 1.5);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(30, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 2.0);
         
         gain.gain.setValueAtTime(0, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.5);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+        gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 1.0);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2.0);
 
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 1.5);
+        osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 2.0);
     },
-
-    playHoverTick: function() {
+    playTick: function() {
         if(audioCtx.state === 'suspended') return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        osc.connect(gain); gain.connect(audioCtx.destination);
 
         osc.type = 'square';
-        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+        osc.frequency.setValueAtTime(1500, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.05);
 
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
 
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.05);
+        osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.05);
     },
-
-    playTypeSound: function() {
+    playTargetLock: function() {
         if(audioCtx.state === 'suspended') return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(600 + Math.random()*200, audioCtx.currentTime);
-        
-        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
-
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.03);
-    },
-
-    playConfirm: function() {
-        if(audioCtx.state === 'suspended') return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        osc.connect(gain); gain.connect(audioCtx.destination);
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
-        osc.frequency.setValueAtTime(1760, audioCtx.currentTime + 0.1); // A6
+        osc.frequency.setValueAtTime(2000, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(3000, audioCtx.currentTime + 0.1);
 
         gain.gain.setValueAtTime(0, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
 
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.3);
+        osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.2);
     }
 };
 
 // ==========================================
-// 2. STARTUP SEQUENCE
+// 2. BOOT SEQUENCE
 // ==========================================
 window.addEventListener('load', () => {
-    // Requires a click to start audio context due to browser policies
     document.body.addEventListener('click', initBootSequence, { once: true });
-    document.getElementById('startup-text').innerText = "CLICK TO INITIALIZE J.A.R.V.I.S. PROTOCOLS";
 });
 
 function initBootSequence() {
     JarvisAudio.playSweep();
-    document.getElementById('startup-text').innerText = "POWERING ON CORE SYSTEMS...";
+    document.getElementById('startup-text').innerText = "BIOMETRIC ACCEPTED. BOOTING CORE...";
     
     let fill = 0;
     const bar = document.getElementById('startup-fill');
     
     const bootInterval = setInterval(() => {
-        fill += Math.random() * 15;
+        fill += Math.random() * 20;
         if(fill >= 100) {
             fill = 100;
             clearInterval(bootInterval);
-            document.getElementById('startup-text').innerText = "SYSTEMS ONLINE";
+            document.getElementById('startup-text').innerText = "SWARM ONLINE";
             setTimeout(() => {
                 document.getElementById('startup-overlay').style.opacity = '0';
-                document.querySelector('.hud-container').classList.add('active');
-                setTimeout(() => document.getElementById('startup-overlay').remove(), 1500);
+                document.getElementById('ui-layer').classList.add('active');
+                setTimeout(() => document.getElementById('startup-overlay').remove(), 2000);
             }, 500);
         }
         bar.style.width = fill + '%';
@@ -117,42 +89,162 @@ function initBootSequence() {
 }
 
 // ==========================================
-// 3. 3D BACKGROUND ENGINE (Three.js)
+// 3. THREE.JS 3D ENGINE & BLOOM POST-PROCESSING
 // ==========================================
-const canvas = document.getElementById('bg-canvas');
+const canvas = document.getElementById('webgl-canvas');
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+scene.fog = new THREE.FogExp2(0x020202, 0.015);
 
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 5, 25);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
+renderer.toneMapping = THREE.ReinhardToneMapping;
 
-// Iron Man Core Wireframe Sphere
-const geometry = new THREE.IcosahedronGeometry(4, 2);
-const material = new THREE.MeshBasicMaterial({ 
-    color: 0x00e5ff, 
-    wireframe: true, 
-    transparent: true, 
-    opacity: 0.15 
+// PostProcessing (Unreal Bloom Pass for Epic Glow)
+const renderScene = new THREE.RenderPass(scene, camera);
+const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 2.0, 0.5, 0.1);
+const composer = new THREE.EffectComposer(renderer);
+composer.addPass(renderScene);
+composer.addPass(bloomPass);
+
+// Group for the entire Core
+const coreGroup = new THREE.Group();
+scene.add(coreGroup);
+
+// Materials
+const matCyan = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.3 });
+const matGold = new THREE.MeshBasicMaterial({ color: 0xffb300, wireframe: true, transparent: true, opacity: 0.5 });
+const matSolidCyan = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+
+// Central Core (JARVIS)
+const jarvisCore = new THREE.Mesh(new THREE.IcosahedronGeometry(4, 2), matCyan);
+coreGroup.add(jarvisCore);
+
+// Outer Rings
+const ring1 = new THREE.Mesh(new THREE.TorusGeometry(8, 0.02, 16, 100), matGold);
+ring1.rotation.x = Math.PI / 2;
+coreGroup.add(ring1);
+
+const ring2 = new THREE.Mesh(new THREE.TorusGeometry(12, 0.05, 16, 100), matCyan);
+ring2.rotation.y = Math.PI / 4;
+coreGroup.add(ring2);
+
+// AI Swarm Nodes
+const aiNames = ["Gemini 1.5", "DeepSeek V3", "Qwen 2.5", "Claude 3.5", "GPT-4o", "Kimi", "Stitch", "Nano", "Banana2", "Llama 3"];
+const nodes = [];
+const orbitRadius = 16;
+
+aiNames.forEach((name, i) => {
+    const angle = (i / aiNames.length) * Math.PI * 2;
+    const mesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.8, 0), matSolidCyan);
+    
+    // Position in orbit
+    mesh.position.x = Math.cos(angle) * orbitRadius;
+    mesh.position.z = Math.sin(angle) * orbitRadius;
+    mesh.position.y = (Math.random() - 0.5) * 4;
+    
+    mesh.userData = { name: name, angle: angle, speed: 0.005 + Math.random() * 0.005 };
+    coreGroup.add(mesh);
+    nodes.push(mesh);
 });
-const sphere = new THREE.Mesh(geometry, material);
-scene.add(sphere);
 
-// Outer Ring
-const ringGeo = new THREE.TorusGeometry(6, 0.05, 16, 100);
-const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb300, transparent: true, opacity: 0.3 });
-const ring = new THREE.Mesh(ringGeo, ringMat);
-ring.rotation.x = Math.PI / 2;
-scene.add(ring);
+// Hexagonal Grid Floor
+const gridHelper = new THREE.PolarGridHelper(30, 16, 8, 64, 0x00e5ff, 0x00e5ff);
+gridHelper.position.y = -8;
+gridHelper.material.opacity = 0.15;
+gridHelper.material.transparent = true;
+scene.add(gridHelper);
 
-camera.position.z = 10;
+// Particles
+const partsGeo = new THREE.BufferGeometry();
+const partsCount = 1000;
+const posArray = new Float32Array(partsCount * 3);
+for(let i=0; i<partsCount*3; i++) {
+    posArray[i] = (Math.random() - 0.5) * 60;
+}
+partsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+const partsMat = new THREE.PointsMaterial({ size: 0.1, color: 0x00e5ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+const particlesMesh = new THREE.Points(partsGeo, partsMat);
+scene.add(particlesMesh);
+
+// ==========================================
+// 4. RAYCASTING & INTERACTION
+// ==========================================
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let hoveredNode = null;
+
+const targetInfoBox = document.getElementById('target-info');
+const tName = document.getElementById('t-name');
+const tHex = document.getElementById('t-hex');
+const tLat = document.getElementById('t-lat');
+
+window.addEventListener('mousemove', (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
+
+// ==========================================
+// 5. ANIMATION LOOP
+// ==========================================
+const clock = new THREE.Clock();
 
 function animate() {
     requestAnimationFrame(animate);
-    sphere.rotation.y += 0.002;
-    sphere.rotation.x += 0.001;
-    ring.rotation.z -= 0.005;
-    renderer.render(scene, camera);
+    const elapsedTime = clock.getElapsedTime();
+
+    // Rotate Core
+    jarvisCore.rotation.y += 0.002;
+    jarvisCore.rotation.x += 0.001;
+    
+    // Rotate Rings
+    ring1.rotation.z -= 0.005;
+    ring2.rotation.x += 0.003;
+    ring2.rotation.y += 0.002;
+    
+    // Orbit Nodes
+    nodes.forEach(node => {
+        node.userData.angle += node.userData.speed;
+        node.position.x = Math.cos(node.userData.angle) * orbitRadius;
+        node.position.z = Math.sin(node.userData.angle) * orbitRadius;
+        node.rotation.x += 0.02;
+        node.rotation.y += 0.02;
+    });
+
+    // Particles float
+    particlesMesh.rotation.y = elapsedTime * 0.02;
+
+    // Raycaster Logic
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(nodes);
+    
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        if (hoveredNode !== object) {
+            if (hoveredNode) hoveredNode.material.color.setHex(0x00e5ff); // Reset prev
+            hoveredNode = object;
+            hoveredNode.material.color.setHex(0xffb300); // Highlight Gold
+            JarvisAudio.playTargetLock();
+            
+            // Show UI
+            targetInfoBox.classList.remove('hidden');
+            tName.innerText = hoveredNode.userData.name;
+            tHex.innerText = Math.floor(Math.random()*65535).toString(16).toUpperCase();
+            tLat.innerText = Math.floor(Math.random()*20 + 2);
+        }
+    } else {
+        if (hoveredNode) {
+            hoveredNode.material.color.setHex(0x00e5ff);
+            hoveredNode = null;
+            targetInfoBox.classList.add('hidden');
+        }
+    }
+
+    composer.render();
 }
 animate();
 
@@ -160,103 +252,37 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // ==========================================
-// 4. UI INTERACTIONS & BINDINGS
+// 6. TERMINAL LOGIC
 // ==========================================
-
-// Hover sounds for buttons and elements
-document.querySelectorAll('.cyber-btn, .ai-node').forEach(el => {
-    el.addEventListener('mouseenter', () => JarvisAudio.playHoverTick());
-});
-
-// Chat logic
 const chatInput = document.getElementById('chat-input');
-const sendBtn = document.getElementById('send-btn');
 const chatWindow = document.getElementById('chat-window');
 
 chatInput.addEventListener('keydown', (e) => {
-    JarvisAudio.playTypeSound();
-    if(e.key === 'Enter') {
-        sendMessage();
+    JarvisAudio.playTick();
+    if(e.key === 'Enter' && chatInput.value.trim() !== '') {
+        const text = chatInput.value.trim();
+        chatInput.value = '';
+        
+        // Add User MSG
+        appendMsg('USER', text, 'user');
+        JarvisAudio.playTargetLock();
+        
+        // Mock JARVIS Reply
+        setTimeout(() => {
+            appendMsg('J.A.R.V.I.S.', `Directive [${text}] synced across all ${nodes.length} nodes via WebGL pipeline.`, 'system');
+            JarvisAudio.playTick();
+        }, 600);
     }
 });
 
-sendBtn.addEventListener('click', sendMessage);
-
-function sendMessage() {
-    const text = chatInput.value.trim();
-    if(!text) return;
-    
-    JarvisAudio.playConfirm();
-
-    // User Message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'message user';
-    userMsg.innerHTML = `<div class="msg-author">USER</div><div class="msg-text">${text}</div>`;
-    chatWindow.appendChild(userMsg);
-    
-    chatInput.value = '';
+function appendMsg(author, text, type) {
+    const div = document.createElement('div');
+    div.className = `message ${type}`;
+    div.innerHTML = `<span class="msg-author">${author}:</span> ${text}`;
+    chatWindow.appendChild(div);
     chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    // Simulate JARVIS Network Response via REST API (Using the /api/chat endpoint from FastAPI if it existed, or just mock it)
-    setTimeout(() => {
-        const sysMsg = document.createElement('div');
-        sysMsg.className = 'message system';
-        sysMsg.innerHTML = `<div class="msg-author">J.A.R.V.I.S.</div><div class="msg-text">Directiva "${text}" recibida. Enrutando al nodo correspondiente del enjambre...</div>`;
-        chatWindow.appendChild(sysMsg);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-        JarvisAudio.playHoverTick();
-    }, 800);
 }
-
-// Random telemetry updates to simulate live data
-setInterval(() => {
-    document.querySelectorAll('.t-bar-fill').forEach(bar => {
-        if(!bar.classList.contains('warning')) {
-            const current = parseFloat(bar.style.width);
-            const delta = (Math.random() - 0.5) * 5;
-            bar.style.width = Math.max(10, Math.min(100, current + delta)) + '%';
-        }
-    });
-}, 2000);
-
-// ==========================================
-// 5. JARVIS AX v3.0 - SKILLS API INTEGRATION
-// ==========================================
-async function fetchSkillsData() {
-    try {
-        const countRes = await fetch('/api/skills/count');
-        const countData = await countRes.json();
-        const hudCount = document.getElementById('hud-skills-count');
-        if(hudCount) hudCount.innerText = `SKILLS: ${countData.total_skills} // ONLINE`;
-
-        const skillsRes = await fetch('/api/skills');
-        const skillsData = await skillsRes.json();
-        
-        // Render skills list in chat terminal for visibility
-        const sysMsg = document.createElement('div');
-        sysMsg.className = 'message system';
-        
-        let skillsHtml = '<div class="msg-author">[JARVIS AX v3.0] SKILLS INICIALIZADAS:</div>';
-        skillsHtml += '<ul style="list-style:none; padding-left:10px; margin-top:5px; opacity:0.8; font-size:0.85rem;">';
-        skillsData.skills.forEach(sk => {
-            skillsHtml += `<li>> [Prioridad: ${sk.priority}] ${sk.name}</li>`;
-        });
-        skillsHtml += '</ul>';
-        sysMsg.innerHTML = skillsHtml;
-        
-        const chatWindow = document.getElementById('chat-window');
-        if(chatWindow) {
-            chatWindow.appendChild(sysMsg);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-    } catch(err) {
-        console.error('Error fetching skills:', err);
-    }
-}
-
-window.addEventListener('load', () => {
-    setTimeout(fetchSkillsData, 3000); 
-});
