@@ -7,6 +7,9 @@ echo "======================================"
 # Iniciar Puente Qwen-JARVIS
 echo "[OK] Iniciando Puente Qwen-JARVIS..."
 python backend/jarvis_orchestrator/qwen_bridge.py > qwen_bridge.log 2>&1 &
+
+# Iniciar Bot de Telegram
+echo "[OK] Iniciando Bot de Telegram..."
 python telegram_bot.py > telegram_bot.log 2>&1 &
 
 # Iniciar CHAU CHAMBA
