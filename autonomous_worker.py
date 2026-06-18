@@ -1,4 +1,4 @@
-﻿import os
+import os
 import time
 import requests
 from datetime import datetime
@@ -7,16 +7,21 @@ from openai import OpenAI
 
 print("🤖 Worker Autónomo JARVIS v2 - Iniciando...")
 
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+SUPABASE_URL = os.getenv('SUPABASE_URL', '').rstrip('/rest/v1/').rstrip('/')
+SUPABASE_KEY = (
+    os.getenv('SUPABASE_KEY') or
+    os.getenv('SUPABASE_SERVICE_ROLE_KEY') or
+    os.getenv('SUPABASE_ANON_KEY')
+)
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', os.getenv('TELEGRAM_ALLOWED_CHAT_ID', ''))
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    print("❌ Faltan SUPABASE_URL o SUPABASE_KEY")
+    print(f"❌ Faltan credenciales Supabase. URL={bool(SUPABASE_URL)} KEY={bool(SUPABASE_KEY)}")
     exit(1)
 
+print(f"📡 Conectando a Supabase: {SUPABASE_URL[:40]}...")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 print("✅ Supabase conectado")
 
