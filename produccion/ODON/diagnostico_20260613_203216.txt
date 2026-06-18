@@ -1,6 +1,0 @@
-﻿Diagnóstico de ODON generado manualmente.
-Fecha: 06/13/2026 20:32:16
-Recomendación 1: Revisar inventario.
-Recomendación 2: Ofrecer promociones.
-Recomendación 3: Optimizar horarios.
-Alerta: Sin novedades críticas.
