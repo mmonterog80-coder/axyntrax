@@ -221,3 +221,42 @@ setInterval(() => {
         }
     });
 }, 2000);
+
+// ==========================================
+// 5. JARVIS AX v3.0 - SKILLS API INTEGRATION
+// ==========================================
+async function fetchSkillsData() {
+    try {
+        const countRes = await fetch('/api/skills/count');
+        const countData = await countRes.json();
+        const hudCount = document.getElementById('hud-skills-count');
+        if(hudCount) hudCount.innerText = `SKILLS: ${countData.total_skills} // ONLINE`;
+
+        const skillsRes = await fetch('/api/skills');
+        const skillsData = await skillsRes.json();
+        
+        // Render skills list in chat terminal for visibility
+        const sysMsg = document.createElement('div');
+        sysMsg.className = 'message system';
+        
+        let skillsHtml = '<div class="msg-author">[JARVIS AX v3.0] SKILLS INICIALIZADAS:</div>';
+        skillsHtml += '<ul style="list-style:none; padding-left:10px; margin-top:5px; opacity:0.8; font-size:0.85rem;">';
+        skillsData.skills.forEach(sk => {
+            skillsHtml += `<li>> [Prioridad: ${sk.priority}] ${sk.name}</li>`;
+        });
+        skillsHtml += '</ul>';
+        sysMsg.innerHTML = skillsHtml;
+        
+        const chatWindow = document.getElementById('chat-window');
+        if(chatWindow) {
+            chatWindow.appendChild(sysMsg);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+    } catch(err) {
+        console.error('Error fetching skills:', err);
+    }
+}
+
+window.addEventListener('load', () => {
+    setTimeout(fetchSkillsData, 3000); 
+});

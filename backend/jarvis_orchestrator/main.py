@@ -196,8 +196,59 @@ async def get_logs():
     except Exception as e:
         return {"error": str(e)}
 
+# ============ JARVIS AX v3.0 SKILLS API (By DeepSeek) ============
+
+from skills_catalog import DEFAULT_SKILLS, DEFAULT_TOOLS, Skill
+
+# Estado en memoria para permitir reordenamiento
+skills_state = [s.model_dump() for s in DEFAULT_SKILLS]
+
+@app.get("/api/skills")
+async def list_skills(token: str = Depends(verify_token)):
+    # Devuelve skills ordenadas por prioridad (mayor a menor)
+    sorted_skills = sorted(skills_state, key=lambda x: x['priority'], reverse=True)
+    return {"skills": sorted_skills}
+
+@app.get("/api/tools")
+async def list_tools(token: str = Depends(verify_token)):
+    return {"tools": [t.model_dump() for t in DEFAULT_TOOLS]}
+
+@app.get("/api/skills/count")
+async def count_skills(token: str = Depends(verify_token)):
+    return {"total_skills": len(skills_state)}
+
+class ExecuteRequest(BaseModel):
+    skill_id: str
+    params: dict = {}
+
+@app.post("/api/skills/execute")
+async def execute_skill(req: ExecuteRequest, token: str = Depends(verify_token)):
+    # Mock de ejecución
+    skill = next((s for s in skills_state if s['id'] == req.skill_id), None)
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill no encontrada")
+    
+    return {
+        "status": "success",
+        "message": f"Ejecutando skill {skill['name']} de forma simulada",
+        "result": {"output": "Mock output para la fase 1 de arquitectura"}
+    }
+
+class ReorderRequest(BaseModel):
+    skill_id: str
+    new_priority: int
+
+@app.post("/api/skills/reorder")
+async def reorder_skills(req: ReorderRequest, token: str = Depends(verify_token)):
+    skill = next((s for s in skills_state if s['id'] == req.skill_id), None)
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill no encontrada")
+    
+    skill['priority'] = req.new_priority
+    return {"status": "success", "message": f"Prioridad de {req.skill_id} actualizada a {req.new_priority}"}
+
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv('PORT', 8080))
+    port = int(os.getenv('PORT', 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
 
