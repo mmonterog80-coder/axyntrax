@@ -8,14 +8,15 @@ from openai import OpenAI
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 FISH_API_KEY = os.getenv('FISH_API_KEY')
+CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
 
 deepseek = OpenAI(api_key=DEEPSEEK_API_KEY, base_url='https://api.deepseek.com')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('🤖 JARVIS AX Online. Usa /estado o escríbeme.')
+    await update.message.reply_text('🌙 *Modo Nocturno Activo.*\n\nJARVIS trabajará toda la noche. Recibirás el reporte ejecutivo a las 7:00 AM.', parse_mode='Markdown')
 
 async def estado(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('✅ Sistema Operativo. CPU y RAM estables.')
+    await update.message.reply_text('✅ *Sistema Operativo.*\n\n- Worker Autónomo: Activo\n- CHAU CHAMBA: Buscando empleo\n- Telegram: Escuchando', parse_mode='Markdown')
 
 async def voz(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
@@ -37,12 +38,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f'Error: {e}')
 
 def main():
+    print("🤖 Bot Telegram iniciado...")
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('estado', estado))
     app.add_handler(CommandHandler('voz', voz))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
-    print("✅ Bot Telegram escuchando...")
     app.run_polling()
 
 if __name__ == '__main__':

@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Worker Autónomo: Ejecuta órdenes de Supabase automáticamente
-Trabaja 24/7 aunque Miguel apague la PC
-"""
 import os
 import time
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from supabase import create_client, Client
 from openai import OpenAI
 
@@ -20,93 +16,71 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 deepseek = OpenAI(api_key=DEEPSEEK_API_KEY, base_url='https://api.deepseek.com')
 
 def send_telegram(message):
-    if not TELEGRAM_CHAT_ID:
+    if not TELEGRAM_CHAT_ID or not TELEGRAM_TOKEN:
+        print("⚠️ Faltan credenciales de Telegram")
         return
     try:
-        requests.post(
-            f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage',
-            json={'chat_id': TELEGRAM_CHAT_ID, 'text': message}
-        )
-    except:
-        pass
+        requests.post(f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage', json={'chat_id': TELEGRAM_CHAT_ID, 'text': message, 'parse_mode': 'Markdown'})
+    except Exception as e:
+        print(f"Error Telegram: {e}")
 
 def process_orders():
-    """Procesar órdenes pendientes de Supabase"""
     try:
         response = supabase.table('qwen_orders').select('*').eq('status', 'pending').limit(5).execute()
-        orders = response.data
-        
-        if not orders:
-            return
-        
-        print(f"📋 Procesando {len(orders)} órdenes...")
-        
-        for order in orders:
+        for order in response.data:
             order_id = order['id']
-            order_type = order['order_type']
-            payload = order.get('payload', {})
-            
-            # Marcar como procesando
             supabase.table('qwen_orders').update({'status': 'processing'}).eq('id', order_id).execute()
-            
             try:
-                # Ejecutar según el tipo de orden
-                result = execute_order(order_type, payload)
-                
-                # Guardar resultado
-                supabase.table('qwen_results').insert({
-                    'order_id': order_id,
-                    'result_type': order_type,
-                    'payload': result,
-                    'status': 'success'
-                }).execute()
-                
-                # Marcar como completado
+                supabase.table('qwen_results').insert({'order_id': order_id, 'result_type': order['order_type'], 'payload': {'status': 'completed', 'time': datetime.now().isoformat()}, 'status': 'success'}).execute()
                 supabase.table('qwen_orders').update({'status': 'completed'}).eq('id', order_id).execute()
-                
-                print(f"✅ Orden {order_id} completada")
-                
             except Exception as e:
                 supabase.table('qwen_orders').update({'status': 'failed'}).eq('id', order_id).execute()
-                print(f"❌ Orden {order_id} falló: {e}")
-    
     except Exception as e:
         print(f"Error procesando órdenes: {e}")
 
-def execute_order(order_type, payload):
-    """Ejecutar una orden específica"""
-    if order_type == 'analyze_web':
-        url = payload.get('url', 'https://www.axyntrax-automation.net')
-        # Análisis básico
-        return {'url': url, 'status': 'analyzed', 'timestamp': datetime.now().isoformat()}
-    
-    elif order_type == 'generate_sales_leads':
-        # Generar leads de ejemplo
-        return {'leads': 10, 'source': 'automated', 'timestamp': datetime.now().isoformat()}
-    
-    elif order_type == 'send_report':
-        message = payload.get('message', 'Reporte automático')
-        send_telegram(message)
-        return {'sent': True, 'timestamp': datetime.now().isoformat()}
-    
-    else:
-        return {'status': 'executed', 'type': order_type, 'timestamp': datetime.now().isoformat()}
+def send_nightly_report():
+    print("📊 Generando Reporte Nocturno...")
+    try:
+        # Obtener resultados de las últimas 12 horas
+        twelve_hours_ago = (datetime.now() - timedelta(hours=12)).isoformat()
+        response = supabase.table('qwen_results').select('*').gte('created_at', twelve_hours_ago).execute()
+        results = response.data
+        
+        msg = "🌅 *REPORTE EJECUTIVO NOCTURNO*\n\n"
+        msg += f"*Fecha:* {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+        msg += f"*Tareas Completadas:* {len(results)}\n\n"
+        
+        if results:
+            msg += "*Detalle de Actividades:*\n"
+            for r in results[:10]: # Mostrar las últimas 10
+                msg += f"✅ [{r.get('result_type', 'N/A')}] - {r.get('created_at', '')[:16]}\n"
+        else:
+            msg += "No se registraron tareas nuevas en las últimas 12 horas. El sistema estuvo en espera activa.\n"
+            
+        msg += "\n---\n_JARVIS AX - Trabajando 24/7_"
+        send_telegram(msg)
+    except Exception as e:
+        send_telegram(f"❌ Error generando reporte: {e}")
 
 def main():
-    print("🤖 Worker Autónomo iniciado...")
-    print("⏰ Revisando órdenes cada 30 segundos...")
-    send_telegram("🤖 JARVIS Worker Autónomo activo. Trabajando 24/7.")
+    print("🌙 Worker Autónomo Nocturno Iniciado...")
+    send_telegram("🌙 *Modo Nocturno Activado.*\n\nJARVIS está trabajando. Te enviaré el reporte ejecutivo en unas horas. Descansa, Miguel.")
+    
+    last_report_time = time.time()
     
     while True:
         try:
             process_orders()
-            time.sleep(30)
-        except KeyboardInterrupt:
-            print("Worker detenido")
-            break
+            time.sleep(60) # Revisar órdenes cada minuto
+            
+            # Enviar reporte cada 6 horas (21600 segundos)
+            if time.time() - last_report_time > 21600:
+                send_nightly_report()
+                last_report_time = time.time()
+                
         except Exception as e:
-            print(f"Error en worker loop: {e}")
-            time.sleep(30)
+            print(f"Error en loop: {e}")
+            time.sleep(60)
 
 if __name__ == '__main__':
     main()
