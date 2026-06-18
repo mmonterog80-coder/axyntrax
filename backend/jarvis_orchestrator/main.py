@@ -1,3 +1,4 @@
+﻿from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from telemetry import router as telemetry_router
@@ -13,9 +14,10 @@ app.include_router(telemetry_router, prefix="/api")
 async def health():
     return {"status": "healthy"}
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    return {"message": "JARVIS AX Online"}
+    with open("templates/index.html", "r", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read())
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
@@ -31,7 +33,7 @@ async def telegram_webhook_route(request: Request):
         data = await request.json()
         logger.info(f"TG_PAYLOAD: {json.dumps(data)}")
         
-        # Enrutamiento dinámico al handler existente
+        # Enrutamiento dinÃ¡mico al handler existente
         import inspect
         try:
             import telegram_handler as th
@@ -53,3 +55,4 @@ async def telegram_webhook_route(request: Request):
         logger.error(f"Webhook error: {e}")
         return {"status": "error"}
 # --- END JARVIS PATCH ---
+
