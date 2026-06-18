@@ -1,26 +1,25 @@
-FROM mcr.microsoft.com/playwright/python:v1.60.0-jammy
+﻿FROM python:3.11-slim
 
 WORKDIR /app
 
-# Instalar dependencias del sistema (por ejemplo, compilador para Qwen/DeepSeek si se requiere)
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    g++ \
-    build-essential \
+    git \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar dependencias de Python
+# Copiar requirements primero (para cache de Docker)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código fuente
+# Copiar el resto del código
 COPY . .
 
-# Dar permisos de ejecución al script de arranque
+# Dar permisos de ejecución al script
 RUN chmod +x start_cloud.sh
 
-# Puerto de la nube
-ENV PORT=8000
-EXPOSE $PORT
+# Exponer puerto
+EXPOSE 8080
 
-CMD ["./start_cloud.sh"]
+# Comando de inicio
+CMD ["bash", "start_cloud.sh"]
