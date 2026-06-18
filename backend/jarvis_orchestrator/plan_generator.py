@@ -51,9 +51,9 @@ def generate_plan(objective: str, module: str = "", phase: int = 1,
         max_tokens = 800
 
     # LÃ³gica de enrutamiento y ejecuciÃ³n (simulada)
-    if preferred_api == "deepseek-reasoner" or preferred_api == "deepseek":
+    if preferred_api == "deepseek-chat" or preferred_api == "deepseek":
         client = openai.OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com/v1")
-        model = "deepseek-coder"
+        model = "deepseek-chat"
     else:
         client = openai.OpenAI(api_key=os.getenv("OPENROUTER_API_KEY"), base_url="https://openrouter.ai/api/v1")
         openrouter_models = {

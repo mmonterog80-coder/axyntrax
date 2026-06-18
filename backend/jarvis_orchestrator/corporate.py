@@ -8,7 +8,7 @@ from jarvis_system_prompt import JARVIS_PROMPT
 CORPORATE_STRUCTURE = {
     "JARVIS": {
         "title": "CEO & Orquestador General",
-        "preferred_api": "deepseek-reasoner",
+        "preferred_api": "deepseek-chat",
         "persona": JARVIS_PROMPT,
         "keywords": ["ceo", "orquestar", "arquitectura de software", "system architecture", "prompt engineering", "agentes", "jarvis"]
     },
