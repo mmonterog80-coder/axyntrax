@@ -1,0 +1,48 @@
+Iniciando Visor de Actividad AXYNTRAX...
+2026-06-13 19:31:03 - [WORKER LOCAL] Conectando a Redis en la nube: redis://localhost:6379/0
+2026-06-13 19:31:05 - [!] Error crítico conectando a Redis: Error 10061 connecting to localhost:6379. No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2026-06-13 19:33:42 - [WORKER LOCAL] Conectando via HTTP al orquestador en: http://localhost:8000
+2026-06-13 19:33:42 - [WORKER LOCAL] Escuchando tareas de AXYNTRAX 24/7...
+2026-06-13 19:37:21 - [WORKER LOCAL] Conectando via HTTP al orquestador en: https://jarvis-ax-cloud-production.up.railway.app
+2026-06-13 19:37:22 - [WORKER LOCAL] Escuchando tareas de AXYNTRAX 24/7...
+2026-06-13 19:45:12 - [JARVIS] Ejecutando orden directa visible (Apertura de Notepad y Mouse)...
+2026-06-13 19:45:24 - [JARVIS] Ordenes del CEO completadas. Esperando siguiente directiva.
+2026-06-13 19:47:41 - [SISTEMA] Activando Protocolo COORDINACIÓN OFICIAL CON DEEPSEEK...
+2026-06-13 19:47:44 - [DeepSeek] Instrucción: Acelera la integración del módulo autónomo de toma de decisiones en el núcleo de AXYNTRAX....
+2026-06-13 19:47:45 - [JARVIS] Ejecutando: Procesando estructura y generando código según directiva de DeepSeek...
+2026-06-13 19:47:56 - [JARVIS] Tarea completada. Informe enviado a DeepSeek.
+2026-06-13 19:47:56 - [JARVIS] Evidencia física generada en: C:\AXYNTRAX\workspace\informe_auto_88cc.txt
+2026-06-13 19:58:10 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 19:58:10 - [!] Tipo de tarea no soportado: log
+2026-06-13 19:58:16 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 19:58:16 - [!] Tipo de tarea no soportado: log
+2026-06-13 19:58:21 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 19:58:21 - [!] Tipo de tarea no soportado: log
+2026-06-13 19:58:27 - [WORKER LOCAL] Procesando tarea: pc_control
+2026-06-13 19:58:28 - [+] Reporte enviado a orquestador: local_task -> completed
+2026-06-13 20:08:07 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:08:07 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:08:13 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:08:13 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:08:19 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:08:19 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:08:24 - [WORKER LOCAL] Procesando tarea: pc_control
+2026-06-13 20:08:25 - [+] Reporte enviado a orquestador: local_task -> completed
+2026-06-13 20:18:09 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:18:09 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:18:15 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:18:15 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:18:21 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:18:21 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:18:27 - [WORKER LOCAL] Procesando tarea: pc_control
+2026-06-13 20:18:28 - [+] Reporte enviado a orquestador: local_task -> completed
+2026-06-13 20:28:10 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:28:10 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:28:15 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:28:15 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:28:21 - [WORKER LOCAL] Procesando tarea: log
+2026-06-13 20:28:21 - [!] Tipo de tarea no soportado: log
+2026-06-13 20:28:27 - [WORKER LOCAL] Procesando tarea: pc_control
+2026-06-13 20:28:28 - [+] Reporte enviado a orquestador: local_task -> completed
+2026-06-13 20:32:34 - [WORKER LOCAL] Conectando via HTTP al orquestador en: https://jarvis-ax-cloud-production.up.railway.app
+2026-06-13 20:32:34 - [WORKER LOCAL] Escuchando tareas de AXYNTRAX 24/7...
