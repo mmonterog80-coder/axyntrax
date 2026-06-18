@@ -2,9 +2,11 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from telemetry import router as telemetry_router
 import uvicorn, os
+from qwen_bridge_simple import ask_qwen
+from pydantic import BaseModel
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["*"], allow_headers=["*"])
 app.include_router(telemetry_router, prefix="/api")
 
 @app.get("/health")
