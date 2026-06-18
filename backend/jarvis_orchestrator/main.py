@@ -247,6 +247,54 @@ async def reorder_skills(req: ReorderRequest, token: str = Depends(verify_token)
     skill['priority'] = req.new_priority
     return {"status": "success", "message": f"Prioridad de {req.skill_id} actualizada a {req.new_priority}"}
 
+# ============ JARVIS AX v3.0 MARK VII API (SWARM & MAIL) ============
+
+@app.get("/api/swarm/status")
+async def swarm_status(token: str = Depends(verify_token)):
+    nodes = [
+        {"id": "jarvis", "name": "JARVIS Core", "role": "Orquestador", "status": "ONLINE", "mem": "1.2GB"},
+        {"id": "gemini", "name": "Gemini 1.5", "role": "Arquitectura", "status": "ONLINE", "mem": "850MB"},
+        {"id": "deepseek", "name": "DeepSeek V3", "role": "Lógica/Código", "status": "PROCESSING", "mem": "2.4GB"},
+        {"id": "qwen", "name": "Qwen 2.5", "role": "Operaciones", "status": "ONLINE", "mem": "420MB"},
+        {"id": "claude", "name": "Claude 3.5", "role": "Shaders/Seguridad", "status": "IDLE", "mem": "0MB"},
+        {"id": "gpt4o", "name": "GPT-4o", "role": "Razonamiento", "status": "IDLE", "mem": "0MB"},
+        {"id": "kimi", "name": "Kimi", "role": "Diseño UX", "status": "ONLINE", "mem": "300MB"},
+        {"id": "stitch", "name": "Stitch", "role": "Frontend CSS", "status": "IDLE", "mem": "0MB"},
+        {"id": "nano", "name": "Nano", "role": "Microtareas", "status": "ONLINE", "mem": "15MB"},
+        {"id": "banana2", "name": "Banana2", "role": "Herramienta Aux", "status": "ONLINE", "mem": "45MB"}
+    ]
+    return {"swarm": nodes}
+
+# Base de datos simulada de correos
+mock_inbox = [
+    {"id": "mail_1", "from": "inversor@capital.com", "subject": "Reunión de Series A", "body": "Estimado CEO, ¿cuándo podemos ver la demo de AXYNTRAX?", "status": "unread"},
+    {"id": "mail_2", "from": "aws-alerts@amazon.com", "subject": "ALERTA: Límite de facturación", "body": "Sus instancias EC2 están al 90% del límite de la capa gratuita.", "status": "read"}
+]
+
+@app.get("/api/mail/inbox")
+async def get_inbox(token: str = Depends(verify_token)):
+    return {"inbox": mock_inbox}
+
+class MailRespondReq(BaseModel):
+    mail_id: str
+
+@app.post("/api/mail/respond")
+async def respond_mail(req: MailRespondReq, token: str = Depends(verify_token)):
+    mail = next((m for m in mock_inbox if m["id"] == req.mail_id), None)
+    if not mail:
+        raise HTTPException(status_code=404, detail="Mail no encontrado")
+    
+    mail["status"] = "replied"
+    
+    # Simular que JARVIS lee y responde usando DeepSeek (mockeado para rapidez visual)
+    respuesta = f"Estimado {mail['from']},\n\nSoy J.A.R.V.I.S., asistente personal de AXYNTRAX. He procesado su solicitud respecto a '{mail['subject']}'. Nos pondremos en contacto a la brevedad.\n\nSaludos."
+    
+    return {
+        "status": "success",
+        "jarvis_response": respuesta,
+        "message": "Correo procesado y respondido por el enjambre."
+    }
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv('PORT', 8000))

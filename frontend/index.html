@@ -47,9 +47,33 @@
         <!-- Global Status -->
         <div class="global-status">
             <h1>AXYNTRAX CLOUD</h1>
-            <div class="status-row">SWARM NODES: <span id="node-count" style="color:var(--secondary)">12</span> ACTIVE</div>
             <div class="status-row">JARVIS PROTOCOL: <span style="color:var(--primary)">ONLINE</span></div>
-            <div class="status-row">HUD: <span style="color:var(--primary)">MARK VI - 8K ENGINE</span></div>
+            <div class="status-row">HUD: <span style="color:var(--primary)">MARK VII - TACTICAL</span></div>
+        </div>
+
+        <!-- Left Panel: Swarm Matrix -->
+        <div class="tactical-panel left-panel">
+            <div class="panel-header">[ SWARM MATRIX ]</div>
+            <div class="swarm-list" id="swarm-list">
+                <div class="swarm-loading">SYNCING NODES...</div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Chronos & Inbox -->
+        <div class="tactical-panel right-panel">
+            <div class="panel-header">[ CHRONOS ]</div>
+            <div class="chronos-widget">
+                <div class="c-time" id="c-time">00:00:00</div>
+                <div class="c-date" id="c-date">YYYY-MM-DD</div>
+                <div class="c-sync">UTC SYNC // SECURE</div>
+            </div>
+
+            <div class="panel-header" style="margin-top:20px;">[ JARVIS INBOX ]</div>
+            <div class="inbox-widget">
+                <div class="inbox-list" id="inbox-list">
+                    <div class="swarm-loading">FETCHING SECURE MAIL...</div>
+                </div>
+            </div>
         </div>
 
         <!-- Bottom Terminal -->
@@ -59,7 +83,7 @@
             </div>
             <div class="chat-window" id="chat-window">
                 <div class="message system startup">
-                    <span class="msg-author">J.A.R.V.I.S.:</span> Swarm initialized in true 3D space. Select a node to view telemetry, or input a command.
+                    <span class="msg-author">J.A.R.V.I.S.:</span> Tactical expansion loaded. Swarm Matrix and Inbox modules are active.
                 </div>
             </div>
             <div class="chat-input-wrapper">

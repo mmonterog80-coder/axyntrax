@@ -320,3 +320,108 @@ function appendMsg(author, text, type) {
     chatWindow.appendChild(div);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+// ==========================================
+// 7. MARK VII - TACTICAL PANELS LOGIC
+// ==========================================
+
+// Chronos Clock
+function updateClock() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+    const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const elTime = document.getElementById('c-time');
+    const elDate = document.getElementById('c-date');
+    if(elTime) elTime.innerText = timeStr;
+    if(elDate) elDate.innerText = dateStr.replace(/\//g, '-');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Fetch Swarm Status
+async function fetchSwarmStatus() {
+    try {
+        const res = await fetch('/api/swarm/status');
+        const data = await res.json();
+        const list = document.getElementById('swarm-list');
+        if(!list) return;
+        
+        list.innerHTML = '';
+        data.swarm.forEach(node => {
+            list.innerHTML += `
+                <div class="swarm-node-item">
+                    <div>
+                        <div class="sn-name">${node.name}</div>
+                        <div class="sn-role">${node.role}</div>
+                    </div>
+                    <div class="sn-status">
+                        <span style="font-size:0.7rem;">${node.mem}</span>
+                        <div class="led ${node.status}"></div>
+                    </div>
+                </div>
+            `;
+        });
+    } catch(err) {
+        console.error("Swarm Fetch Error:", err);
+    }
+}
+
+// Fetch Inbox
+async function fetchInbox() {
+    try {
+        const res = await fetch('/api/mail/inbox');
+        const data = await res.json();
+        const list = document.getElementById('inbox-list');
+        if(!list) return;
+        
+        list.innerHTML = '';
+        data.inbox.forEach(mail => {
+            const isUnread = mail.status === 'unread' ? 'unread' : '';
+            const btnHtml = mail.status !== 'replied' ? 
+                `<button class="cyber-btn-sm" onclick="respondToMail('${mail.id}')">AUTO-REPLY (JARVIS)</button>` : 
+                `<span style="color:#00ff00; font-size:0.7rem;">[REPLIED]</span>`;
+                
+            list.innerHTML += `
+                <div class="mail-item ${isUnread}">
+                    <div class="m-from">${mail.from}</div>
+                    <div class="m-subject">${mail.subject}</div>
+                    <div class="m-body">${mail.body}</div>
+                    ${btnHtml}
+                </div>
+            `;
+        });
+    } catch(err) {
+        console.error("Inbox Fetch Error:", err);
+    }
+}
+
+// Auto-Reply Logic
+window.respondToMail = async function(mailId) {
+    JarvisAudio.playTick();
+    appendMsg('J.A.R.V.I.S.', `Processing mail ${mailId}... Routing to DeepSeek V3 for response generation.`, 'system');
+    
+    try {
+        const res = await fetch('/api/mail/respond', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({mail_id: mailId})
+        });
+        const data = await res.json();
+        
+        if(data.status === 'success') {
+            JarvisAudio.playTargetLock();
+            appendMsg('J.A.R.V.I.S.', `Response sent: "${data.jarvis_response}"`, 'system');
+            fetchInbox(); // Refresh UI
+        }
+    } catch (err) {
+        appendMsg('J.A.R.V.I.S.', `Error responding to mail: ${err.message}`, 'system');
+    }
+}
+
+// Initial Fetchs
+window.addEventListener('load', () => {
+    setTimeout(fetchSwarmStatus, 3000);
+    setTimeout(fetchInbox, 3500);
+    // Poll swarm status every 10s
+    setInterval(fetchSwarmStatus, 10000);
+});
