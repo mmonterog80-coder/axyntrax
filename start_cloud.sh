@@ -1,14 +1,14 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 echo "======================================"
 echo " INICIANDO JARVIS AX (CLOUD MODE)"
 echo "======================================"
 
-# Iniciar Puente Qwen-JARVIS en background
+# Iniciar Puente Qwen-JARVIS
 echo "[OK] Iniciando Puente Qwen-JARVIS..."
 python backend/jarvis_orchestrator/qwen_bridge.py > qwen_bridge.log 2>&1 &
 
-# Iniciar CHAU CHAMBA en background
+# Iniciar CHAU CHAMBA
 echo "[OK] Iniciando CHAU CHAMBA (Bot 24/7)..."
 python chau_chamba.py > chau_chamba.log 2>&1 &
 
