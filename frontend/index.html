@@ -3,74 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z.IA | Master Orchestrator HUD</title>
+    <title>J.A.R.V.I.S. | Mark V HUD</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for futuristic look -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts from Kimi UX Spec -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Three.js from Stitch Spec -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body>
-    <!-- Background 3D Canvas -->
+<body class="booting" id="hud-body">
+    <!-- Scanning Lines & Vignette -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- Power On Sequence Overlay -->
+    <div id="startup-overlay">
+        <div class="startup-logo">J.A.R.V.I.S.</div>
+        <div class="startup-bar"><div class="startup-fill" id="startup-fill"></div></div>
+        <div class="startup-text" id="startup-text">INITIALIZING SYSTEMS...</div>
+    </div>
+
+    <!-- 3D Background Canvas -->
     <canvas id="bg-canvas"></canvas>
 
     <div class="hud-container">
-        <!-- Top Header -->
+        
+        <!-- Top HUD Elements -->
         <header class="hud-header">
+            <div class="corner-reticle top-left"></div>
+            <div class="corner-reticle top-right"></div>
+            
             <div class="brand">
-                <h1>Z.IA</h1>
-                <span class="subtitle">ORQUESTADORA MAESTRA // RED ACTIVA</span>
+                <h1>J.A.R.V.I.S.</h1>
+                <span class="subtitle">AXYNTRAX CLOUD // MARK V</span>
             </div>
             <div class="sys-status">
-                <div class="status-indicator online"></div>
-                <span>SISTEMA EN LÍNEA</span>
+                <svg class="hex-icon" viewBox="0 0 100 100">
+                    <polygon points="50 3, 93 25, 93 75, 50 97, 7 75, 7 25" stroke="var(--primary)" stroke-width="2" fill="none"/>
+                    <circle cx="50" cy="50" r="10" fill="var(--primary)" class="pulse-dot"/>
+                </svg>
+                <div class="status-text">
+                    <span class="status-title">AURA NETWORK</span>
+                    <span class="status-value">ONLINE // SYNCED</span>
+                </div>
             </div>
         </header>
 
-        <!-- Main Content -->
+        <!-- Main HUD Layout -->
         <main class="hud-main">
-            <!-- Left Panel: AI Swarm Status -->
+            <!-- Left Panel: Diagnostics & Swarm -->
             <aside class="panel left-panel">
-                <div class="panel-header">ENJAMBRE DE IA</div>
+                <div class="panel-header">
+                    <span class="ph-bracket">[</span> DIAGNOSTICS <span class="ph-bracket">]</span>
+                </div>
+                
+                <div class="telemetry-block">
+                    <div class="t-label">CORE TEMP</div>
+                    <div class="t-bar-container"><div class="t-bar-fill" style="width: 34%;"></div></div>
+                    <div class="t-value">34°C</div>
+                </div>
+                
+                <div class="telemetry-block">
+                    <div class="t-label">NETWORK LATENCY</div>
+                    <div class="t-bar-container"><div class="t-bar-fill" style="width: 12%;"></div></div>
+                    <div class="t-value">12ms</div>
+                </div>
+
+                <div class="telemetry-block">
+                    <div class="t-label">RAILWAY CLOUD</div>
+                    <div class="t-bar-container"><div class="t-bar-fill warning" style="width: 98%;"></div></div>
+                    <div class="t-value">98%</div>
+                </div>
+
+                <div class="panel-header mt-4">
+                    <span class="ph-bracket">[</span> AI SWARM NODES <span class="ph-bracket">]</span>
+                </div>
                 <div class="ai-list" id="ai-nodes">
-                    <!-- Injected by JS -->
+                    <div class="ai-node">
+                        <div class="node-icon">K</div>
+                        <div class="node-info">
+                            <span class="node-name">KIMI (Moonshot)</span>
+                            <span class="node-state">UX ARCHITECT // IDLE</span>
+                        </div>
+                    </div>
+                    <div class="ai-node">
+                        <div class="node-icon">S</div>
+                        <div class="node-info">
+                            <span class="node-name">STITCH</span>
+                            <span class="node-state">FRONTEND // STANDBY</span>
+                        </div>
+                    </div>
+                    <div class="ai-node">
+                        <div class="node-icon">G</div>
+                        <div class="node-info">
+                            <span class="node-name">GOOGLE STUDIO</span>
+                            <span class="node-state">LOGIC CORE // ACTIVE</span>
+                        </div>
+                    </div>
                 </div>
             </aside>
 
-            <!-- Center: 3D Hologram / Core -->
+            <!-- Center: Holographic Core -->
             <section class="core-section">
-                <div class="hologram-container">
-                    <div class="ring ring-1"></div>
-                    <div class="ring ring-2"></div>
-                    <div class="ring ring-3"></div>
-                    <div class="core-orb">Z.IA</div>
+                <!-- Reticles -->
+                <div class="center-reticle">
+                    <div class="crosshair-x"></div>
+                    <div class="crosshair-y"></div>
+                    <div class="target-circle"></div>
+                    <div class="target-circle inner"></div>
                 </div>
-                <div class="core-data">
-                    <p>ANALIZANDO TELEMETRÍA...</p>
-                    <div class="data-bar"><div class="fill"></div></div>
+                
+                <!-- Center Data -->
+                <div class="core-data-bottom">
+                    <div class="data-stream-x">
+                        <span class="math-f">ƒ(x) = ∫(Σ AI_Nodes) dx</span>
+                        <span class="hex-stream">0x3A 0x8F 0x11 0xCC</span>
+                    </div>
                 </div>
             </section>
 
-            <!-- Right Panel: Communication Terminal -->
+            <!-- Right Panel: Communications -->
             <aside class="panel right-panel">
-                <div class="panel-header">TERMINAL DE ENLACE</div>
+                <div class="panel-header">
+                    <span class="ph-bracket">[</span> COMM LINK <span class="ph-bracket">]</span>
+                </div>
+                
                 <div class="chat-window" id="chat-window">
-                    <div class="message system">
-                        [Z.IA] Conexión establecida. Enjambre orquestado y listo para recibir órdenes, señor.
+                    <div class="message system startup">
+                        <div class="msg-author">J.A.R.V.I.S.</div>
+                        <div class="msg-text">Welcome back, Sir. All systems are online and the AI Swarm is awaiting your command.</div>
                     </div>
                 </div>
+                
                 <div class="chat-input-container">
-                    <input type="text" id="chat-input" placeholder="INGRESE COMANDO A Z.IA..." autocomplete="off">
-                    <button id="send-btn">ENVIAR</button>
+                    <div class="input-glow-border">
+                        <input type="text" id="chat-input" placeholder=">> INPUT DIRECTIVE..." autocomplete="off">
+                        <button id="send-btn" class="cyber-btn">TRANSMIT</button>
+                    </div>
                 </div>
             </aside>
         </main>
         
         <!-- Bottom Footer -->
         <footer class="hud-footer">
-            <div class="data-stream">01001010 01000001 01010010 01010110 01001001 01010011 -> Z.IA PROTOCOL OVERRIDE</div>
+            <div class="corner-reticle bottom-left"></div>
+            <div class="corner-reticle bottom-right"></div>
+            <div class="data-stream footer-stream">SYS.VERSION: MK.V | AXYNTRAX AUTOMATION CLOUD | PROTOCOL Z.IA ACTIVE</div>
         </footer>
     </div>
 
+    <!-- Google AI Studio Audio Synth Logic -->
     <script src="app.js"></script>
 </body>
 </html>

@@ -1,4 +1,124 @@
-// 3D Background with Three.js
+/**
+ * J.A.R.V.I.S. MARK V - CORE LOGIC & AUDIO SYNTHESIS
+ * Architecture by Google AI Studio (LLM Council)
+ */
+
+// ==========================================
+// 1. AUDIO SYNTHESIZER (Web Audio API)
+// ==========================================
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+const JarvisAudio = {
+    playSweep: function() {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        // Power up sweep sound
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(50, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 1.5);
+        
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.5);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 1.5);
+    },
+
+    playHoverTick: function() {
+        if(audioCtx.state === 'suspended') return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.05);
+    },
+
+    playTypeSound: function() {
+        if(audioCtx.state === 'suspended') return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600 + Math.random()*200, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.03);
+    },
+
+    playConfirm: function() {
+        if(audioCtx.state === 'suspended') return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+        osc.frequency.setValueAtTime(1760, audioCtx.currentTime + 0.1); // A6
+
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+};
+
+// ==========================================
+// 2. STARTUP SEQUENCE
+// ==========================================
+window.addEventListener('load', () => {
+    // Requires a click to start audio context due to browser policies
+    document.body.addEventListener('click', initBootSequence, { once: true });
+    document.getElementById('startup-text').innerText = "CLICK TO INITIALIZE J.A.R.V.I.S. PROTOCOLS";
+});
+
+function initBootSequence() {
+    JarvisAudio.playSweep();
+    document.getElementById('startup-text').innerText = "POWERING ON CORE SYSTEMS...";
+    
+    let fill = 0;
+    const bar = document.getElementById('startup-fill');
+    
+    const bootInterval = setInterval(() => {
+        fill += Math.random() * 15;
+        if(fill >= 100) {
+            fill = 100;
+            clearInterval(bootInterval);
+            document.getElementById('startup-text').innerText = "SYSTEMS ONLINE";
+            setTimeout(() => {
+                document.getElementById('startup-overlay').style.opacity = '0';
+                document.querySelector('.hud-container').classList.add('active');
+                setTimeout(() => document.getElementById('startup-overlay').remove(), 1500);
+            }, 500);
+        }
+        bar.style.width = fill + '%';
+    }, 100);
+}
+
+// ==========================================
+// 3. 3D BACKGROUND ENGINE (Three.js)
+// ==========================================
 const canvas = document.getElementById('bg-canvas');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -7,58 +127,31 @@ const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialia
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
-// Particles
-const geometry = new THREE.BufferGeometry();
-const particlesCount = 1500;
-const posArray = new Float32Array(particlesCount * 3);
-
-for(let i = 0; i < particlesCount * 3; i++) {
-    // Spread particles around
-    posArray[i] = (Math.random() - 0.5) * 10;
-}
-
-geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-// Particle Material (Cyan/Purple glow)
-const material = new THREE.PointsMaterial({
-    size: 0.02,
-    color: 0x00f3ff,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending
+// Iron Man Core Wireframe Sphere
+const geometry = new THREE.IcosahedronGeometry(4, 2);
+const material = new THREE.MeshBasicMaterial({ 
+    color: 0x00e5ff, 
+    wireframe: true, 
+    transparent: true, 
+    opacity: 0.15 
 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
 
-const particlesMesh = new THREE.Points(geometry, material);
-scene.add(particlesMesh);
+// Outer Ring
+const ringGeo = new THREE.TorusGeometry(6, 0.05, 16, 100);
+const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb300, transparent: true, opacity: 0.3 });
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = Math.PI / 2;
+scene.add(ring);
 
-camera.position.z = 3;
-
-// Mouse tracking
-let mouseX = 0;
-let mouseY = 0;
-
-document.addEventListener('mousemove', (event) => {
-    mouseX = (event.clientX / window.innerWidth) - 0.5;
-    mouseY = (event.clientY / window.innerHeight) - 0.5;
-});
-
-const clock = new THREE.Clock();
+camera.position.z = 10;
 
 function animate() {
     requestAnimationFrame(animate);
-    const elapsedTime = clock.getElapsedTime();
-
-    particlesMesh.rotation.y = elapsedTime * 0.05;
-    particlesMesh.rotation.x = elapsedTime * 0.02;
-
-    // Interactive mouse movement
-    particlesMesh.rotation.y += mouseX * 0.1;
-    particlesMesh.rotation.x += mouseY * 0.1;
-
-    // Color shifting based on time
-    const hue = Math.abs(Math.sin(elapsedTime * 0.2)) * 0.2 + 0.5; // shift between cyan and purple
-    material.color.setHSL(hue, 1.0, 0.5);
-
+    sphere.rotation.y += 0.002;
+    sphere.rotation.x += 0.001;
+    ring.rotation.z -= 0.005;
     renderer.render(scene, camera);
 }
 animate();
@@ -69,78 +162,62 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// UI Logic
-const ais = [
-    { name: "DeepSeek Coder", status: "ONLINE", color: "#0f0" },
-    { name: "Gemini 2.5 Pro", status: "STANDBY", color: "#ffaa00" },
-    { name: "Kimi (Moonshot)", status: "STANDBY", color: "#ffaa00" },
-    { name: "Qwen 3 Max", status: "ONLINE", color: "#0f0" },
-    { name: "ElevenLabs", status: "READY", color: "#0f0" },
-    { name: "Fish Audio", status: "ONLINE", color: "#0f0" },
-    { name: "Supabase DB", status: "SYNCED", color: "#0f0" }
-];
+// ==========================================
+// 4. UI INTERACTIONS & BINDINGS
+// ==========================================
 
-const aiList = document.getElementById('ai-nodes');
-ais.forEach(ai => {
-    const div = document.createElement('div');
-    div.className = 'ai-node';
-    div.innerHTML = `
-        <span class="ai-name">${ai.name}</span>
-        <span class="ai-status" style="color: ${ai.color}; text-shadow: 0 0 5px ${ai.color}">${ai.status}</span>
-    `;
-    aiList.appendChild(div);
+// Hover sounds for buttons and elements
+document.querySelectorAll('.cyber-btn, .ai-node').forEach(el => {
+    el.addEventListener('mouseenter', () => JarvisAudio.playHoverTick());
 });
 
-// Chat Logic
-const chatWindow = document.getElementById('chat-window');
+// Chat logic
 const chatInput = document.getElementById('chat-input');
 const sendBtn = document.getElementById('send-btn');
+const chatWindow = document.getElementById('chat-window');
 
-function addMessage(sender, text) {
-    const msg = document.createElement('div');
-    msg.className = `message ${sender.toLowerCase()}`;
-    msg.innerText = sender === 'JARVIS' ? `[JARVIS] ${text}` : `[USER] ${text}`;
-    chatWindow.appendChild(msg);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-async function sendMessage() {
-    const text = chatInput.value.trim();
-    if (!text) return;
-
-    addMessage('USER', text);
-    chatInput.value = '';
-
-    // Typing indicator
-    const typing = document.createElement('div');
-    typing.className = `message jarvis`;
-    typing.innerText = `[JARVIS] Procesando consulta en el enjambre...`;
-    chatWindow.appendChild(typing);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-        });
-        const data = await response.json();
-        
-        // Remove typing
-        chatWindow.removeChild(typing);
-        addMessage('JARVIS', data.reply);
-
-        if (data.audio) {
-            const snd = new Audio("data:audio/mp3;base64," + data.audio);
-            snd.play();
-        }
-    } catch (err) {
-        chatWindow.removeChild(typing);
-        addMessage('JARVIS', 'Error de conexión con el núcleo lógico.');
+chatInput.addEventListener('keydown', (e) => {
+    JarvisAudio.playTypeSound();
+    if(e.key === 'Enter') {
+        sendMessage();
     }
-}
+});
 
 sendBtn.addEventListener('click', sendMessage);
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-});
+
+function sendMessage() {
+    const text = chatInput.value.trim();
+    if(!text) return;
+    
+    JarvisAudio.playConfirm();
+
+    // User Message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user';
+    userMsg.innerHTML = `<div class="msg-author">USER</div><div class="msg-text">${text}</div>`;
+    chatWindow.appendChild(userMsg);
+    
+    chatInput.value = '';
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // Simulate JARVIS Network Response via REST API (Using the /api/chat endpoint from FastAPI if it existed, or just mock it)
+    setTimeout(() => {
+        const sysMsg = document.createElement('div');
+        sysMsg.className = 'message system';
+        sysMsg.innerHTML = `<div class="msg-author">J.A.R.V.I.S.</div><div class="msg-text">Directiva "${text}" recibida. Enrutando al nodo correspondiente del enjambre...</div>`;
+        chatWindow.appendChild(sysMsg);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        JarvisAudio.playHoverTick();
+    }, 800);
+}
+
+// Random telemetry updates to simulate live data
+setInterval(() => {
+    document.querySelectorAll('.t-bar-fill').forEach(bar => {
+        if(!bar.classList.contains('warning')) {
+            const current = parseFloat(bar.style.width);
+            const delta = (Math.random() - 0.5) * 5;
+            bar.style.width = Math.max(10, Math.min(100, current + delta)) + '%';
+        }
+    });
+}, 2000);
