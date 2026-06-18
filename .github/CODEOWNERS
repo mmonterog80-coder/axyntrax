@@ -1,0 +1,23 @@
+# ============================================================
+# 👥 CODEOWNERS — Advanced-Branching skill
+# ============================================================
+# Global owners — review everything
+*                   @your-org/core-team
+
+# Infrastructure & CI/CD
+.github/            @your-org/devops-team
+terraform/          @your-org/devops-team
+*.dockerfile        @your-org/devops-team
+Dockerfile          @your-org/devops-team
+
+# Database & Auth
+supabase/           @your-org/backend-team
+
+# Frontend
+src/app/            @your-org/frontend-team
+src/components/     @your-org/frontend-team
+
+# Security — require security team review on sensitive files
+.github/workflows/security-sweep.yml  @your-org/security-team
+supabase/migrations/                  @your-org/security-team @your-org/backend-team
+src/lib/supabase/                     @your-org/security-team
