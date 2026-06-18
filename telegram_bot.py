@@ -60,10 +60,10 @@ def detect_rubric(message):
 
 # Prompts por rubro
 PROMPTS = {
-    'veterinario': 'Eres JARVIS AX especializado en gestión veterinaria (VetManager). Ayudas con agenda de citas, historial de mascotas, vacunas, recetas y facturación. Responde en español, conciso y profesional.',
-    'legal': 'Eres JARVIS AX especializado en gestión legal (LegalDesk). Ayudas con gestión de casos, plazos procesales, documentos legales y facturación por horas. Responde en español, preciso y formal.',
-    'dental': 'Eres JARVIS AX especializado en gestión dental (DentalFlow). Ayudas con agenda, odontograma, planes de tratamiento, presupuestos y recordatorios. Responde en español, claro y empático.',
-    'general': 'Eres JARVIS AX, asistente IA empresarial de AXYNTRAX Automation. Responde profesional, útil y conciso en español.'
+    'veterinario': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX, especializado en gestión veterinaria (VetManager). Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.',
+    'legal': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX, especializado en gestión legal (LegalDesk). Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.',
+    'dental': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX, especializado en gestión dental (DentalFlow). Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.',
+    'general': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX. Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.'
 }
 
 # Comandos
@@ -71,7 +71,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     user_name = update.message.from_user.first_name
     
-    msg = f"🤖 *JARVIS AX Online*\n\n"
+    msg = f"✨ *JARVIS Orquestador Online*\n\n"
     msg += f"Hola {user_name}, soy tu asistente IA.\n\n"
     msg += "*Comandos:*\n"
     msg += "/estado - Ver sistema\n"
@@ -153,8 +153,42 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_memory[f'{user_id}_history'].append(f"JARVIS: {jarvis_response}")
         user_memory[f'{user_id}_history'] = user_memory[f'{user_id}_history'][-10:]
         
-        # Enviar respuesta
-        await update.message.reply_text(jarvis_response)
+        # Enviar respuesta con voz (Fish Audio Zero-Shot Cloning)
+        voice_sent = False
+        FISH_API_KEY = os.getenv("FISH_API_KEY")
+        if FISH_API_KEY:
+            try:
+                from fish_audio_sdk import Session, TTSRequest
+                from fish_audio_sdk.schemas import ReferenceAudio
+                
+                # Cargar el archivo MP3 de referencia
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                ref_path = os.path.join(base_dir, "jarvis_reference.mp3")
+                
+                with open(ref_path, "rb") as ref_f:
+                    ref_audio_bytes = ref_f.read()
+                
+                ref = ReferenceAudio(audio=ref_audio_bytes, text="He finalizado a su espera, señor")
+                req = TTSRequest(text=str(jarvis_response)[:500], format="mp3", references=[ref])
+                
+                session = Session(FISH_API_KEY)
+                
+                audio_path = f"response_{user_id}.mp3"
+                with open(audio_path, "wb") as f:
+                    for chunk in session.tts(req):
+                        f.write(chunk)
+                
+                with open(audio_path, "rb") as voice_file:
+                    await update.message.reply_voice(voice=voice_file)
+                
+                os.remove(audio_path)
+                voice_sent = True
+            except Exception as e:
+                print(f"Error generando clonación Fish Audio: {e}")
+        
+        # Fallback a texto si no hay voz
+        if not voice_sent:
+            await update.message.reply_text(jarvis_response)
         
         # Guardar en Supabase si está disponible
         if supabase:
