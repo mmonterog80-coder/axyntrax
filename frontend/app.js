@@ -106,7 +106,7 @@ renderer.toneMapping = THREE.ReinhardToneMapping;
 
 // PostProcessing (Unreal Bloom Pass for Epic Glow)
 const renderScene = new THREE.RenderPass(scene, camera);
-const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 2.0, 0.5, 0.1);
+const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 3.5, 0.8, 0.1);
 const composer = new THREE.EffectComposer(renderer);
 composer.addPass(renderScene);
 composer.addPass(bloomPass);
@@ -116,39 +116,68 @@ const coreGroup = new THREE.Group();
 scene.add(coreGroup);
 
 // Materials
-const matCyan = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.3 });
-const matGold = new THREE.MeshBasicMaterial({ color: 0xffb300, wireframe: true, transparent: true, opacity: 0.5 });
+const matCyan = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.2 });
+const matCyanBright = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.8 });
+const matGold = new THREE.MeshBasicMaterial({ color: 0xffb300, wireframe: true, transparent: true, opacity: 0.4 });
 const matSolidCyan = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+const pointMat = new THREE.PointsMaterial({ color: 0x00e5ff, size: 0.05, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
 
 // Central Core (JARVIS)
-const jarvisCore = new THREE.Mesh(new THREE.IcosahedronGeometry(4, 2), matCyan);
+// 1. Inner Point Sphere
+const innerSphereGeo = new THREE.SphereGeometry(3.8, 32, 32);
+const innerSphere = new THREE.Points(innerSphereGeo, pointMat);
+coreGroup.add(innerSphere);
+
+// 2. Outer Wireframe Icosahedron
+const jarvisCore = new THREE.Mesh(new THREE.IcosahedronGeometry(4.2, 3), matCyanBright);
 coreGroup.add(jarvisCore);
 
-// Outer Rings
-const ring1 = new THREE.Mesh(new THREE.TorusGeometry(8, 0.02, 16, 100), matGold);
+// Outer Rings (Complex and Dashed)
+const ringGeo1 = new THREE.TorusGeometry(8, 0.05, 16, 100);
+const ring1 = new THREE.Mesh(ringGeo1, matGold);
 ring1.rotation.x = Math.PI / 2;
 coreGroup.add(ring1);
 
-const ring2 = new THREE.Mesh(new THREE.TorusGeometry(12, 0.05, 16, 100), matCyan);
+// Dashed Ring 2
+const ringGeo2 = new THREE.TorusGeometry(12, 0.02, 16, 150);
+const matDashed = new THREE.LineDashedMaterial({ color: 0x00e5ff, dashSize: 0.5, gapSize: 0.2, transparent: true, opacity: 0.8 });
+const edges = new THREE.EdgesGeometry(ringGeo2);
+const ring2 = new THREE.LineSegments(edges, matDashed);
+ring2.computeLineDistances();
 ring2.rotation.y = Math.PI / 4;
 coreGroup.add(ring2);
 
+// Ring 3 (Outer Gold)
+const ringGeo3 = new THREE.TorusGeometry(15, 0.01, 16, 100);
+const ring3 = new THREE.Mesh(ringGeo3, matGold);
+ring3.rotation.x = Math.PI / 3;
+coreGroup.add(ring3);
+
 // AI Swarm Nodes
-const aiNames = ["Gemini 1.5", "DeepSeek V3", "Qwen 2.5", "Claude 3.5", "GPT-4o", "Kimi", "Stitch", "Nano", "Banana2", "Llama 3"];
+const aiNames = ["Gemini 1.5", "DeepSeek V3", "Qwen 2.5", "Claude 3.5", "GPT-4o", "Kimi", "Stitch", "Nano", "Banana2", "Llama 3", "AlphaFold", "JARVIS Core"];
 const nodes = [];
-const orbitRadius = 16;
+const orbitRadius = 18;
 
 aiNames.forEach((name, i) => {
     const angle = (i / aiNames.length) * Math.PI * 2;
-    const mesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.8, 0), matSolidCyan);
+    
+    // Each node is a complex mini-core
+    const nodeGroup = new THREE.Group();
+    
+    const mesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.8, 1), matSolidCyan);
+    const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 1), matGold);
+    nodeGroup.add(mesh);
+    nodeGroup.add(wire);
     
     // Position in orbit
-    mesh.position.x = Math.cos(angle) * orbitRadius;
-    mesh.position.z = Math.sin(angle) * orbitRadius;
-    mesh.position.y = (Math.random() - 0.5) * 4;
+    nodeGroup.position.x = Math.cos(angle) * orbitRadius;
+    nodeGroup.position.z = Math.sin(angle) * orbitRadius;
+    nodeGroup.position.y = (Math.random() - 0.5) * 6;
     
-    mesh.userData = { name: name, angle: angle, speed: 0.005 + Math.random() * 0.005 };
-    coreGroup.add(mesh);
+    // Use the inner mesh for raycasting
+    mesh.userData = { name: name, angle: angle, speed: 0.003 + Math.random() * 0.004, parentGroup: nodeGroup };
+    
+    coreGroup.add(nodeGroup);
     nodes.push(mesh);
 });
 
@@ -208,11 +237,16 @@ function animate() {
     
     // Orbit Nodes
     nodes.forEach(node => {
+        const pGroup = node.userData.parentGroup;
         node.userData.angle += node.userData.speed;
-        node.position.x = Math.cos(node.userData.angle) * orbitRadius;
-        node.position.z = Math.sin(node.userData.angle) * orbitRadius;
-        node.rotation.x += 0.02;
-        node.rotation.y += 0.02;
+        
+        // Orbit the whole group
+        pGroup.position.x = Math.cos(node.userData.angle) * orbitRadius;
+        pGroup.position.z = Math.sin(node.userData.angle) * orbitRadius;
+        
+        // Rotate the individual geometries inside
+        pGroup.rotation.x += 0.01;
+        pGroup.rotation.y += 0.02;
     });
 
     // Particles float
