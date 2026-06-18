@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS AX - HUD</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .card h3 { margin-bottom: 15px; }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .status.online { background: #10b981; }
+        .status.offline { background: #ef4444; }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .metric-value { font-weight: bold; color: #60a5fa; }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            margin: 5px;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 JARVIS AX</h1>
+            <p>Sistema de Control Centralizado</p>
+            <p id="timestamp" style="margin-top: 10px; font-size: 0.9em;"></p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>📡 Estado del Sistema</h3>
+                <div id="system-status">
+                    <span class="status offline">Verificando...</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="metric">
+                        <span>API:</span>
+                        <span class="metric-value" id="api-status">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Uptime:</span>
+                        <span class="metric-value" id="uptime">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Telemetría</h3>
+                <div class="metric">
+                    <span>CPU:</span>
+                    <span class="metric-value" id="cpu">-</span>
+                </div>
+                <div class="metric">
+                    <span>RAM:</span>
+                    <span class="metric-value" id="ram">-</span>
+                </div>
+                <div class="metric">
+                    <span>Disco:</span>
+                    <span class="metric-value" id="disk">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔗 Accesos Rápidos</h3>
+                <a href="https://railway.app/dashboard" class="btn" target="_blank">🚂 Railway</a>
+                <a href="https://supabase.com/dashboard/project/qatawtbfrfreakdbluat" class="btn" target="_blank">🗄️ Supabase</a>
+                <a href="https://github.com/axyntraxautomation-lab/AXYNTRAX" class="btn" target="_blank">💻 GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function refreshData() {
+            try {
+                const healthRes = await fetch('/health');
+                const health = await healthRes.json();
+                document.getElementById('system-status').innerHTML = '<span class="status online">ONLINE</span>';
+                document.getElementById('api-status').textContent = 'Activo';
+                document.getElementById('uptime').textContent = health.uptime || 'N/A';
+
+                const telRes = await fetch('/api/telemetry/system');
+                const tel = await telRes.json();
+                document.getElementById('cpu').textContent = (tel.cpu || 0).toFixed(1) + '%';
+                document.getElementById('ram').textContent = (tel.ram || 0).toFixed(1) + '%';
+                document.getElementById('disk').textContent = (tel.disk || 0).toFixed(1) + '%';
+
+                document.getElementById('timestamp').textContent = 'Última actualización: ' + new Date().toLocaleString('es-PE');
+            } catch (error) {
+                document.getElementById('system-status').innerHTML = '<span class="status offline">OFFLINE</span>';
+            }
+        }
+
+        refreshData();
+        setInterval(refreshData, 30000);
+    </script>
+</body>
+</html>
