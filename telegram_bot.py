@@ -207,25 +207,38 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"Error procesando mensaje: {error_msg}")
 
 def main():
-    print("🤖 Iniciando JARVIS AX Bot de Telegram...")
-    print(f"Token configurado: {'Sí' if TELEGRAM_TOKEN else 'No'}")
-    print(f"DeepSeek configurado: {'Sí' if DEEPSEEK_API_KEY else 'No'}")
-    
-    app = Application.builder().token(TELEGRAM_TOKEN).build()
-    
-    # Comandos
-    app.add_handler(CommandHandler('start', start))
-    app.add_handler(CommandHandler('ayuda', help_command))
-    app.add_handler(CommandHandler('estado', estado_command))
-    app.add_handler(CommandHandler('vet', vet_command))
-    app.add_handler(CommandHandler('legal', legal_command))
-    app.add_handler(CommandHandler('dental', dental_command))
-    
-    # Mensajes de texto
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    
-    print("✅ Bot listo y escuchando mensajes...")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    import sys
+    # Forzar UTF-8 en stdout si es posible
+    if sys.stdout.encoding != 'utf-8':
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
+
+    try:
+        print("🤖 Iniciando JARVIS AX Bot de Telegram...")
+        print(f"Token configurado: {'Sí' if TELEGRAM_TOKEN else 'No'}")
+        print(f"DeepSeek configurado: {'Sí' if DEEPSEEK_API_KEY else 'No'}")
+        
+        app = Application.builder().token(TELEGRAM_TOKEN).build()
+        
+        # Comandos
+        app.add_handler(CommandHandler('start', start))
+        app.add_handler(CommandHandler('ayuda', help_command))
+        app.add_handler(CommandHandler('estado', estado_command))
+        app.add_handler(CommandHandler('vet', vet_command))
+        app.add_handler(CommandHandler('legal', legal_command))
+        app.add_handler(CommandHandler('dental', dental_command))
+        
+        # Mensajes de texto
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+        
+        print("✅ Bot listo y escuchando mensajes...")
+        app.run_polling(allowed_updates=Update.ALL_TYPES)
+    except Exception as e:
+        import traceback
+        print(f"❌ FATAL ERROR IN TELEGRAM BOT: {e}")
+        traceback.print_exc()
 
 if __name__ == '__main__':
     main()

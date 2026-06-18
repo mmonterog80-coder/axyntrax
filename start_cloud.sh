@@ -6,13 +6,13 @@ echo "======================================"
 
 # Iniciar Bot de Telegram
 echo "[OK] Iniciando Bot de Telegram..."
-python telegram_bot.py > telegram.log 2>&1 &
+PYTHONIOENCODING=utf-8 python telegram_bot.py > telegram.log 2>&1 &
 
 # Iniciar Worker Autónomo (CANAL QWEN-JARVIS)
 echo "[OK] Iniciando Worker Autónomo v2..."
-python autonomous_worker.py > worker.log 2>&1 &
+PYTHONIOENCODING=utf-8 python autonomous_worker.py > worker.log 2>&1 &
 
 # Iniciar FastAPI (debe ir al frente)
-echo "[OK] Iniciando FastAPI en el puerto ${PORT:-8080}..."
-exec python -m uvicorn backend.jarvis_orchestrator.main:app --host 0.0.0.0 --port ${PORT:-8080}
+echo "[OK] Iniciando FastAPI en el puerto ${PORT:-8000}..."
+exec python -m uvicorn backend.jarvis_orchestrator.main:app --host 0.0.0.0 --port ${PORT:-8000}
 # rebuild trigger 2026-06-18T08:45:04.4949486-05:00
