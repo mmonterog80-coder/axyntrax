@@ -16,7 +16,7 @@ class TaskStatus(str, Enum):
     failed = "failed"
 
 class TaskContext(BaseModel):
-    model_preference: Optional[str] = "deepseek-r1"
+    model_preference: Optional[str] = "deepseek-chat"
     files_allowed: Optional[List[str]] = []
     risk_level: Optional[RiskLevel] = RiskLevel.medium
     require_admin: Optional[bool] = False
