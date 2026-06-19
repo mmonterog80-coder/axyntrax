@@ -1,4 +1,5 @@
 import os, openai, re
+from llm_cache import llm_response_cache
 
 def generate_plan(objective: str, module: str = "", phase: int = 1,
                   action_type: str = "execute", preferred_api: str = None,
@@ -71,13 +72,19 @@ def generate_plan(objective: str, module: str = "", phase: int = 1,
     # Guardar mensaje del usuario en memoria CRM
     save_message(session_id=session_id, role="user", content=objective)
     
-    resp = client.chat.completions.create(
-        model=model, 
-        messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
-        max_tokens=max_tokens
-    )
+    cache_key = system_prompt + user_prompt
+    cached_result = llm_response_cache.get(cache_key)
     
-    result = resp.choices[0].message.content
+    if cached_result:
+        result = cached_result
+    else:
+        resp = client.chat.completions.create(
+            model=model, 
+            messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
+            max_tokens=max_tokens
+        )
+        result = resp.choices[0].message.content
+        llm_response_cache.set(cache_key, result)
     
     # Extraer el nombre del departamento de current_persona si existe
     dept_name = "JARVIS"

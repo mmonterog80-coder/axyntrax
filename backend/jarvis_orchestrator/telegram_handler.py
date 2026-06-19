@@ -2,6 +2,7 @@ import os
 import requests
 import logging
 from voice_generator import generar_audio
+from llm_cache import llm_response_cache
 
 logger = logging.getLogger(__name__)
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
@@ -30,6 +31,10 @@ REGLAS DE VOZ — OBLIGATORIAS:
 def call_deepseek(user_message: str) -> str:
     """Usa DeepSeek para generar respuesta de JARVIS."""
     try:
+        cached = llm_response_cache.get(user_message)
+        if cached:
+            return cached
+            
         from openai import OpenAI
         key = os.getenv("DEEPSEEK_API_KEY")
         if not key:
@@ -44,7 +49,9 @@ def call_deepseek(user_message: str) -> str:
             ],
             max_tokens=150
         )
-        return resp.choices[0].message.content.strip()
+        result = resp.choices[0].message.content.strip()
+        llm_response_cache.set(user_message, result)
+        return result
     except Exception as e:
         logger.error(f"DeepSeek error: {e}")
         return "Señor Miguel, hay un problema de conexión temporal. En breve estará resuelto."
