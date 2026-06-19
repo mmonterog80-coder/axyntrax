@@ -251,19 +251,53 @@ async def reorder_skills(req: ReorderRequest, token: str = Depends(verify_token)
 
 @app.get("/api/swarm/status")
 async def swarm_status(token: str = Depends(verify_token)):
-    nodes = [
-        {"id": "jarvis", "name": "JARVIS Core", "role": "Orquestador", "status": "ONLINE", "mem": "1.2GB"},
-        {"id": "gemini", "name": "Gemini 1.5", "role": "Arquitectura", "status": "ONLINE", "mem": "850MB"},
-        {"id": "deepseek", "name": "DeepSeek V3", "role": "Lógica/Código", "status": "PROCESSING", "mem": "2.4GB"},
-        {"id": "qwen", "name": "Qwen 2.5", "role": "Operaciones", "status": "ONLINE", "mem": "420MB"},
-        {"id": "claude", "name": "Claude 3.5", "role": "Shaders/Seguridad", "status": "IDLE", "mem": "0MB"},
-        {"id": "gpt4o", "name": "GPT-4o", "role": "Razonamiento", "status": "IDLE", "mem": "0MB"},
-        {"id": "kimi", "name": "Kimi", "role": "Diseño UX", "status": "ONLINE", "mem": "300MB"},
-        {"id": "stitch", "name": "Stitch", "role": "Frontend CSS", "status": "IDLE", "mem": "0MB"},
-        {"id": "nano", "name": "Nano", "role": "Microtareas", "status": "ONLINE", "mem": "15MB"},
-        {"id": "banana2", "name": "Banana2", "role": "Herramienta Aux", "status": "ONLINE", "mem": "45MB"}
+    departments = [
+        {
+            "id": "ceo",
+            "name": "JARVIS Antigravity",
+            "role": "CEO / PC Controller",
+            "status": "ONLINE",
+            "mem": "Core",
+            "sub_agents": []
+        },
+        {
+            "id": "strategy",
+            "name": "Gemini 1.5",
+            "role": "Dir. Estrategia y Arquitectura",
+            "status": "ONLINE",
+            "mem": "1.2GB",
+            "sub_agents": [
+                {"id": "vision", "name": "Vision", "role": "Market & E-commerce", "status": "ONLINE", "mem": "300MB"},
+                {"id": "architect", "name": "Architect", "role": "Diseño B2B", "status": "IDLE", "mem": "0MB"},
+                {"id": "kimi", "name": "Kimi", "role": "UX/UI Expert", "status": "ONLINE", "mem": "450MB"}
+            ]
+        },
+        {
+            "id": "factory",
+            "name": "DeepSeek V3",
+            "role": "Dir. Fábrica de Software",
+            "status": "PROCESSING",
+            "mem": "3.5GB",
+            "sub_agents": [
+                {"id": "stitch", "name": "Stitch", "role": "Frontend / React", "status": "PROCESSING", "mem": "1.1GB"},
+                {"id": "forge", "name": "Forge", "role": "Backend / DB", "status": "ONLINE", "mem": "800MB"},
+                {"id": "sentinel", "name": "Sentinel", "role": "QA & SecOps", "status": "IDLE", "mem": "0MB"}
+            ]
+        },
+        {
+            "id": "operations",
+            "name": "Qwen 2.5",
+            "role": "Dir. Operaciones e Infra",
+            "status": "ONLINE",
+            "mem": "1.8GB",
+            "sub_agents": [
+                {"id": "nano", "name": "Nano", "role": "API & Tools Admin", "status": "ONLINE", "mem": "120MB"},
+                {"id": "devops", "name": "DevOps AI", "role": "Cloud Deployments", "status": "ONLINE", "mem": "200MB"},
+                {"id": "banana2", "name": "Banana2", "role": "Data Processing", "status": "PROCESSING", "mem": "950MB"}
+            ]
+        }
     ]
-    return {"swarm": nodes}
+    return {"swarm": departments}
 
 # Base de datos simulada de correos
 mock_inbox = [

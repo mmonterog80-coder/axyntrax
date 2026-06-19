@@ -347,19 +347,38 @@ async function fetchSwarmStatus() {
         if(!list) return;
         
         list.innerHTML = '';
-        data.swarm.forEach(node => {
+        data.swarm.forEach(dept => {
+            // Render Department (Director)
             list.innerHTML += `
-                <div class="swarm-node-item">
+                <div class="swarm-node-item" style="border-left-color: #ffb300;">
                     <div>
-                        <div class="sn-name">${node.name}</div>
-                        <div class="sn-role">${node.role}</div>
+                        <div class="sn-name" style="color: #ffb300;">[DIR] ${dept.name}</div>
+                        <div class="sn-role">${dept.role}</div>
                     </div>
                     <div class="sn-status">
-                        <span style="font-size:0.7rem;">${node.mem}</span>
-                        <div class="led ${node.status}"></div>
+                        <span style="font-size:0.7rem;">${dept.mem}</span>
+                        <div class="led ${dept.status}"></div>
                     </div>
                 </div>
             `;
+            
+            // Render Sub-Agents
+            if(dept.sub_agents && dept.sub_agents.length > 0) {
+                dept.sub_agents.forEach(sub => {
+                    list.innerHTML += `
+                        <div class="swarm-node-item" style="margin-left: 15px; border-left-color: #00e5ff; background: rgba(0, 229, 255, 0.02);">
+                            <div>
+                                <div class="sn-name" style="font-size: 0.75rem;">└ ${sub.name}</div>
+                                <div class="sn-role" style="font-size: 0.6rem;">${sub.role}</div>
+                            </div>
+                            <div class="sn-status">
+                                <span style="font-size:0.6rem;">${sub.mem}</span>
+                                <div class="led ${sub.status}" style="width:6px; height:6px;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
         });
     } catch(err) {
         console.error("Swarm Fetch Error:", err);
