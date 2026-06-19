@@ -381,6 +381,22 @@ async def respond_mail(req: MailRespondReq, token: str = Depends(verify_token)):
 
 from fastapi.staticfiles import StaticFiles
 
+# ============ MÓDULOS MERCADO PERUANO ============
+@app.get('/api/modules/peru')
+async def peru_modules(token: str = Depends(verify_token)):
+    return {'modules': [
+        {'id': 'veterinaria', 'name': 'VetManager Perú', 'status': 'active', 'price_sol': 199},
+        {'id': 'dental', 'name': 'DentalFlow Perú', 'status': 'active', 'price_sol': 199},
+        {'id': 'restaurante', 'name': 'RestoPOS Perú', 'status': 'active', 'price_sol': 299},
+        {'id': 'bodega', 'name': 'BodegaStock', 'status': 'active', 'price_sol': 99},
+        {'id': 'taller', 'name': 'TallerPro', 'status': 'active', 'price_sol': 149},
+        {'id': 'salon', 'name': 'SalonBook', 'status': 'active', 'price_sol': 99},
+        {'id': 'academia', 'name': 'AcademiaFlow', 'status': 'active', 'price_sol': 249},
+        {'id': 'farmacia', 'name': 'FarmaControl', 'status': 'active', 'price_sol': 199},
+        {'id': 'inmobiliaria', 'name': 'InmoAI', 'status': 'active', 'price_sol': 399},
+        {'id': 'contabilidad', 'name': 'ContaSUNAT', 'status': 'active', 'price_sol': 299},
+    ]}
+
 # ============ SERVIR EL HUD FRONTEND (React/Vite) ============
 import os
 

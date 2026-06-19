@@ -38,7 +38,19 @@ DEFAULT_SKILLS = [
     Skill(id="sk_11", name="Directive Validation", description="Sentinel valida que la directiva sea clara antes de orquestar.", priority=110, assigned_agent="sentinel", tier="strategy", dependencies=[]),
     Skill(id="sk_12", name="Circuit Breaker Retry", description="Qwen ejecuta reintentos acotados (max 3) si una tarea falla.", priority=110, assigned_agent="devops_ai", tier="operations", dependencies=[]),
     Skill(id="sk_13", name="Progress Reporting", description="JARVIS reporta el estado del grafo a Telegram cada 5 minutos.", priority=110, assigned_agent="jarvis", tier="operations", dependencies=[]),
-    Skill(id="sk_14", name="Acceptance Validator", description="Sentinel valida que el output cumpla los criterios de éxito.", priority=100, assigned_agent="sentinel", tier="engineering", dependencies=[])
+    Skill(id="sk_14", name="Acceptance Validator", description="Sentinel valida que el output cumpla los criterios de éxito.", priority=100, assigned_agent="sentinel", tier="engineering", dependencies=[]),
+
+    # MÓDULOS MERCADO PERUANO
+    Skill(id="sk_15", name="Gestión Veterinaria", description="ATHENA gestiona fichas de mascotas, citas y tratamientos.", priority=95, assigned_agent="athena", tier="vertical", dependencies=[]),
+    Skill(id="sk_16", name="Sistema Dental", description="VULCAN gestiona odontograma, citas y planes de tratamiento.", priority=95, assigned_agent="vulcan", tier="vertical", dependencies=[]),
+    Skill(id="sk_17", name="POS Restaurante", description="MERCURY gestiona mesas, órdenes y cocina en tiempo real.", priority=95, assigned_agent="mercury", tier="vertical", dependencies=[]),
+    Skill(id="sk_18", name="Control Inventario", description="DIANA controla stock, alertas de reposición y proveedores.", priority=90, assigned_agent="diana", tier="vertical", dependencies=[]),
+    Skill(id="sk_19", name="Taller Mecánico", description="HERMES gestiona órdenes de trabajo, repuestos y clientes.", priority=90, assigned_agent="hermes", tier="vertical", dependencies=[]),
+    Skill(id="sk_20", name="Salón de Belleza", description="ATHENA gestiona reservas, servicios y fidelización.", priority=90, assigned_agent="athena", tier="vertical", dependencies=[]),
+    Skill(id="sk_21", name="Academia / Cursos", description="VULCAN gestiona alumnos, cursos, pagos y certificados.", priority=90, assigned_agent="vulcan", tier="vertical", dependencies=[]),
+    Skill(id="sk_22", name="Farmacia / Botica", description="DIANA controla medicamentos, recetas y stock crítico.", priority=95, assigned_agent="diana", tier="vertical", dependencies=[]),
+    Skill(id="sk_23", name="Inmobiliaria", description="MERCURY gestiona propiedades, clientes y contratos.", priority=85, assigned_agent="mercury", tier="vertical", dependencies=[]),
+    Skill(id="sk_24", name="Contabilidad SUNAT", description="HERMES genera reportes para SUNAT, PDT y libros electrónicos.", priority=95, assigned_agent="hermes", tier="vertical", dependencies=[])
 ]
 
 # Catálogo de Herramientas (Broker)
