@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Activity, Mail, MessageSquare, Zap, Shield, Cpu, Send, Mic } from 'lucide-react';
+import { Mail, MessageSquare, Zap, Shield, Cpu, Send, Mic } from 'lucide-react';
 import axios from 'axios';
 
 interface ChatMessage {
