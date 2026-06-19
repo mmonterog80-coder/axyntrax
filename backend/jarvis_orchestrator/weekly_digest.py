@@ -22,7 +22,7 @@ def weekly_digest():
     
     # Obtener logs de la última semana
     # En Supabase gte significa >= 
-    res = supabase.table("audit_log").select("*").gte("timestamp", seven_days_ago.isoformat()).execute()
+    res = supabase.table("audit_log").select("*").gte("created_at", seven_days_ago.isoformat()).execute()
     
     logs = res.data
     total_requests = len(logs)

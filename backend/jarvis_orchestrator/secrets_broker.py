@@ -42,7 +42,6 @@ def log_audit(agent_id: str, secret_name: str, action: str):
         supabase.table("audit_log").insert({
             "agent_id": agent_id,
             "secret_name": secret_name,
-            "timestamp": time.time(),
             "action": action
         }).execute()
     except Exception as e:

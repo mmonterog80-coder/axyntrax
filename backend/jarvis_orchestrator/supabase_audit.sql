@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS audit_log (
     agent_id TEXT NOT NULL,
     secret_name TEXT NOT NULL,
     action TEXT NOT NULL,
-    timestamp TIMESTAMPTZ DEFAULT now(),
+    created_at TIMESTAMPTZ DEFAULT now(),
     prev_hash TEXT,
     row_hash TEXT GENERATED ALWAYS AS (
-        encode(digest(agent_id || secret_name || action || timestamp::text || coalesce(prev_hash,''), 'sha256'), 'hex')
+        encode(digest(agent_id || secret_name || action || coalesce(prev_hash,''), 'sha256'), 'hex')
     ) STORED
 );
 
