@@ -15,6 +15,7 @@ from telemetry import router as telemetry_router
 from secrets_broker import router as secrets_router
 from whatsapp_bot import router as whatsapp_router
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -55,10 +56,14 @@ START_TIME = time.time()
 
 # ============ RUTAS PÚBLICAS (Rate Limited) ============
 
-@app.get("/")
-# @limiter.limit("60/minute")
-async def root():
-    return {"message": "JARVIS AX Online", "version": "2.0.0", "timestamp": datetime.now().isoformat()}
+# Servir Frontend Dashboard
+frontend_dist = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend_dashboard_dist")
+if os.path.exists(frontend_dist):
+    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
+else:
+    @app.get("/")
+    def read_root():
+        return {"message": "AXYNTRAX AX Orquestador Online (Frontend no encontrado)", "version": "2.0.0", "timestamp": datetime.now().isoformat()}
 
 @app.get("/health")
 # @limiter.limit("120/minute")
