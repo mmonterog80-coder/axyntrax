@@ -36,15 +36,24 @@ def generate_plan(objective: str, module: str = "", phase: int = 1,
             corp_data = CORPORATE_STRUCTURE[dept]
             preferred_api = corp_data["preferred_api"]
             current_persona = corp_data["persona"]
+    CHAIN_OF_DRAFT_PROMPT = (
+        "\n[REGLA ESTRICTA - CHAIN OF DRAFT]: "
+        "Piensa tu solución en una sola frase breve. "
+        "No uses saludos ni despedidas. Sé brutalmente conciso. "
+        "Si generas código, entrega SOLO el código sin texto adicional."
+    )
+
     if action_type == "generate_code":
         system_prompt = current_persona if current_persona else ("Eres un programador experto. Devuelve ÃšNICAMENTE el cÃ³digo fuente completo "
                          "dentro de un bloque de cÃ³digo markdown. Sin explicaciones fuera del bloque.")
+        system_prompt += CHAIN_OF_DRAFT_PROMPT
         user_prompt = f"Objetivo: {objective}\n\nEscribe el cÃ³digo que cumpla ese objetivo."
         max_tokens = 1400
     else:
         system_prompt = current_persona if current_persona else ("Eres JARVIS AX, un asistente de IA avanzado del sistema AXYNTRAX. "
                          "Responde de forma clara, precisa y en espaÃ±ol. "
                          f"MÃ³dulo: {module} | Fase: {phase}")
+        system_prompt += CHAIN_OF_DRAFT_PROMPT
         
         # Inyectar memoria en el prompt del usuario
         memoria_context = f"\n\n[MEMORIA RECIENTE DE LA SESIÃ“N]\n{history_text}\n" if history_text else ""
