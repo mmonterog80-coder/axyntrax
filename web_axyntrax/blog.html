@@ -3,204 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog | AXYNTRAX Automation — IA y Automatización Empresarial</title>
-    <meta name="description" content="Aprende sobre automatización empresarial con IA, casos de éxito, tutoriales y tendencias del futuro del trabajo. Blog de AXYNTRAX Automation.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.axyntrax-automation.net/blog.html">
-    <!-- Open Graph -->
-    <meta property="og:title" content="Blog AXYNTRAX | IA y Automatización Empresarial">
-    <meta property="og:description" content="Guías, casos de éxito y tendencias sobre automatización con IA para empresas en LATAM.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.axyntrax-automation.net/blog.html">
-    <!-- Schema.org Blog -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Blog",
-      "name": "Blog AXYNTRAX Automation",
-      "url": "https://www.axyntrax-automation.net/blog.html",
-      "description": "Artículos sobre automatización empresarial con IA para empresas en Perú y LATAM",
-      "publisher": {
-        "@type": "Organization",
-        "name": "AXYNTRAX Automation",
-        "url": "https://www.axyntrax-automation.net/"
-      }
-    }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AXYNTRAX Blog | Noticias de IA para Empresas Peruanas</title>
+    <meta name="description" content="Aprende cómo la Inteligencia Artificial está transformando negocios en Perú.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
-        body { background-color: #030014; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(10,10,25,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(0,255,255,0.15); transition: all 0.3s ease; }
-        .glass:hover { border-color: rgba(0,255,255,0.4); transform: translateY(-3px); box-shadow: 0 0 20px rgba(0,255,255,0.08); }
-        .tag { background: rgba(0,255,255,0.1); border: 1px solid rgba(0,255,255,0.2); color: #22d3ee; font-size: 0.7rem; padding: 2px 10px; border-radius: 999px; }
+        :root {
+            --bg-dark: #060d1a;
+            --accent-cyan: #00b8d9;
+            --accent-amber: #f59e0b;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-dark); color: #fff; line-height: 1.6; }
+        
+        /* HEADER */
+        header { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; background: rgba(6, 13, 26, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--accent-cyan); text-decoration: none; letter-spacing: 2px;}
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 30px; transition: color 0.3s; font-weight: 600;}
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* HERO BLOG */
+        .hero { padding: 100px 50px 50px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.2rem; color: #a0aabf; }
+
+        /* BLOG GRID */
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; padding: 50px; max-width: 1200px; margin: 0 auto; }
+        .blog-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; transition: transform 0.3s; }
+        .blog-card:hover { transform: translateY(-5px); border-color: var(--accent-amber); }
+        .blog-img { width: 100%; height: 200px; background: linear-gradient(45deg, #0f172a, #1e293b); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+        .blog-content { padding: 30px; }
+        .blog-date { color: var(--accent-cyan); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; display: block; }
+        .blog-title { font-size: 1.4rem; margin-bottom: 15px; color: #fff; }
+        .blog-excerpt { color: #a0aabf; font-size: 0.95rem; margin-bottom: 20px; }
+        .read-more { color: var(--accent-amber); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+        .read-more:hover { color: #fff; }
+
+        /* FOOTER */
+        footer { padding: 50px; text-align: center; border-top: 1px solid var(--glass-border); color: #a0aabf; margin-top: 50px;}
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; padding: 20px; }
+            .hero h1 { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50">Saltar al contenido</a>
 
-    <nav class="w-full bg-black/50 backdrop-blur-md border-b border-cyan-500/20 py-4 px-8 flex justify-between items-center sticky top-0 z-50">
-        <a href="index.html" class="font-orbitron font-bold text-xl text-white">AXY<span class="text-cyan-400">NTRAX</span></a>
-        <div class="flex gap-6">
-            <a href="index.html" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">Inicio</a>
-            <a href="pricing.html" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">Precios</a>
-            <a href="registro.html" class="text-sm font-orbitron text-black bg-cyan-400 px-4 py-2 rounded hover:bg-cyan-300 transition font-bold">Empezar</a>
-        </div>
-    </nav>
+    <header>
+        <a href="index.html" class="logo">AXYNTRAX</a>
+        <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="pricing.html">Precios</a>
+            <a href="blog.html" style="color: #fff;">Blog</a>
+        </nav>
+    </header>
 
-    <main id="main-content" class="max-w-6xl mx-auto px-6 py-20">
-        <div class="text-center mb-16">
-            <span class="inline-block bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-orbitron px-4 py-2 rounded-full mb-6 tracking-widest">BLOG & RECURSOS</span>
-            <h1 class="font-orbitron text-4xl md:text-5xl font-black text-white mb-4">
-                El Futuro del Trabajo<br><span class="text-cyan-400">es Autónomo</span>
-            </h1>
-            <p class="text-gray-400 max-w-2xl mx-auto">Guías prácticas, casos de éxito y las últimas tendencias en automatización empresarial con Inteligencia Artificial.</p>
-        </div>
+    <section class="hero">
+        <h1>Centro de Recursos IA</h1>
+        <p>Descubre cómo la inteligencia artificial está revolucionando el mercado peruano y cómo aplicarla en tu empresa.</p>
+    </section>
 
-        <!-- Featured Article -->
-        <article class="glass rounded-2xl overflow-hidden mb-12">
-            <div class="p-8 md:p-10">
-                <div class="flex gap-2 mb-4 flex-wrap">
-                    <span class="tag">DESTACADO</span>
-                    <span class="tag">GUÍA</span>
-                    <span class="tag">AUTOMATIZACIÓN</span>
-                </div>
-                <h2 class="font-orbitron text-2xl font-bold text-white mb-3">
-                    <a href="#" class="hover:text-cyan-400 transition">Cómo automatizar tu empresa con IA en 2026: Guía completa para PYMES en Perú</a>
-                </h2>
-                <p class="text-gray-400 mb-4 leading-relaxed">Descubre el paso a paso para implementar agentes de IA en tu empresa sin necesidad de un equipo técnico. Desde WhatsApp bots hasta generación automática de reportes, todo lo que necesitas saber.</p>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs font-bold" aria-hidden="true">JA</div>
-                        <div>
-                            <p class="text-white text-sm font-semibold">JARVIS AI</p>
-                            <time class="text-gray-500 text-xs" datetime="2026-06-14">14 Junio 2026 · 8 min lectura</time>
-                        </div>
-                    </div>
-                    <a href="#" class="text-cyan-400 text-sm font-orbitron hover:underline">Leer →</a>
-                </div>
+    <section class="blog-grid">
+        <article class="blog-card">
+            <div class="blog-img">🤖</div>
+            <div class="blog-content">
+                <span class="blog-date">15 Jun 2026</span>
+                <h2 class="blog-title">Por qué los bots de WhatsApp son el nuevo vendedor estrella en Perú</h2>
+                <p class="blog-excerpt">El 85% de las ventas B2B y B2C en Perú se cierran por WhatsApp. Descubre cómo un Agente IA puede multiplicar tu tasa de conversión atendiendo 24/7 sin dejar clientes en visto.</p>
+                <a href="#" class="read-more">Leer Artículo →</a>
             </div>
         </article>
 
-        <!-- Article Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <article class="glass rounded-xl p-6">
-                <div class="flex gap-2 mb-3 flex-wrap">
-                    <span class="tag">WHATSAPP</span>
-                    <span class="tag">VENTAS</span>
-                </div>
-                <h2 class="font-orbitron text-base font-bold text-white mb-2">
-                    <a href="#" class="hover:text-cyan-400 transition">5 formas en que un bot de WhatsApp puede triplicar tus ventas</a>
-                </h2>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">Estrategias probadas para convertir conversaciones en contratos usando automatización inteligente.</p>
-                <div class="flex justify-between items-center">
-                    <time class="text-gray-600 text-xs" datetime="2026-06-10">10 Jun 2026 · 5 min</time>
-                    <a href="#" class="text-cyan-400 text-xs font-orbitron hover:underline">Leer →</a>
-                </div>
-            </article>
+        <article class="blog-card">
+            <div class="blog-img">🧾</div>
+            <div class="blog-content">
+                <span class="blog-date">10 Jun 2026</span>
+                <h2 class="blog-title">Facturación Electrónica SUNAT: De dolor de cabeza a piloto automático</h2>
+                <p class="blog-excerpt">Con la integración de AXYNTRAX, las boletas y facturas se emiten solas al cerrar una venta en el POS. Se acabó el doble tecleo y las multas por errores humanos.</p>
+                <a href="#" class="read-more">Leer Artículo →</a>
+            </div>
+        </article>
 
-            <article class="glass rounded-xl p-6">
-                <div class="flex gap-2 mb-3 flex-wrap">
-                    <span class="tag">MARKETING</span>
-                    <span class="tag">IA</span>
-                </div>
-                <h2 class="font-orbitron text-base font-bold text-white mb-2">
-                    <a href="#" class="hover:text-cyan-400 transition">Marketing autónomo: Cómo PHOENIX genera 90 posts/mes sin intervención humana</a>
-                </h2>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">Un análisis a fondo de cómo nuestro agente de marketing opera con el protocolo anti-ban para redes sociales.</p>
-                <div class="flex justify-between items-center">
-                    <time class="text-gray-600 text-xs" datetime="2026-06-07">7 Jun 2026 · 6 min</time>
-                    <a href="#" class="text-cyan-400 text-xs font-orbitron hover:underline">Leer →</a>
-                </div>
-            </article>
+        <article class="blog-card">
+            <div class="blog-img">🏥</div>
+            <div class="blog-content">
+                <span class="blog-date">02 Jun 2026</span>
+                <h2 class="blog-title">Caso de Éxito: Cómo una clínica en Lima duplicó sus citas con IA</h2>
+                <p class="blog-excerpt">Entrevista exclusiva con la Dra. Torres, quien automatizó los recordatorios de citas de su clínica dental usando AXYNTRAX, reduciendo el ausentismo en un 60%.</p>
+                <a href="#" class="read-more">Leer Artículo →</a>
+            </div>
+        </article>
+    </section>
 
-            <article class="glass rounded-xl p-6">
-                <div class="flex gap-2 mb-3 flex-wrap">
-                    <span class="tag">LEGAL</span>
-                    <span class="tag">GDPR</span>
-                </div>
-                <h2 class="font-orbitron text-base font-bold text-white mb-2">
-                    <a href="#" class="hover:text-cyan-400 transition">EU AI Act 2026: Lo que toda empresa peruana debe saber antes de usar IA</a>
-                </h2>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">El nuevo reglamento europeo de IA ya está en vigor. Si tienes clientes en Europa o usas IA, esto te afecta.</p>
-                <div class="flex justify-between items-center">
-                    <time class="text-gray-600 text-xs" datetime="2026-06-03">3 Jun 2026 · 7 min</time>
-                    <a href="#" class="text-cyan-400 text-xs font-orbitron hover:underline">Leer →</a>
-                </div>
-            </article>
-
-            <article class="glass rounded-xl p-6">
-                <div class="flex gap-2 mb-3 flex-wrap">
-                    <span class="tag">CASOS DE ÉXITO</span>
-                </div>
-                <h2 class="font-orbitron text-base font-bold text-white mb-2">
-                    <a href="#" class="hover:text-cyan-400 transition">Clínica dental en Arequipa reduce 80% de tiempo en atención al cliente con IA</a>
-                </h2>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">Caso real: cómo implementamos un bot de WhatsApp para agenda de citas que gestiona 200+ pacientes al mes.</p>
-                <div class="flex justify-between items-center">
-                    <time class="text-gray-600 text-xs" datetime="2026-05-28">28 May 2026 · 4 min</time>
-                    <a href="#" class="text-cyan-400 text-xs font-orbitron hover:underline">Leer →</a>
-                </div>
-            </article>
-
-            <article class="glass rounded-xl p-6">
-                <div class="flex gap-2 mb-3 flex-wrap">
-                    <span class="tag">DESARROLLO</span>
-                    <span class="tag">CÓDIGO</span>
-                </div>
-                <h2 class="font-orbitron text-base font-bold text-white mb-2">
-                    <a href="#" class="hover:text-cyan-400 transition">Claude 3.5 Sonnet vs GPT-4o: El mejor modelo para desarrollo web en 2026</a>
-                </h2>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">Comparativa exhaustiva de los principales modelos de IA para desarrollo de software y diseño UI/UX.</p>
-                <div class="flex justify-between items-center">
-                    <time class="text-gray-600 text-xs" datetime="2026-05-20">20 May 2026 · 9 min</time>
-                    <a href="#" class="text-cyan-400 text-xs font-orbitron hover:underline">Leer →</a>
-                </div>
-            </article>
-
-            <article class="glass rounded-xl p-6">
-                <div class="flex gap-2 mb-3 flex-wrap">
-                    <span class="tag">PRODUCTIVIDAD</span>
-                </div>
-                <h2 class="font-orbitron text-base font-bold text-white mb-2">
-                    <a href="#" class="hover:text-cyan-400 transition">El ROI de la automatización: Cuánto dinero estás perdiendo por no usar IA</a>
-                </h2>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">Calculamos el costo real de hacer manualmente lo que la IA puede automatizar, con datos reales de empresas LATAM.</p>
-                <div class="flex justify-between items-center">
-                    <time class="text-gray-600 text-xs" datetime="2026-05-15">15 May 2026 · 5 min</time>
-                    <a href="#" class="text-cyan-400 text-xs font-orbitron hover:underline">Leer →</a>
-                </div>
-            </article>
-        </div>
-
-        <!-- Newsletter CTA -->
-        <div class="glass rounded-2xl p-10 text-center">
-            <h2 class="font-orbitron text-2xl font-bold text-white mb-3">Newsletter Semanal</h2>
-            <p class="text-gray-400 mb-6 max-w-lg mx-auto">Una sola newsletter cada semana con lo más importante de IA para empresas. Sin spam. Solo valor.</p>
-            <form id="newsletter-form" class="flex gap-3 max-w-sm mx-auto" novalidate>
-                <label for="newsletter-email" class="sr-only">Tu correo electrónico</label>
-                <input type="email" id="newsletter-email" placeholder="tu@empresa.com" required
-                       class="flex-1 bg-black/50 border border-cyan-500/20 text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-cyan-500/60 transition">
-                <button type="submit" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-orbitron font-bold px-6 py-3 rounded-lg text-sm hover:opacity-90 transition">
-                    Suscribirse
-                </button>
-            </form>
-            <p class="text-gray-600 text-xs mt-3">Al suscribirte aceptas nuestra <a href="pages/politica-privacidad.html" class="text-gray-500 hover:text-cyan-400 underline">Política de Privacidad</a>.</p>
-        </div>
-    </main>
-
-    <footer class="w-full border-t border-white/5 bg-black/60 py-8 mt-16 text-center">
-        <p class="text-gray-600 text-sm">© 2026 AXYNTRAX Automation — Arequipa, Perú | <a href="pages/politica-privacidad.html" class="text-gray-500 hover:text-cyan-400">Privacidad</a> | <a href="pages/terminos.html" class="text-gray-500 hover:text-cyan-400">Términos</a></p>
+    <footer>
+        <p>&copy; 2026 AXYNTRAX Automation.</p>
     </footer>
-    <script>
-        document.getElementById('newsletter-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('newsletter-email').value;
-            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                this.innerHTML = '<p class="text-green-400 font-orbitron">✅ ¡Suscrito! Recibirás el primer newsletter pronto.</p>';
-            }
-        });
-    </script>
+
 </body>
 </html>

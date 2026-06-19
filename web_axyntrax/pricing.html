@@ -3,121 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precios | AXYNTRAX Automation — Automatización B2B con IA</title>
-    <meta name="description" content="Planes y precios de AXYNTRAX Automation. Starter, Pro y Enterprise para empresas en Perú y LATAM que quieren automatizar con IA.">
-    <meta name="robots" content="index, follow">
-    <!-- Open Graph -->
-    <meta property="og:title" content="Precios | AXYNTRAX Automation">
-    <meta property="og:description" content="Automatiza tu empresa con agentes IA. Planes desde S/. 299/mes.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.axyntrax-automation.net/pricing.html">
-    <meta property="og:image" content="https://www.axyntrax-automation.net/assets/og-image.png">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AXYNTRAX | Planes y Precios</title>
+    <meta name="description" content="Planes de suscripción de AXYNTRAX. IA accesible para empresas peruanas.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
-        body { background-color: #030014; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass-card { background: rgba(10,10,25,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0,255,255,0.2); transition: all 0.3s ease; }
-        .glass-card:hover { border-color: rgba(0,255,255,0.6); transform: translateY(-4px); }
-        .popular { border: 1px solid rgba(0,255,255,0.7); box-shadow: 0 0 30px rgba(0,255,255,0.15); }
-        .check { color: #22d3ee; }
+        :root {
+            --bg-dark: #060d1a;
+            --accent-cyan: #00b8d9;
+            --accent-amber: #f59e0b;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-dark); color: #fff; line-height: 1.6; }
+        
+        /* HEADER */
+        header { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; background: rgba(6, 13, 26, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--accent-cyan); text-decoration: none; letter-spacing: 2px;}
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 30px; transition: color 0.3s; font-weight: 600;}
+        .nav-links a:hover { color: var(--accent-cyan); }
+        .btn-primary { background: var(--accent-amber); color: #000; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 800; transition: transform 0.3s, box-shadow 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3); }
+
+        /* HERO PRICING */
+        .hero { text-align: center; padding: 100px 20px 50px; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.2rem; color: #a0aabf; max-width: 600px; margin: 0 auto; }
+
+        /* PRICING TABLE */
+        .pricing-table { padding: 50px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .price-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 40px; position: relative; display: flex; flex-direction: column; }
+        .price-card:hover { border-color: var(--accent-cyan); transform: translateY(-5px); transition: all 0.3s;}
+        .price-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .price-card .desc { color: #a0aabf; font-size: 0.9rem; margin-bottom: 30px; min-height: 40px; }
+        .price { font-size: 3rem; font-weight: 800; color: #fff; margin-bottom: 30px; }
+        .price span { font-size: 1rem; color: #a0aabf; font-weight: 400; }
+        
+        .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent-cyan); color: #000; font-weight: 800; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; }
+        .price-card.popular { border-color: var(--accent-cyan); background: rgba(0, 184, 217, 0.05); }
+        .price-card.popular .price { color: var(--accent-cyan); }
+
+        .features { list-style: none; margin-bottom: 40px; flex-grow: 1; }
+        .features li { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
+        .features li::before { content: '✓'; color: var(--accent-amber); font-weight: bold; }
+        
+        .btn-full { display: block; text-align: center; width: 100%; padding: 15px; border-radius: 8px; font-weight: 800; text-decoration: none; transition: 0.3s; }
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: #fff; }
+        .btn-outline:hover { border-color: var(--accent-cyan); background: rgba(0,184,217,0.1); }
+        .btn-solid { background: var(--accent-cyan); color: #000; }
+        .btn-solid:hover { background: #0099b5; transform: translateY(-2px); }
+
+        /* FOOTER */
+        footer { padding: 50px; text-align: center; border-top: 1px solid var(--glass-border); color: #a0aabf; margin-top: 80px;}
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; padding: 20px; }
+            .hero h1 { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50">Saltar al contenido</a>
 
-    <nav class="relative z-50 w-full bg-black/60 border-b border-cyan-500/20 py-4 px-8 flex justify-between items-center">
-        <a href="index.html" class="font-orbitron font-bold text-xl text-white">AXY<span class="text-cyan-400">NTRAX</span></a>
-        <div class="flex gap-6">
-            <a href="index.html" class="text-sm font-orbitron text-gray-300 hover:text-cyan-400 transition">Inicio</a>
-            <a href="contacto.html" class="text-sm font-orbitron text-cyan-400 border border-cyan-500/50 px-4 py-2 rounded hover:bg-cyan-500/10 transition">Contacto</a>
-        </div>
-    </nav>
+    <header>
+        <a href="index.html" class="logo">AXYNTRAX</a>
+        <nav class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="pricing.html">Precios</a>
+            <a href="blog.html">Blog</a>
+        </nav>
+    </header>
 
-    <main id="main-content" class="max-w-6xl mx-auto px-6 py-20">
-        <div class="text-center mb-16">
-            <span class="inline-block bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-orbitron px-4 py-2 rounded-full mb-6 tracking-widest">PLANES Y PRECIOS</span>
-            <h1 class="font-orbitron text-4xl md:text-5xl font-black text-white mb-4">Automatiza tu empresa.<br><span class="text-cyan-400">Sin límites.</span></h1>
-            <p class="text-gray-400 max-w-2xl mx-auto">Elige el plan que se adapta a tu empresa. Cancela cuando quieras. Sin contratos de permanencia.</p>
-        </div>
+    <section class="hero">
+        <h1>Planes Claros, Sin Sorpresas</h1>
+        <p>Precios en Soles Peruanos. Facturación electrónica SUNAT incluida en todos los planes.</p>
+    </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Starter -->
-            <div class="glass-card rounded-2xl p-8">
-                <h2 class="font-orbitron text-lg font-bold text-white mb-1">STARTER</h2>
-                <p class="text-gray-500 text-sm mb-6">Para emprendedores y startups</p>
-                <div class="mb-8">
-                    <span class="text-5xl font-black text-white">S/.299</span>
-                    <span class="text-gray-500 ml-2">/mes</span>
-                </div>
-                <ul class="space-y-3 mb-8 text-sm">
-                    <li class="flex items-center gap-2"><span class="check">✓</span> 2 Agentes IA activos</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Bot de WhatsApp básico</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> 500 mensajes/mes</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Soporte por email</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Panel de control básico</li>
-                    <li class="text-gray-600 flex items-center gap-2">✗ Automatización de marketing</li>
-                    <li class="text-gray-600 flex items-center gap-2">✗ Integración CRM</li>
-                </ul>
-                <a href="contacto.html" class="block w-full text-center py-3 rounded-lg border border-cyan-500/40 text-cyan-400 font-orbitron text-sm hover:bg-cyan-500/10 transition">COMENZAR</a>
-            </div>
-
-            <!-- Pro (Popular) -->
-            <div class="glass-card popular rounded-2xl p-8 relative">
-                <span class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-cyan-500 text-black text-xs font-orbitron font-bold px-4 py-1 rounded-full">MÁS POPULAR</span>
-                <h2 class="font-orbitron text-lg font-bold text-white mb-1">PRO</h2>
-                <p class="text-gray-500 text-sm mb-6">Para empresas en crecimiento</p>
-                <div class="mb-8">
-                    <span class="text-5xl font-black text-white">S/.799</span>
-                    <span class="text-gray-500 ml-2">/mes</span>
-                </div>
-                <ul class="space-y-3 mb-8 text-sm">
-                    <li class="flex items-center gap-2"><span class="check">✓</span> 6 Agentes IA activos</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Bot WhatsApp avanzado</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> 5,000 mensajes/mes</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Marketing automatizado (3x/día)</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Integración CRM básica</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Soporte prioritario 24h</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> SLA 99.9% uptime</li>
-                </ul>
-                <a href="contacto.html" class="block w-full text-center py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-orbitron font-bold text-sm hover:opacity-90 transition">OBTENER PRO</a>
-            </div>
-
-            <!-- Enterprise -->
-            <div class="glass-card rounded-2xl p-8">
-                <h2 class="font-orbitron text-lg font-bold text-white mb-1">ENTERPRISE</h2>
-                <p class="text-gray-500 text-sm mb-6">Para corporaciones</p>
-                <div class="mb-8">
-                    <span class="text-5xl font-black text-white">Custom</span>
-                </div>
-                <ul class="space-y-3 mb-8 text-sm">
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Agentes IA ilimitados</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Mensajes ilimitados</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> Desarrollo a medida</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> SSO / OAuth enterprise</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> RBAC y Audit Logs</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> DPA y contrato dedicado</li>
-                    <li class="flex items-center gap-2"><span class="check">✓</span> SLA 99.95% + soporte 2h P1</li>
-                </ul>
-                <a href="contacto.html" class="block w-full text-center py-3 rounded-lg border border-purple-500/40 text-purple-400 font-orbitron text-sm hover:bg-purple-500/10 transition">HABLAR CON VENTAS</a>
-            </div>
+    <section class="pricing-table">
+        <div class="price-card">
+            <h3>Starter</h3>
+            <p class="desc">Para negocios pequeños que recién empiezan a digitalizarse.</p>
+            <div class="price">S/. 199<span>/mes</span></div>
+            <ul class="features">
+                <li>1 Módulo SaaS a elección</li>
+                <li>Usuarios Limitados (hasta 3)</li>
+                <li>Soporte L-V (Horario Laboral)</li>
+                <li>Integración Básica SUNAT</li>
+            </ul>
+            <a href="#" class="btn-full btn-outline">Empezar Gratis 7 días</a>
         </div>
 
-        <!-- Trust badges -->
-        <div class="mt-16 text-center">
-            <p class="text-gray-600 text-sm mb-6 font-orbitron tracking-widest">CONSTRUIDO PARA EMPRESAS QUE EXIGEN LO MEJOR</p>
-            <div class="flex flex-wrap justify-center gap-8 items-center">
-                <div class="text-gray-500 border border-gray-800 rounded-lg px-6 py-3 text-sm">🔒 SSL / HTTPS</div>
-                <div class="text-gray-500 border border-gray-800 rounded-lg px-6 py-3 text-sm">🛡️ GDPR Compliant</div>
-                <div class="text-gray-500 border border-gray-800 rounded-lg px-6 py-3 text-sm">⚡ 99.9% Uptime SLA</div>
-                <div class="text-gray-500 border border-gray-800 rounded-lg px-6 py-3 text-sm">🤖 IA Auditada (EU AI Act)</div>
-                <div class="text-gray-500 border border-gray-800 rounded-lg px-6 py-3 text-sm">🇵🇪 Ley 29733 Perú</div>
-            </div>
+        <div class="price-card popular">
+            <div class="popular-badge">MÁS ELEGIDO</div>
+            <h3>Business</h3>
+            <p class="desc">Para empresas que necesitan control total y automatización IA.</p>
+            <div class="price">S/. 399<span>/mes</span></div>
+            <ul class="features">
+                <li>Hasta 3 Módulos SaaS</li>
+                <li>Usuarios Ilimitados</li>
+                <li>Bot de WhatsApp Automático</li>
+                <li>Facturación Electrónica Ilimitada</li>
+                <li>Reportes IA en Tiempo Real</li>
+                <li>Soporte Prioritario</li>
+            </ul>
+            <a href="#" class="btn-full btn-solid">Seleccionar Plan</a>
         </div>
-    </main>
 
-    <footer class="w-full text-center py-8 border-t border-white/5 mt-8">
-        <p class="text-gray-600 text-sm">© 2026 AXYNTRAX Automation — Arequipa, Perú | <a href="pages/politica-privacidad.html" class="text-gray-500 hover:text-cyan-400">Privacidad</a> | <a href="pages/terminos.html" class="text-gray-500 hover:text-cyan-400">Términos</a> | <a href="pages/sla.html" class="text-gray-500 hover:text-cyan-400">SLA</a></p>
+        <div class="price-card">
+            <h3>Enterprise</h3>
+            <p class="desc">Operación a gran escala, múltiples sedes y personalización total.</p>
+            <div class="price">A medida</div>
+            <ul class="features">
+                <li>Todos los Módulos Disponibles</li>
+                <li>Múltiples Locales (Sucursales)</li>
+                <li>Desarrollo de Funciones a Medida</li>
+                <li>Clonación de Voz IA</li>
+                <li>Servidor Dedicado (Aislamiento Total)</li>
+                <li>Soporte 24/7/365 por Teléfono</li>
+            </ul>
+            <a href="#" class="btn-full btn-outline">Contactar Ventas</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>¿Tienes dudas? Escríbenos a ventas@axyntrax.net o al WhatsApp +51 987 654 321</p>
+        <p style="margin-top: 10px;">&copy; 2026 AXYNTRAX Automation.</p>
     </footer>
+
 </body>
 </html>

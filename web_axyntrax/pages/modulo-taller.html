@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXYNTRAX | TallerPro - IA para Talleres Mecánicos en Perú</title>
+    <meta name="description" content="Gestión de órdenes de trabajo, inventario de repuestos y recordatorios de servicio para talleres mecánicos.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #060d1a;
+            --accent-cyan: #00b8d9;
+            --accent-amber: #f59e0b;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-dark); color: #fff; line-height: 1.6; }
+        
+        /* HEADER */
+        header { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; background: rgba(6, 13, 26, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--accent-cyan); text-decoration: none; letter-spacing: 2px;}
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 30px; transition: color 0.3s; font-weight: 600;}
+        .nav-links a:hover { color: var(--accent-cyan); }
+        .btn-primary { background: var(--accent-amber); color: #000; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 800; transition: transform 0.3s, box-shadow 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3); }
+
+        /* HERO */
+        .hero { text-align: center; padding: 100px 20px; background: radial-gradient(circle at top, rgba(245, 158, 11, 0.15) 0%, transparent 50%); }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; background: linear-gradient(90deg, #fff, var(--accent-amber)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: #a0aabf; max-width: 600px; margin: 0 auto 40px; }
+
+        /* FEATURES */
+        .features { padding: 80px 50px; max-width: 1200px; margin: 0 auto; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px); transition: transform 0.3s, border-color 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); border-color: var(--accent-amber); }
+        .feature-icon { font-size: 2rem; color: var(--accent-cyan); margin-bottom: 20px; }
+        .feature-card h3 { margin-bottom: 15px; font-size: 1.4rem; }
+        .feature-card p { color: #a0aabf; font-size: 0.95rem; }
+
+        /* PRICING */
+        .pricing { padding: 80px 50px; background: rgba(0,0,0,0.3); text-align: center; }
+        .pricing h2 { font-size: 2.5rem; margin-bottom: 50px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .price-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 40px 30px; position: relative; }
+        .price-card.popular { border-color: var(--accent-cyan); transform: scale(1.05); }
+        .popular-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent-cyan); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; }
+        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; color: var(--accent-amber); }
+        .price span { font-size: 1rem; color: #a0aabf; font-weight: 400; }
+        .features-list { list-style: none; margin: 30px 0; text-align: left; }
+        .features-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc; }
+        .features-list li::before { content: '✓'; color: var(--accent-cyan); margin-right: 10px; font-weight: bold; }
+
+        /* FOOTER */
+        footer { padding: 50px; text-align: center; border-top: 1px solid var(--glass-border); color: #a0aabf; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; padding: 20px; }
+            .nav-links a { margin: 0 10px; }
+            .hero h1 { font-size: 2.5rem; }
+            .price-card.popular { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="logo">AXYNTRAX</a>
+        <nav class="nav-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../pricing.html">Precios</a>
+            <a href="#contacto" class="btn-primary">Solicitar Demo</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>TallerPro Perú</h1>
+        <p>Digitaliza tu taller mecánico. Órdenes de trabajo, inventario de repuestos y recordatorios automáticos por WhatsApp para el mantenimiento de tus clientes.</p>
+        <a href="#contacto" class="btn-primary" style="display: inline-block; padding: 15px 30px; font-size: 1.1rem;">Agendar Demo</a>
+    </section>
+
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Órdenes de Trabajo</h3>
+                <p>Crea órdenes digitales al ingresar el vehículo, adjunta fotos del estado inicial y asigna mecánicos.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>Control de Repuestos</h3>
+                <p>Inventario exacto de aceites, filtros y piezas. Resta automáticamente al asignar repuestos a una orden.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>Recordatorios IA</h3>
+                <p>La IA envía mensajes por WhatsApp a tus clientes cuando les toca su próximo cambio de aceite o revisión.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Cotizaciones Rápidas</h3>
+                <p>Genera proformas en PDF en segundos y envíalas al cliente para su aprobación antes de iniciar el trabajo.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <h3>Productividad del Mecánico</h3>
+                <p>Mide los tiempos de reparación por cada técnico y optimiza la rentabilidad de tu taller.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧾</div>
+                <h3>Boletas y Facturas</h3>
+                <p>Integración lista con SUNAT para emitir comprobantes electrónicos sin salir del sistema.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing">
+        <h2>Acelera el Crecimiento de tu Taller</h2>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>Básico</h3>
+                <div class="price">S/.149<span>/mes</span></div>
+                <ul class="features-list">
+                    <li>Gestión de Órdenes</li>
+                    <li>Cotizaciones PDF</li>
+                    <li>Base de datos clientes</li>
+                    <li>Soporte L-V</li>
+                </ul>
+                <a href="#contacto" class="btn-primary" style="display: block; text-align: center; background: transparent; border: 1px solid var(--accent-amber); color: #fff;">Empezar</a>
+            </div>
+            
+            <div class="price-card popular">
+                <div class="popular-badge">RECOMENDADO</div>
+                <h3>Pro</h3>
+                <div class="price">S/.249<span>/mes</span></div>
+                <ul class="features-list">
+                    <li>Inventario de Repuestos</li>
+                    <li>Productividad Mecánicos</li>
+                    <li>Facturación SUNAT</li>
+                    <li>Múltiples Usuarios</li>
+                </ul>
+                <a href="#contacto" class="btn-primary" style="display: block; text-align: center;">Elegir Pro</a>
+            </div>
+
+            <div class="price-card">
+                <h3>IA Avanzado</h3>
+                <div class="price">S/.449<span>/mes</span></div>
+                <ul class="features-list">
+                    <li>Todo lo de Pro</li>
+                    <li>Bot de WhatsApp Automático</li>
+                    <li>Recordatorios de Mantenimiento</li>
+                    <li>Soporte Prioritario</li>
+                </ul>
+                <a href="#contacto" class="btn-primary" style="display: block; text-align: center; background: transparent; border: 1px solid var(--accent-amber); color: #fff;">Contactar Ventas</a>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacto">
+        <h2>¿Listo para revolucionar tu taller?</h2>
+        <p style="margin: 20px 0;">Contáctanos por WhatsApp al: +51 987 654 321</p>
+        <p>&copy; 2026 AXYNTRAX Automation. Creado en Arequipa para el Perú.</p>
+    </footer>
+
+</body>
+</html>
