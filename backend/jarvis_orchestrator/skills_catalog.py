@@ -32,7 +32,13 @@ DEFAULT_SKILLS = [
     
     Skill(id="sk_08", name="Cloud Deploy", description="Qwen3 Max gestiona Railway/Vercel y hace el push a producción.", priority=100, assigned_agent="devops_ai", tier="operations", dependencies=["sk_07"]),
     Skill(id="sk_09", name="Telegram Reporting", description="Telegram Bot envía notificaciones al CEO de despliegues y pagos.", priority=90, assigned_agent="jarvis", tier="operations", dependencies=["sk_08"]),
-    Skill(id="sk_10", name="Continuous Memory Sync", description="JARVIS guarda todo el contexto en Supabase pgvector.", priority=100, assigned_agent="jarvis", tier="operations", dependencies=[])
+    Skill(id="sk_10", name="Continuous Memory Sync", description="JARVIS guarda todo el contexto en Supabase pgvector.", priority=100, assigned_agent="jarvis", tier="operations", dependencies=[]),
+    
+    # NUEVAS SKILLS CEO MODE
+    Skill(id="sk_11", name="Directive Validation", description="Sentinel valida que la directiva sea clara antes de orquestar.", priority=110, assigned_agent="sentinel", tier="strategy", dependencies=[]),
+    Skill(id="sk_12", name="Circuit Breaker Retry", description="Qwen ejecuta reintentos acotados (max 3) si una tarea falla.", priority=110, assigned_agent="devops_ai", tier="operations", dependencies=[]),
+    Skill(id="sk_13", name="Progress Reporting", description="JARVIS reporta el estado del grafo a Telegram cada 5 minutos.", priority=110, assigned_agent="jarvis", tier="operations", dependencies=[]),
+    Skill(id="sk_14", name="Acceptance Validator", description="Sentinel valida que el output cumpla los criterios de éxito.", priority=100, assigned_agent="sentinel", tier="engineering", dependencies=[])
 ]
 
 # Catálogo de Herramientas (Broker)
