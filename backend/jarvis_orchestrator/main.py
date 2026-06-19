@@ -56,14 +56,7 @@ START_TIME = time.time()
 
 # ============ RUTAS PÚBLICAS (Rate Limited) ============
 
-# Servir Frontend Dashboard
-frontend_dist = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend_dashboard", "dist")
-if os.path.exists(frontend_dist):
-    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
-else:
-    @app.get("/")
-    def read_root():
-        return {"message": "AXYNTRAX AX Orquestador Online (Frontend no encontrado)", "version": "2.0.0", "timestamp": datetime.now().isoformat()}
+# El frontend ahora se servirá vía Proxy a Space-Z (ver final del archivo)
 
 @app.get("/health")
 # @limiter.limit("120/minute")
@@ -112,11 +105,7 @@ from openai import OpenAI
 class ChatRequest(BaseModel):
     message: str
 
-# Montar frontend (El nuevo HUD 8K Cinematic de Z.IA)
-import os
-base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-frontend_dir = os.path.join(base_dir, "frontend")
-app.mount("/dashboard", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+# Montaje eliminado de /dashboard para evitar confusiones. Todo va a la raíz /
 
 import base64
 
@@ -354,6 +343,42 @@ async def respond_mail(req: MailRespondReq, token: str = Depends(verify_token)):
         "jarvis_response": respuesta,
         "message": "Correo procesado y respondido por el enjambre."
     }
+
+# ============ PROXY INVERSO AL HUD (Space-Z) ============
+import httpx
+from fastapi.responses import StreamingResponse
+
+# Creamos el cliente HTTPX para reenviar peticiones
+proxy_client = httpx.AsyncClient(base_url="https://e1w4j5vf8fj0-d.space-z.ai")
+
+@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"])
+async def reverse_proxy(path: str, request: Request):
+    # Evitar hacer proxy a las rutas de la API de FastAPI o docs
+    if path.startswith("api/") or path.startswith("docs") or path.startswith("openapi.json"):
+        raise HTTPException(status_code=404, detail="Ruta de API no encontrada")
+        
+    url = httpx.URL(path=request.url.path, query=request.url.query.encode("utf-8"))
+    
+    # Preparar los headers quitando 'host' para que httpx asigne el de Space-Z
+    headers = dict(request.headers)
+    headers.pop("host", None)
+    
+    # Reenviar el request a Space-Z
+    req = proxy_client.build_request(
+        request.method,
+        url,
+        headers=headers,
+        content=request.stream()
+    )
+    
+    resp = await proxy_client.send(req, stream=True)
+    
+    # Retornar la respuesta al cliente tal cual viene de Space-Z
+    return StreamingResponse(
+        resp.aiter_raw(),
+        status_code=resp.status_code,
+        headers=resp.headers
+    )
 
 if __name__ == "__main__":
     import uvicorn
