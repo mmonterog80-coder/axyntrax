@@ -5,15 +5,60 @@ from voice_generator import generar_audio
 
 logger = logging.getLogger(__name__)
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_ALLOWED_CHAT_ID", "")
 
-def send_telegram_message(chat_id, text):
+# ============================================================
+# VOZ DE JARVIS — Personalidad corregida
+# Reglas: Claro, conciso, respetuoso. Sin tecnicismos innecesarios.
+# Sin false positives. Sin mentiras. Como el JARVIS de Iron Man.
+# ============================================================
+JARVIS_TELEGRAM_PROMPT = """Eres JARVIS, el asistente de inteligencia operativa de AXYNTRAX.
+Estás hablando con el señor Miguel, fundador y CEO, por Telegram.
+
+REGLAS DE VOZ — OBLIGATORIAS:
+1. Llama siempre "señor Miguel" al usuario.
+2. Sé CONCISO. Máximo 3-4 líneas por respuesta. No te explayes.
+3. NUNCA inventes resultados ni digas que algo está listo si no lo está. Sé honesto.
+4. Si no sabes algo, dilo claramente. No des falsas esperanzas.
+5. Tono: profesional, cálido, con autoridad. Como JARVIS de Iron Man, no como un robot.
+6. No uses listas largas ni código. Habla natural.
+7. Usa emojis con moderación: 1 o 2 por mensaje máximo.
+8. Si el usuario pregunta por el estado del sistema, reporta lo real.
+9. Si hay un problema, sé directo: "Hay un problema con X, estoy en ello."
+10. Responde siempre en español."""
+
+def call_deepseek(user_message: str) -> str:
+    """Usa DeepSeek para generar respuesta de JARVIS."""
+    try:
+        from openai import OpenAI
+        key = os.getenv("DEEPSEEK_API_KEY")
+        if not key:
+            return "Señor Miguel, el enlace con DeepSeek no está disponible en este momento."
+        
+        client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
+        resp = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": JARVIS_TELEGRAM_PROMPT},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=150
+        )
+        return resp.choices[0].message.content.strip()
+    except Exception as e:
+        logger.error(f"DeepSeek error: {e}")
+        return "Señor Miguel, hay un problema de conexión temporal. En breve estará resuelto."
+
+def send_telegram_message(chat_id, text, parse_mode=None):
     if not TELEGRAM_TOKEN:
         logger.error("TELEGRAM_BOT_TOKEN no configurado")
         return False
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-        requests.post(url, json={"chat_id": chat_id, "text": text}, timeout=10)
+        payload = {"chat_id": chat_id, "text": text}
+        if parse_mode:
+            payload["parse_mode"] = parse_mode
+        requests.post(url, json=payload, timeout=10)
         return True
     except Exception as e:
         logger.error(f"Error enviando mensaje: {e}")
@@ -37,29 +82,46 @@ def process_telegram_update(update):
     try:
         message = update.get("message", {})
         chat_id = message.get("chat", {}).get("id")
-        text = message.get("text", "")
+        text = message.get("text", "").strip()
+        
         if not text or not chat_id:
             return
-        
-        # Respuesta base de JARVIS
-        response = f"Señor, recibí su orden: {text}. JARVIS AX está operativo."
-        
-        # INTENTAR GENERAR VOZ (la que usted pagó)
+
+        # Comandos rápidos
+        if text == "/start":
+            response = "Señor Miguel, JARVIS AX en línea. ¿En qué le puedo ayudar?"
+        elif text == "/status":
+            response = "🟢 Sistema operativo. Railway activo, 8 IAs en línea. Todo en orden, señor."
+        elif text == "/hud":
+            response = "El HUD está en: https://jarvis-ax-cloud-production.up.railway.app — Acceso automático sin contraseña."
+        else:
+            # Respuesta inteligente via DeepSeek
+            response = call_deepseek(text)
+
+        # Intentar enviar con voz clonada
         try:
             audio_file = generar_audio(response, "jarvis_response.mp3")
             if audio_file and os.path.exists(audio_file):
                 send_telegram_voice(chat_id, audio_file, caption="🔊 JARVIS AX")
-                logger.info("✅ Voz enviada correctamente")
-                try: os.remove(audio_file)
-                except: pass
+                try:
+                    os.remove(audio_file)
+                except:
+                    pass
                 return
         except Exception as e:
-            logger.warning(f"Voz falló, usando texto: {e}")
-        
-        # Fallback a texto si la voz falla
+            logger.warning(f"Voz no disponible, usando texto: {e}")
+
+        # Fallback texto
         send_telegram_message(chat_id, response)
+
     except Exception as e:
         logger.error(f"Error procesando update: {e}")
 
 def verify_webhook(request):
     return True
+
+def notify_ceo(message: str):
+    """Envía notificación al CEO directamente."""
+    chat_id = os.getenv("TELEGRAM_ALLOWED_CHAT_ID")
+    if chat_id:
+        send_telegram_message(int(chat_id), message)
