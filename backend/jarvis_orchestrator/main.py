@@ -157,10 +157,9 @@ async def chat_endpoint(req: ChatRequest):
     except Exception as e:
         return {"reply": f"Fallo en la matriz de red: {str(e)}"}
 
-# ============ RUTAS DE MÓDULOS SaaS ============
+from reasoning_engine import run_chain_of_thought
 
 @app.get("/api/modules/vet")
-# @limiter.limit("30/minute")
 async def vet_module(token: str = Depends(verify_token)):
     return {
         "module": "VetManager",
@@ -168,6 +167,13 @@ async def vet_module(token: str = Depends(verify_token)):
         "features": ["Gestión de pacientes", "Agenda de citas", "Historial médico", "Recetas", "Facturación", "Inventario"],
         "timestamp": datetime.now().isoformat()
     }
+
+@app.post("/api/mark_x/reason")
+async def execute_reasoning(task: dict, token: str = Depends(verify_token)):
+    """Ejecuta el bucle cognitivo Mark X (Gemini -> DeepSeek -> Sentinel)"""
+    description = task.get("description", "Sin descripción")
+    result = run_chain_of_thought(description)
+    return result
 
 @app.get("/api/modules/legal")
 # @limiter.limit("30/minute")
