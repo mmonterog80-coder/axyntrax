@@ -2,6 +2,14 @@
 /// <reference types="react" />
 /// <reference types="react-dom" />
 
+// Vite env variables
+interface ImportMetaEnv {
+  readonly VITE_API_SECRET: string;
+}
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 declare namespace NodeJS {
   interface Process{
     env: ProcessEnv

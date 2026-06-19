@@ -6,15 +6,18 @@ import {
 } from 'lucide-react';
 
 // API Configuration
-const API_BASE = ''; // En prod, usa rutas relativas al mismo dominio proxy
+const API_BASE = ''; // Rutas relativas al mismo dominio Railway
+// Token pre-inyectado desde variable de entorno Vite (nunca exponer en UI)
+const INJECTED_TOKEN = import.meta.env.VITE_API_SECRET || 'AXYNTRAX-STARK-TOWER-2026';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('comando');
-  const [token, setToken] = useState(localStorage.getItem('jarvis_token') || '');
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('jarvis_token'));
+  // Auto-autenticar: siempre usa el token inyectado
+  const [token, setToken] = useState(INJECTED_TOKEN);
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Auto-conectado
   const [authInput, setAuthInput] = useState('');
   
-  // States para data real
+  // Estados para data real
   const [telemetry, setTelemetry] = useState<any>({ uptime_human: '--:--:--' });
   const [systemInfo, setSystemInfo] = useState<any>({ cpu_percent: 0, ram_percent: 0 });
   const [iasStatus, setIasStatus] = useState<any>({ total: 0, online: 0, ias: [] });
@@ -67,8 +70,9 @@ export default function App() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('jarvis_token', authInput);
-    setToken(authInput);
+    // Siempre usa el token inyectado, no el del usuario
+    localStorage.setItem('jarvis_token', INJECTED_TOKEN);
+    setToken(INJECTED_TOKEN);
     setIsAuthenticated(true);
   };
 
