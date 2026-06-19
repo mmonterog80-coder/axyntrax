@@ -110,9 +110,52 @@ async def legal_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def dental_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await set_mode(update, context, 'dental')
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+import base64
+import requests
+
+async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
-    user_message = update.message.text
+    status_msg = await update.message.reply_text("🎧 _Escuchando..._", parse_mode='Markdown')
+    
+    try:
+        voice_file = await context.bot.get_file(update.message.voice.file_id)
+        file_bytes = await voice_file.download_as_bytearray()
+        
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        if not gemini_key:
+            raise Exception("No hay enlace neuronal (GEMINI_API_KEY) para audio.")
+            
+        b64_audio = base64.b64encode(file_bytes).decode('utf-8')
+        
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": "Transcribe exactamente el siguiente audio. Devuelve SOLO el texto transcrito, sin explicaciones ni comillas extra."},
+                    {"inline_data": {"mime_type": "audio/ogg", "data": b64_audio}}
+                ]
+            }]
+        }
+        
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        
+        data = response.json()
+        transcription = data['candidates'][0]['content']['parts'][0]['text'].strip()
+        
+        await status_msg.edit_text(f"🗣️ *Tú (Voz):* {transcription}", parse_mode='Markdown')
+        
+        # Enviar a la pipeline principal
+        await handle_message(update, context, text_override=transcription)
+        
+    except Exception as e:
+        error_msg = str(e)
+        await status_msg.edit_text(f"❌ *Error de Audio:* {error_msg[:200]}", parse_mode='Markdown')
+        print(f"Error voz: {error_msg}")
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text_override=None):
+    user_id = update.message.from_user.id
+    user_message = text_override if text_override is not None else update.message.text
     
     if not user_message or not user_message.strip():
         return
@@ -230,8 +273,9 @@ def main():
         app.add_handler(CommandHandler('legal', legal_command))
         app.add_handler(CommandHandler('dental', dental_command))
         
-        # Mensajes de texto
+        # Mensajes de texto y voz
         app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+        app.add_handler(MessageHandler(filters.VOICE, handle_voice))
         
         print("✅ Bot listo y escuchando mensajes...")
         app.run_polling(allowed_updates=Update.ALL_TYPES)
