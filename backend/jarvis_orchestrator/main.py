@@ -17,6 +17,7 @@ from whatsapp_bot import router as whatsapp_router
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -29,6 +30,15 @@ async def lifespan(app: FastAPI):
     print("Apagando módulos...")
 
 app = FastAPI(title="AXYNTRAX Orchestrator", version="Mark X", lifespan=lifespan)
+
+# Habilitar CORS para permitir peticiones desde Vercel
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # En producción, limitar a los dominios de Vercel
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Montar Rutas
 app.include_router(whatsapp_router, prefix="/api")
