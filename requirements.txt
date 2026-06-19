@@ -8,3 +8,5 @@ psutil>=5.9.0
 requests>=2.31.0
 psutil
 fish-audio-sdk
+infisical-python
+supabase

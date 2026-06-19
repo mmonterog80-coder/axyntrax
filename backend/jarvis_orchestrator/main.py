@@ -11,6 +11,7 @@ import psutil
 from datetime import datetime, timedelta
 from fastapi import FastAPI, Request, HTTPException, Depends
 from telemetry import router as telemetry_router
+from secrets_broker import router as secrets_router
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -18,6 +19,10 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 app = FastAPI(title="JARVIS AX API", version="2.0.0")
+
+# Mount Routers
+app.include_router(telemetry_router, prefix="/api")
+app.include_router(secrets_router, prefix="/api")
 
 # Rate Limiting
 limiter = Limiter(key_func=get_remote_address)
@@ -184,7 +189,7 @@ async def dental_module(token: str = Depends(verify_token)):
         "timestamp": datetime.now().isoformat()
     }
 
-app.include_router(telemetry_router, prefix="/api")
+# (Montado en top level)
 from tasks import router as tasks_router
 app.include_router(tasks_router) # Mounts /telegram/webhook
 
