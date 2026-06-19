@@ -10,17 +10,27 @@ import time
 import psutil
 from datetime import datetime, timedelta
 from fastapi import FastAPI, Request, HTTPException, Depends
+from contextlib import asynccontextmanager
 from telemetry import router as telemetry_router
 from secrets_broker import router as secrets_router
+from whatsapp_bot import router as whatsapp_router
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-app = FastAPI(title="JARVIS AX API", version="2.0.0")
+# Startup y Shutdown Events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Iniciando J.A.R.V.I.S. AXYNTRAX Neural Network...")
+    yield
+    print("Apagando módulos...")
 
-# Mount Routers
+app = FastAPI(title="AXYNTRAX Orchestrator", version="Mark X", lifespan=lifespan)
+
+# Montar Rutas
+app.include_router(whatsapp_router, prefix="/api")
 app.include_router(telemetry_router, prefix="/api")
 app.include_router(secrets_router, prefix="/api")
 
