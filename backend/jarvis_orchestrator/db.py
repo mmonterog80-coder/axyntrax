@@ -5,9 +5,17 @@ from supabase import create_client, Client
 from models import TaskCreate, TaskResponse, RunSnapshot, TaskStatus
 from plan_generator import generate_plan
 
-url = os.environ.get("SUPABASE_URL")
-key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-supabase: Client = create_client(url, key)
+url = os.environ.get("SUPABASE_URL", "")
+key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_KEY", "")
+try:
+    if url and key:
+        supabase: Client = create_client(url, key)
+    else:
+        print("[WARNING] Variables SUPABASE_URL o KEY no definidas. Cliente de bd inactivo.")
+        supabase = None
+except Exception as e:
+    print(f"[WARNING] Error inicializando Supabase en db.py: {e}")
+    supabase = None
 
 def create_task(payload: TaskCreate) -> TaskResponse:
     run_id = uuid4()
