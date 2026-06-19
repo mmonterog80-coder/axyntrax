@@ -249,6 +249,28 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, tex
         await update.message.reply_text(f"❌ Error: {error_msg[:200]}")
         print(f"Error procesando mensaje: {error_msg}")
 
+async def antigravity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    directive = " ".join(context.args)
+    if not directive:
+        await update.message.reply_text("⚠️ Uso: /antigravity <directiva de la misión>\nEj: /antigravity Crea el módulo de barbería")
+        return
+        
+    await update.message.reply_text(f"🚀 *Iniciando Arquitectura Anti-Bobina*\nOrquestando 30 skills para directiva:\n_{directive}_", parse_mode="Markdown")
+    
+    import threading
+    import sys
+    # Aseguramos que la ruta al backend esté disponible
+    backend_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend", "jarvis_orchestrator")
+    if backend_path not in sys.path:
+        sys.path.append(backend_path)
+        
+    try:
+        from antigravity_core import run_antigravity_flow
+        # Corremos la orquestación masiva en un hilo en background para no bloquear el bot
+        threading.Thread(target=run_antigravity_flow, args=(directive,)).start()
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error iniciando Antigravity: {e}")
+
 def main():
     import sys
     # Forzar UTF-8 en stdout si es posible
@@ -272,6 +294,7 @@ def main():
         app.add_handler(CommandHandler('vet', vet_command))
         app.add_handler(CommandHandler('legal', legal_command))
         app.add_handler(CommandHandler('dental', dental_command))
+        app.add_handler(CommandHandler('antigravity', antigravity_command))
         
         # Mensajes de texto y voz
         app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))

@@ -12,6 +12,10 @@ PYTHONIOENCODING=utf-8 python telegram_bot.py > telegram.log 2>&1 &
 echo "[OK] Iniciando Worker Autónomo v2..."
 PYTHONIOENCODING=utf-8 python autonomous_worker.py > worker.log 2>&1 &
 
+# Compilar J.A.R.V.I.S. HUD
+echo "[OK] Compilando HUD Frontend..."
+cd jarvis_hud && npm install && npm run build && cd ..
+
 # Iniciar FastAPI (debe ir al frente)
 echo "[OK] Iniciando FastAPI en el puerto ${PORT:-8000}..."
 exec python -m uvicorn backend.jarvis_orchestrator.main:app --host 0.0.0.0 --port ${PORT:-8000}

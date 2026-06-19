@@ -314,71 +314,79 @@ async def swarm_status(token: str = Depends(verify_token)):
     ]
     return {"swarm": departments}
 
-# Base de datos simulada de correos
-mock_inbox = [
-    {"id": "mail_1", "from": "inversor@capital.com", "subject": "Reunión de Series A", "body": "Estimado CEO, ¿cuándo podemos ver la demo de AXYNTRAX?", "status": "unread"},
-    {"id": "mail_2", "from": "aws-alerts@amazon.com", "subject": "ALERTA: Límite de facturación", "body": "Sus instancias EC2 están al 90% del límite de la capa gratuita.", "status": "read"}
-]
 
-@app.get("/api/mail/inbox")
+from gmail_service import get_gmail_service, list_unread_messages, create_draft
+
+@app.get("/api/gmail/inbox")
 async def get_inbox(token: str = Depends(verify_token)):
-    return {"inbox": mock_inbox}
+    try:
+        service = get_gmail_service()
+        if not service:
+            return JSONResponse(status_code=500, content={"error": "Gmail Service No Disponible. Falta credentials.json o Auth."})
+        msgs = list_unread_messages(service)
+        return {"inbox": msgs}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 class MailRespondReq(BaseModel):
     mail_id: str
+    to_email: str
+    subject: str
+    instructions: str
 
-@app.post("/api/mail/respond")
+@app.post("/api/gmail/respond")
 async def respond_mail(req: MailRespondReq, token: str = Depends(verify_token)):
-    mail = next((m for m in mock_inbox if m["id"] == req.mail_id), None)
-    if not mail:
-        raise HTTPException(status_code=404, detail="Mail no encontrado")
-    
-    mail["status"] = "replied"
-    
-    # Simular que JARVIS lee y responde usando DeepSeek (mockeado para rapidez visual)
-    respuesta = f"Estimado {mail['from']},\n\nSoy J.A.R.V.I.S., asistente personal de AXYNTRAX. He procesado su solicitud respecto a '{mail['subject']}'. Nos pondremos en contacto a la brevedad.\n\nSaludos."
-    
-    return {
-        "status": "success",
-        "jarvis_response": respuesta,
-        "message": "Correo procesado y respondido por el enjambre."
-    }
-
-# ============ PROXY INVERSO AL HUD (Space-Z) ============
-import httpx
-from fastapi.responses import StreamingResponse
-
-# Creamos el cliente HTTPX para reenviar peticiones
-proxy_client = httpx.AsyncClient(base_url="https://e1w4j5vf8fj0-d.space-z.ai")
-
-@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"])
-async def reverse_proxy(path: str, request: Request):
-    # Evitar hacer proxy a las rutas de la API de FastAPI o docs
-    if path.startswith("api/") or path.startswith("docs") or path.startswith("openapi.json"):
-        raise HTTPException(status_code=404, detail="Ruta de API no encontrada")
+    try:
+        service = get_gmail_service()
+        if not service:
+            return JSONResponse(status_code=500, content={"error": "Gmail Service No Disponible"})
+            
+        # Generamos la respuesta con DeepSeek
+        deepseek_key = os.getenv("DEEPSEEK_API_KEY")
+        if not deepseek_key:
+            return {"error": "DeepSeek no disponible para redactar."}
+            
+        client = OpenAI(api_key=deepseek_key, base_url="https://api.deepseek.com")
+        prompt = f"Eres JARVIS, el asistente CEO. Redacta un correo profesional respondiendo al asunto: '{req.subject}'. Instrucciones extra del usuario: '{req.instructions}'"
         
-    url = httpx.URL(path=request.url.path, query=request.url.query.encode("utf-8"))
-    
-    # Preparar los headers quitando 'host' para que httpx asigne el de Space-Z
-    headers = dict(request.headers)
-    headers.pop("host", None)
-    
-    # Reenviar el request a Space-Z
-    req = proxy_client.build_request(
-        request.method,
-        url,
-        headers=headers,
-        content=request.stream()
-    )
-    
-    resp = await proxy_client.send(req, stream=True)
-    
-    # Retornar la respuesta al cliente tal cual viene de Space-Z
-    return StreamingResponse(
-        resp.aiter_raw(),
-        status_code=resp.status_code,
-        headers=resp.headers
-    )
+        resp = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=500
+        )
+        draft_text = resp.choices[0].message.content
+        
+        draft = create_draft(service, req.to_email, f"Re: {req.subject}", draft_text)
+        
+        # Opcional: Avisar por Telegram
+        import requests
+        t_token = os.getenv("TELEGRAM_BOT_TOKEN")
+        t_chat = os.getenv("TELEGRAM_ALLOWED_CHAT_ID")
+        if t_token and t_chat:
+            requests.post(f"https://api.telegram.org/bot{t_token}/sendMessage", json={
+                "chat_id": t_chat,
+                "text": f"Señor, he preparado un borrador en Gmail para: {req.to_email} (Asunto: {req.subject})"
+            })
+            
+        return {
+            "status": "success",
+            "message": "Borrador creado con éxito en Gmail y Telegram notificado.",
+            "draft_preview": draft_text
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+from fastapi.staticfiles import StaticFiles
+
+# ============ SERVIR EL HUD FRONTEND (React/Vite) ============
+import os
+
+# Verificar que el build exista, si no lo creamos en dev
+hud_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "jarvis_hud", "dist")
+if not os.path.exists(hud_path):
+    print(f"WARN: Carpeta de dist no encontrada en {hud_path}")
+else:
+    app.mount("/", StaticFiles(directory=hud_path, html=True), name="hud")
 
 if __name__ == "__main__":
     import uvicorn
