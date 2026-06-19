@@ -14,3 +14,7 @@ crewai==1.10.1
 langchain-openai
 langfuse
 httpx>=0.25.0
+google-generativeai
+langchain-google-genai
+langchain-anthropic
+elevenlabs
