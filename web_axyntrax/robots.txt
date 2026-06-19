@@ -1,12 +1,11 @@
 User-agent: *
 Allow: /
-Allow: /pages/
-Allow: /pricing.html
-Allow: /contacto.html
-
 Disallow: /dashboard.html
-Disallow: /api/
-Disallow: /admin/
+Disallow: /login.html
+Disallow: /registro.html
 Disallow: /.vercel/
 
 Sitemap: https://www.axyntrax-automation.net/sitemap.xml
+
+# AXYNTRAX Automation — IA para empresas peruanas
+# Módulos: Veterinaria, Dental, Restaurante, Bodega, Taller, Salón, Academia, Farmacia, Inmobiliaria, Contabilidad SUNAT
