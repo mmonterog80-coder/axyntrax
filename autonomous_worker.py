@@ -143,7 +143,7 @@ def process_pending_orders():
 
 def main():
     print("🌙 Worker Autónomo v2 - Modo Nocturno")
-    send_telegram("🤖 JARVIS Worker v2 iniciado. Leyendo órdenes de Supabase cada 30s.")
+    # Removido el mensaje de inicio para no hacer spam en caso de crash-loops
     
     last_report = time.time()
     total_processed = 0
