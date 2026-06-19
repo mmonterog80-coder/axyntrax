@@ -30,6 +30,24 @@ function App() {
     { id: 2, sender: 'leads@axyntrax.com', subject: 'Nuevo Lead Capturado', preview: 'El SalesBot ha agendado una llamada...', time: '09:15 AM', read: true }
   ];
 
+  // Simular conexión real al Backend en Railway
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const response = await fetch('https://jarvis-ax-cloud-production.up.railway.app/health');
+        if (response.ok) {
+          console.log('[Z.IA] Enlace seguro establecido con AXYNTRAX Railway Cloud.');
+        }
+      } catch (error) {
+        console.warn('[Z.IA] Intentando reconexión a Railway...', error);
+      }
+    };
+    checkConnection();
+    // Poll every 30s to keep it alive
+    const interval = setInterval(checkConnection, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="dashboard-container">
       
@@ -100,7 +118,7 @@ function App() {
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <div className="status-indicator">
               <span className="status-dot active"></span>
-              <span className="subtitle" style={{ color: 'var(--accent-green)' }}>Railway Cloud Online</span>
+              <span className="subtitle" style={{ color: 'var(--accent-green)' }}>Conectado a: https://jarvis-ax-cloud-production.up.railway.app</span>
             </div>
             <div className="status-indicator">
               <span className="status-dot thinking"></span>

@@ -1,0 +1,100 @@
+version: "3.9"
+
+services:
+  # Base de Datos Vectorial para RAG y Memoria
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - axyntrax-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Observabilidad y Trazas
+  langfuse-server:
+    image: langfuse/langfuse:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/langfuse
+      - NEXTAUTH_SECRET=mysecret
+      - SALT=mysalt
+      - NEXTAUTH_URL=http://localhost:3000
+    depends_on:
+      - db
+    networks:
+      - axyntrax-net
+
+  # BD para Langfuse
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=langfuse
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - axyntrax-net
+
+  # Motor FastAPI (API Gateway + LangGraph)
+  fastapi_gateway:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn backend.jarvis_orchestrator.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - LANGFUSE_PUBLIC_KEY=pk-lf-...
+      - LANGFUSE_SECRET_KEY=sk-lf-...
+      - LANGFUSE_HOST=http://langfuse-server:3000
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      - qdrant
+      - langfuse-server
+    networks:
+      - axyntrax-net
+
+  # Background Worker (Celery/Temporal Simulation)
+  worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python -m backend.jarvis_orchestrator.queue_manager
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      - qdrant
+    networks:
+      - axyntrax-net
+
+  # MCP Server para herramientas de JARVIS
+  mcp_server:
+    build:
+      context: ./mcp_tools
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - axyntrax-net
+
+volumes:
+  qdrant_data:
+  pg_data:
+
+networks:
+  axyntrax-net:
+    driver: bridge
