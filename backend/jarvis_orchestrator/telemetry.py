@@ -1,10 +1,18 @@
-import psutil, time
-from fastapi import APIRouter
+import psutil, time, os
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter()
+security = HTTPBearer(auto_error=False)
+API_SECRET = os.getenv('API_SECRET', 'axyntrax-secret-change-me')
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if not credentials or credentials.credentials != API_SECRET:
+        raise HTTPException(status_code=401, detail="Token requerido o inválido")
+    return credentials.credentials
 
 @router.get("/telemetry/system")
-async def system_telemetry():
+async def system_telemetry(token: str = Depends(verify_token)):
     net = psutil.net_io_counters()
     return {
         "cpu_percent": psutil.cpu_percent(interval=0.5),
@@ -16,7 +24,7 @@ async def system_telemetry():
     }
 
 @router.get("/ias/status")
-async def ias_status():
+async def ias_status(token: str = Depends(verify_token)):
     return {
         "ias": [
             {"id": "deepseek", "nombre": "DeepSeek V4", "estado": "online"},

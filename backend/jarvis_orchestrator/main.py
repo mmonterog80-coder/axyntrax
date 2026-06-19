@@ -31,13 +31,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="AXYNTRAX Orchestrator", version="Mark X", lifespan=lifespan)
 
-# Habilitar CORS para permitir peticiones desde Vercel
+# Habilitar CORS — dominios autorizados de producción
+ALLOWED_ORIGINS = [
+    "https://jarvis-ax-cloud-production.up.railway.app",
+    "https://axyntrax.vercel.app",
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # En producción, limitar a los dominios de Vercel
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Requested-With"],
 )
 
 # Montar Rutas
@@ -80,20 +86,7 @@ async def health():
     }
 
 # ============ RUTAS PROTEGIDAS (JWT + Rate Limited) ============
-
-@app.get("/api/telemetry/system")
-# @limiter.limit("30/minute")
-async def telemetry(token: str = Depends(verify_token)):
-    cpu = psutil.cpu_percent(interval=1)
-    ram = psutil.virtual_memory().percent
-    disk = psutil.disk_usage('/').percent
-    
-    return {
-        "cpu": cpu,
-        "ram": ram,
-        "disk": disk,
-        "timestamp": datetime.now().isoformat()
-    }
+# NOTA: /api/telemetry/system y /api/ias/status están en telemetry.py router (con auth)
 
 @app.get("/api/status")
 # @limiter.limit("30/minute")
@@ -120,7 +113,7 @@ class ChatRequest(BaseModel):
 import base64
 
 @app.post("/api/chat")
-async def chat_endpoint(req: ChatRequest):
+async def chat_endpoint(req: ChatRequest, token: str = Depends(verify_token)):
     try:
         deepseek_key = os.getenv("DEEPSEEK_API_KEY")
         if not deepseek_key:
@@ -214,7 +207,7 @@ from tasks import router as tasks_router
 app.include_router(tasks_router) # Mounts /telegram/webhook
 
 @app.get("/api/logs")
-async def get_logs():
+async def get_logs(token: str = Depends(verify_token)):
     try:
         with open("telegram.log", "r") as f:
             return {"logs": f.read()[-5000:]}
