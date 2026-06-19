@@ -3,266 +3,455 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AXYNTRAX | Inteligencia Artificial para Empresas Peruanas</title>
-    <meta name="description" content="Automatiza tu empresa con AXYNTRAX. Más de 50 módulos SaaS y 8 IAs trabajando 24/7 para hacer crecer tu negocio en Perú.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>AXYNTRAX Automation | Automatización Empresarial con IA — Perú y LATAM</title>
+    <meta name="description" content="AXYNTRAX: Ecosistema de agentes IA autónomos que automatizan ventas, marketing, atención al cliente y desarrollo de software 24/7. Hecho en Arequipa para Perú y LATAM.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.axyntrax-automation.net/">
+    <link rel="alternate" hreflang="es" href="https://www.axyntrax-automation.net/">
+    <link rel="alternate" hreflang="en" href="https://www.axyntrax-automation.net/en/">
+    <link rel="alternate" hreflang="x-default" href="https://www.axyntrax-automation.net/">
+
+    <!-- Open Graph / LinkedIn / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.axyntrax-automation.net/">
+    <meta property="og:title" content="AXYNTRAX Automation | Automatiza tu empresa con IA">
+    <meta property="og:description" content="Agentes IA autónomos que trabajan 24/7 automatizando ventas, marketing y desarrollo. Sin parar. Sin quejarse.">
+    <meta property="og:image" content="https://www.axyntrax-automation.net/assets/og-image.png">
+    <meta property="og:locale" content="es_PE">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AXYNTRAX Automation | IA que trabaja 24/7">
+    <meta name="twitter:description" content="Automatiza tu empresa con agentes de IA. Ventas, marketing y desarrollo sin parar.">
+    <meta name="twitter:image" content="https://www.axyntrax-automation.net/assets/og-image.png">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AXYNTRAX Automation",
+      "url": "https://www.axyntrax-automation.net/",
+      "description": "Ecosistema de agentes IA autónomos para automatización empresarial B2B en Perú y LATAM.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "299",
+        "priceCurrency": "PEN",
+        "priceValidUntil": "2027-12-31"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "AXYNTRAX Automation",
+        "url": "https://www.axyntrax-automation.net/",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Arequipa",
+          "addressCountry": "PE"
+        }
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "47"
+      }
+    }
+    </script>
+
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué es AXYNTRAX?",
+          "acceptedAnswer": {"@type": "Answer", "text": "AXYNTRAX es una plataforma SaaS con agentes de IA que automatizan ventas, marketing y desarrollo de software para empresas en Perú y LATAM."}
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cómo funciona la automatización con IA?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Los agentes IA operan 24/7, procesando tareas como responder WhatsApp, generar posts para redes sociales o desarrollar código, sin intervención humana constante."}
+        },
+        {
+          "@type": "Question",
+          "name": "¿Tienen planes para pequeñas empresas?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Sí, el plan Starter desde S/.299/mes está diseñado para emprendedores y startups que quieren empezar a automatizar."}
+        }
+      ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-dark: #060d1a;
-            --accent-cyan: #00b8d9;
-            --accent-amber: #f59e0b;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+        body { background-color: #030014; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .cyber-grid {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background-image: linear-gradient(rgba(0,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.07) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 20s linear infinite;
+            mask-image: radial-gradient(circle at center, black 10%, transparent 60%);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        body { background-color: var(--bg-dark); color: #fff; line-height: 1.6; overflow-x: hidden; }
-        
-        /* HEADER */
-        header { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; background: rgba(6, 13, 26, 0.85); backdrop-filter: blur(15px); position: fixed; width: 100%; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass-border); }
-        .logo { font-size: 28px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: 2px; }
-        .logo span { color: var(--accent-cyan); }
-        .nav-links a { color: #a0aabf; text-decoration: none; margin-left: 35px; transition: color 0.3s; font-weight: 600; }
-        .nav-links a:hover { color: #fff; }
-        .btn-primary { background: linear-gradient(135deg, var(--accent-cyan), #007bb5); color: #fff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 800; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 184, 217, 0.3); }
-
-        /* HERO */
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 120px 20px 50px; background: radial-gradient(circle at 50% 30%, rgba(0, 184, 217, 0.15) 0%, transparent 60%); position: relative; }
-        .hero-badge { background: rgba(0, 184, 217, 0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; margin-bottom: 30px; letter-spacing: 1px; }
-        .hero h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 25px; font-weight: 800; max-width: 900px; }
-        .hero h1 span { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 1.25rem; color: #a0aabf; max-width: 700px; margin-bottom: 40px; }
-        .hero-buttons { display: flex; gap: 20px; }
-        .btn-secondary { background: var(--glass-bg); color: #fff; border: 1px solid var(--glass-border); padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: background 0.3s, border-color 0.3s; }
-        .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
-
-        /* STATS COUNTER */
-        .stats { display: flex; justify-content: center; gap: 60px; margin-top: 80px; flex-wrap: wrap; }
-        .stat-item { text-align: center; }
-        .stat-number { font-size: 3rem; font-weight: 800; color: var(--accent-cyan); margin-bottom: 5px; }
-        .stat-label { color: #a0aabf; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
-
-        /* WHY AXYNTRAX */
-        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 60px; font-weight: 800; }
-        .features { padding: 100px 50px; background: #040914; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .feature-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px 30px; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
-        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-cyan); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
-        .feature-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .feature-card:hover::before { transform: scaleX(1); }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 20px; }
-        .feature-card h3 { font-size: 1.5rem; margin-bottom: 15px; color: #fff; }
-        .feature-card p { color: #a0aabf; font-size: 1rem; }
-
-        /* MODULES */
-        .modules { padding: 100px 50px; }
-        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .module-link { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 25px; text-align: center; text-decoration: none; color: #fff; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
-        .module-link:hover { background: rgba(0, 184, 217, 0.1); border-color: var(--accent-cyan); transform: scale(1.05); }
-        .module-link span { font-size: 1.1rem; font-weight: 600; }
-
-        /* TESTIMONIALS */
-        .testimonials { padding: 100px 50px; background: #040914; }
-        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .test-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 40px; border-radius: 20px; }
-        .test-text { font-size: 1.1rem; font-style: italic; color: #ccc; margin-bottom: 25px; }
-        .test-author { display: flex; align-items: center; gap: 15px; }
-        .author-info h4 { color: #fff; font-size: 1rem; }
-        .author-info p { color: var(--accent-amber); font-size: 0.9rem; }
-
-        /* CTA */
-        .cta { padding: 120px 50px; text-align: center; background: linear-gradient(rgba(6, 13, 26, 0.9), rgba(6, 13, 26, 0.9)), url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M10 10h80v80H10z" stroke="rgba(255,255,255,0.03)" fill="none"/></svg>'); }
-        .cta h2 { font-size: 3.5rem; margin-bottom: 20px; }
-        .cta p { font-size: 1.2rem; color: #a0aabf; margin-bottom: 40px; }
-
-        /* FOOTER */
-        footer { padding: 60px 50px; border-top: 1px solid var(--glass-border); background: #02050a; }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
-        .footer-col h4 { color: #fff; margin-bottom: 20px; font-size: 1.2rem; }
-        .footer-col a { display: block; color: #a0aabf; text-decoration: none; margin-bottom: 10px; transition: color 0.3s; }
-        .footer-col a:hover { color: var(--accent-cyan); }
-        .footer-bottom { text-align: center; color: #666; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--glass-border); }
-
-        @media (max-width: 768px) {
-            header { padding: 20px; flex-direction: column; gap: 15px; }
-            .nav-links { display: none; } /* En móvil se necesita menú hamburguesa, simplificado aquí */
-            .hero h1 { font-size: 2.8rem; }
-            .stats { flex-direction: column; gap: 30px; }
-        }
+        @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px); } }
+        .glitch { position: relative; }
+        .glitch::before { content: attr(data-text); position: absolute; top: 0; left: 2px; color: #ff00c1; clip: rect(0, 900px, 0, 0); animation: glitch 5s infinite; }
+        .glitch::after { content: attr(data-text); position: absolute; top: 0; left: -2px; color: #00fff9; clip: rect(0, 900px, 0, 0); animation: glitch 5s infinite reverse; }
+        @keyframes glitch { 0%, 90%, 100% { clip: rect(0, 900px, 0, 0); } 92% { clip: rect(10px, 900px, 30px, 0); } 94% { clip: rect(60px, 900px, 80px, 0); } 96% { clip: rect(40px, 900px, 60px, 0); } }
+        .glass-card { background: rgba(10,10,25,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(0,255,255,0.15); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(0,255,255,0.5); transform: translateY(-4px); box-shadow: 0 0 20px rgba(0,255,255,0.1); }
+        .glow-btn { background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); transition: all 0.3s ease; }
+        .glow-btn:hover { opacity: 0.9; transform: scale(1.03); box-shadow: 0 0 20px rgba(0,242,254,0.4); }
+        .floating { animation: float 5s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .testimonial-card { background: rgba(10,10,25,0.8); border: 1px solid rgba(255,255,255,0.1); }
+        .neon-line { height: 2px; background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body>
+    <!-- Accessibility: Skip to Content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cyan-500 text-black px-4 py-2 rounded z-50 font-orbitron text-sm">Saltar al contenido</a>
 
-    <header>
-        <a href="index.html" class="logo">AXYNTRAX<span>.</span></a>
-        <nav class="nav-links">
-            <a href="#modulos">Módulos</a>
-            <a href="pricing.html">Precios</a>
-            <a href="blog.html">Blog</a>
-            <a href="#contacto">Contacto</a>
-            <a href="https://jarvis-ax-cloud-production.up.railway.app" class="btn-primary" style="margin-left: 30px;">Login HUD</a>
-        </nav>
-    </header>
+    <!-- Fixed Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="cyber-grid"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#030014]/70 to-[#030014]"></div>
+    </div>
 
-    <section class="hero">
-        <div class="hero-badge">VERSIÓN 7.0 — ORQUESTADOR IA</div>
-        <h1>Inteligencia Artificial para <span>Empresas Peruanas</span></h1>
-        <p>Ecosistema de agentes IA autónomos que automatizan ventas, marketing, atención al cliente y gestión operativa. Operan 24/7 sin parar y sin quejarse.</p>
-        <div class="hero-buttons">
-            <a href="#modulos" class="btn-primary" style="padding: 15px 35px; font-size: 1.1rem;">Explorar Soluciones</a>
-            <a href="#contacto" class="btn-secondary" style="padding: 15px 35px; font-size: 1.1rem;">Hablar con Ventas</a>
+    <!-- Navigation -->
+    <nav class="relative z-50 w-full bg-black/50 backdrop-blur-md border-b border-cyan-500/20 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="font-orbitron font-bold text-xl text-white tracking-widest">AXY<span class="text-cyan-400">NTRAX</span></a>
+            <div class="hidden md:flex gap-8 items-center">
+                <a href="#servicios" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">Servicios</a>
+                <a href="#casos-uso" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">Casos de Uso</a>
+                <a href="#faq" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">FAQ</a>
+                <a href="pricing.html" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">Precios</a>
+                <a href="blog.html" class="text-sm font-orbitron text-gray-400 hover:text-cyan-400 transition">Blog</a>
+                <a href="login.html" class="text-sm font-orbitron text-gray-300 hover:text-cyan-400 transition">Iniciar Sesión</a>
+                <a href="en/" class="text-xs text-gray-600 border border-gray-800 px-2 py-1 rounded hover:border-cyan-500/30 hover:text-cyan-400 transition">🌐 EN</a>
+                <a href="registro.html" class="text-sm font-orbitron text-black bg-cyan-400 px-5 py-2 rounded hover:bg-cyan-300 transition font-bold">Empezar Gratis</a>
+            </div>
+            <!-- Mobile menu button -->
+            <button id="menu-btn" class="md:hidden text-cyan-400" aria-label="Abrir menú">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
         </div>
-        
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">Módulos SaaS</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">8</div>
-                <div class="stat-label">IAs Orquestadas</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Operatividad</div>
-            </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-4 flex-col gap-4 px-4 pb-4">
+            <a href="#servicios" class="text-sm font-orbitron text-gray-300">Servicios</a>
+            <a href="pricing.html" class="text-sm font-orbitron text-gray-300">Precios</a>
+            <a href="contacto.html" class="text-sm font-orbitron text-gray-300">Contacto</a>
+            <a href="login.html" class="text-sm font-orbitron text-gray-300">Iniciar Sesión</a>
+            <a href="registro.html" class="text-sm font-orbitron text-cyan-400 border border-cyan-500/50 px-4 py-2 rounded text-center">Registrarse</a>
         </div>
-    </section>
+    </nav>
 
-    <section class="features">
-        <h2 class="section-title">¿Por qué elegir AXYNTRAX?</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🧠</div>
-                <h3>Cerebro Unificado</h3>
-                <p>Nuestras 8 IAs (JARVIS, Athena, Mercury, etc.) comparten memoria. Lo que aprende el sistema de ventas, lo usa el sistema de soporte al instante.</p>
+    <main id="main-content" class="relative z-10">
+        <!-- Hero Section -->
+        <section class="text-center px-6 py-24 max-w-5xl mx-auto">
+            <div class="mb-6 inline-flex items-center gap-2 bg-white/5 border border-cyan-500/30 rounded-full px-4 py-2 backdrop-blur-md">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping inline-block"></span>
+                <span class="text-cyan-400 text-xs font-orbitron tracking-widest uppercase">9 Agentes IA Activos · Operando 24/7</span>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Automatización Total</h3>
-                <p>Desde facturación electrónica SUNAT hasta envío automático de recordatorios por WhatsApp. Quitamos el trabajo manual de su empresa.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🇵🇪</div>
-                <h3>Hecho para el Perú</h3>
-                <p>Soporte de pagos con Yape, Plin, conectividad con pasarelas locales y adaptación total a la normativa tributaria peruana.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔐</div>
-                <h3>Seguridad Nivel Banco</h3>
-                <p>Infraestructura Zero-Trust, datos encriptados y servidores aislados para garantizar la privacidad de sus clientes.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📈</div>
-                <h3>Escalabilidad Infinita</h3>
-                <p>Si necesita procesar 10 ventas o 100,000 ventas, nuestros clústers en la nube escalan automáticamente para soportar su crecimiento.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎙️</div>
-                <h3>Clonación de Voz</h3>
-                <p>Agentes que llaman por teléfono a sus clientes o envían audios por WhatsApp usando voces hiperrealistas para cerrar ventas.</p>
-            </div>
-        </div>
-    </section>
 
-    <section id="modulos" class="modules">
-        <h2 class="section-title">Módulos Disponibles</h2>
-        <div class="modules-grid">
-            <a href="pages/modulo-veterinaria.html" class="module-link">
-                <div style="font-size: 2rem;">🐾</div>
-                <span>Clínicas Veterinarias</span>
-            </a>
-            <a href="pages/modulo-dental.html" class="module-link">
-                <div style="font-size: 2rem;">🦷</div>
-                <span>Consultorios Dentales</span>
-            </a>
-            <a href="pages/modulo-restaurante.html" class="module-link">
-                <div style="font-size: 2rem;">🍽️</div>
-                <span>Restaurantes & POS</span>
-            </a>
-            <a href="pages/modulo-bodega.html" class="module-link">
-                <div style="font-size: 2rem;">🛒</div>
-                <span>Bodegas y Minimarkets</span>
-            </a>
-            <a href="pages/modulo-taller.html" class="module-link">
-                <div style="font-size: 2rem;">⚙️</div>
-                <span>Talleres Mecánicos</span>
-            </a>
-        </div>
-        <div style="text-align: center; margin-top: 40px;">
-            <p style="color: #a0aabf;">Y más de 45 módulos adicionales para farmacias, colegios, gimnasios e inmobiliarias.</p>
-        </div>
-    </section>
+            <h1 class="text-4xl md:text-6xl font-orbitron font-black mb-4 tracking-tight leading-tight">
+                <span class="glitch text-white" data-text="AXYNTRAX">AXYNTRAX</span><br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">AUTOMATION</span>
+            </h1>
 
-    <section class="testimonials">
-        <h2 class="section-title">Empresas que confían en nosotros</h2>
-        <div class="test-grid">
-            <div class="test-card">
-                <p class="test-text">"Implementar AXYNTRAX en nuestros 3 minimarkets fue la mejor decisión. El control de stock automático y los cierres de caja nos quitaron dolores de cabeza diarios."</p>
-                <div class="test-author">
-                    <div class="author-info">
-                        <h4>Carlos Mendoza</h4>
-                        <p>CEO, Minimarket Express (Arequipa)</p>
+            <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-4 font-light leading-relaxed floating">
+                El ecosistema de <strong class="text-white">Inteligencia Artificial</strong> que trabaja por tu empresa mientras tú duermes. Ventas, marketing, atención al cliente y desarrollo de software — <strong class="text-cyan-400">automatizados al 100%.</strong>
+            </p>
+            <p class="text-gray-500 text-sm mb-10">Hecho en Arequipa, Perú 🇵🇪 · Para empresas en LATAM y el mundo</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <a href="registro.html" class="glow-btn px-8 py-4 rounded-lg font-orbitron font-bold text-black tracking-widest shadow-lg">🚀 EMPEZAR AHORA — GRATIS</a>
+                <a href="pricing.html" class="px-8 py-4 rounded-lg font-orbitron font-bold text-cyan-400 tracking-widest border border-cyan-500/30 hover:bg-cyan-500/10 transition backdrop-blur-sm">VER PRECIOS</a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+                <div class="text-center">
+                    <div class="text-3xl font-black font-orbitron text-cyan-400">24/7</div>
+                    <div class="text-xs text-gray-500 mt-1">Operación continua</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black font-orbitron text-cyan-400">9+</div>
+                    <div class="text-xs text-gray-500 mt-1">Agentes especializados</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black font-orbitron text-cyan-400">99.9%</div>
+                    <div class="text-xs text-gray-500 mt-1">Uptime garantizado</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black font-orbitron text-cyan-400">5x</div>
+                    <div class="text-xs text-gray-500 mt-1">Más productividad</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="neon-line max-w-3xl mx-auto mb-20"></div>
+
+        <!-- Services Section -->
+        <section id="servicios" class="px-6 py-16 max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-orbitron px-4 py-2 rounded-full mb-4 tracking-widest">SERVICIOS</span>
+                <h2 class="font-orbitron text-3xl font-bold text-white">Tu empresa en piloto automático</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-cyan-500/20 transition"></div>
+                    <div class="text-cyan-400 text-4xl mb-4" aria-hidden="true">🤖</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white mb-3">Ventas & WhatsApp</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Agente de ventas que responde WhatsApp 24/7, califica leads, agenda citas y cierra tratos sin intervención humana.</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-purple-500/20 transition"></div>
+                    <div class="text-purple-400 text-4xl mb-4" aria-hidden="true">📣</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white mb-3">Marketing Autónomo</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Genera y publica contenido persuasivo para LinkedIn, Instagram y Facebook 3 veces al día con el protocolo anti-ban integrado.</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-pink-500/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-pink-500/20 transition"></div>
+                    <div class="text-pink-400 text-4xl mb-4" aria-hidden="true">⚡</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white mb-3">Desarrollo de Software</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Agentes de código que diseñan, programan y despliegan software automáticamente. Tu CTO artificial trabajando sin parar.</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-green-500/20 transition"></div>
+                    <div class="text-green-400 text-4xl mb-4" aria-hidden="true">📊</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white mb-3">Business Intelligence</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Análisis de mercado, tendencias y datos empresariales generados automáticamente para decisiones más rápidas.</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-yellow-500/20 transition"></div>
+                    <div class="text-yellow-400 text-4xl mb-4" aria-hidden="true">🔒</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white mb-3">Seguridad & DevOps</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Monitoreo continuo de tu infraestructura cloud, alertas automáticas y despliegues seguros con CI/CD autónomo.</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-orange-500/20 transition"></div>
+                    <div class="text-orange-400 text-4xl mb-4" aria-hidden="true">🌐</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white mb-3">Web & Frontend</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Diseño y construcción de sitios web enterprise impulsados por Claude 3.5 Sonnet, el mejor modelo para UI/UX del mundo.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="neon-line max-w-3xl mx-auto my-20"></div>
+
+        <!-- Use Cases -->
+        <section id="casos-uso" class="px-6 py-16 max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-orbitron px-4 py-2 rounded-full mb-4 tracking-widest">CASOS DE USO</span>
+                <h2 class="font-orbitron text-3xl font-bold text-white">¿Para qué tipo de empresa?</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-card rounded-xl p-6 flex gap-4">
+                    <div class="text-3xl flex-shrink-0" aria-hidden="true">🏥</div>
+                    <div><h3 class="font-orbitron font-bold text-white mb-2">Clínicas & Salud</h3><p class="text-gray-400 text-sm">Agenda de citas por WhatsApp, recordatorios automáticos y gestión de pacientes sin personal adicional.</p></div>
+                </div>
+                <div class="glass-card rounded-xl p-6 flex gap-4">
+                    <div class="text-3xl flex-shrink-0" aria-hidden="true">🏪</div>
+                    <div><h3 class="font-orbitron font-bold text-white mb-2">Retail & E-commerce</h3><p class="text-gray-400 text-sm">Catálogo automatizado, seguimiento de pedidos y soporte post-venta integrado en WhatsApp y redes sociales.</p></div>
+                </div>
+                <div class="glass-card rounded-xl p-6 flex gap-4">
+                    <div class="text-3xl flex-shrink-0" aria-hidden="true">🏗️</div>
+                    <div><h3 class="font-orbitron font-bold text-white mb-2">Inmobiliarias</h3><p class="text-gray-400 text-sm">Captación de leads, tours virtuales y seguimiento de prospectos con IA que nunca se olvida de un potencial comprador.</p></div>
+                </div>
+                <div class="glass-card rounded-xl p-6 flex gap-4">
+                    <div class="text-3xl flex-shrink-0" aria-hidden="true">🎓</div>
+                    <div><h3 class="font-orbitron font-bold text-white mb-2">Educación & Academias</h3><p class="text-gray-400 text-sm">Matriculaciones automáticas, soporte a estudiantes 24/7 y generación de material educativo por IA.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="px-6 py-16 max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-orbitron px-4 py-2 rounded-full mb-4 tracking-widest">TESTIMONIOS</span>
+                <h2 class="font-orbitron text-3xl font-bold text-white">Empresas que ya automatizan</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="testimonial-card rounded-xl p-6">
+                    <div class="flex mb-3"><span class="text-yellow-400" aria-label="5 estrellas">★★★★★</span></div>
+                    <p class="text-gray-300 text-sm italic mb-4">"Redujimos el 80% del tiempo en atención al cliente. El bot de WhatsApp responde mejor que cualquier persona de mi equipo."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs font-bold">RC</div>
+                        <div><p class="text-white text-sm font-semibold">Ricardo C.</p><p class="text-gray-500 text-xs">Clínica Dental, Arequipa</p></div>
+                    </div>
+                </div>
+                <div class="testimonial-card rounded-xl p-6">
+                    <div class="flex mb-3"><span class="text-yellow-400" aria-label="5 estrellas">★★★★★</span></div>
+                    <p class="text-gray-300 text-sm italic mb-4">"AXYNTRAX publica contenido de LinkedIn por nosotros todos los días. Nuestros leads aumentaron 3x en el primer mes."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-xs font-bold">ML</div>
+                        <div><p class="text-white text-sm font-semibold">María L.</p><p class="text-gray-500 text-xs">Consultora B2B, Lima</p></div>
+                    </div>
+                </div>
+                <div class="testimonial-card rounded-xl p-6">
+                    <div class="flex mb-3"><span class="text-yellow-400" aria-label="5 estrellas">★★★★★</span></div>
+                    <p class="text-gray-300 text-sm italic mb-4">"Pasamos de 2 desarrolladores a 0, todo el código lo genera la IA. Ahorramos S/.8,000/mes en planilla técnica."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 text-xs font-bold">AV</div>
+                        <div><p class="text-white text-sm font-semibold">Álvaro V.</p><p class="text-gray-500 text-xs">Startup SaaS, Trujillo</p></div>
                     </div>
                 </div>
             </div>
-            <div class="test-card">
-                <p class="test-text">"La IA nos agenda citas automáticamente por WhatsApp 24/7. Nuestras sillas dentales no paran, la rentabilidad subió un 40% en el primer mes."</p>
-                <div class="test-author">
-                    <div class="author-info">
-                        <h4>Dra. Lucía Torres</h4>
-                        <p>Directora, Torres Dental (Lima)</p>
-                    </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="px-6 py-16 max-w-3xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-orbitron px-4 py-2 rounded-full mb-4 tracking-widest">FAQ</span>
+                <h2 class="font-orbitron text-3xl font-bold text-white">Preguntas frecuentes</h2>
+            </div>
+            <div class="space-y-4">
+                <details class="glass-card rounded-xl p-5 cursor-pointer group">
+                    <summary class="text-white font-semibold flex justify-between items-center list-none">
+                        ¿Qué es AXYNTRAX?
+                        <span class="text-cyan-400 group-open:rotate-180 transition">▼</span>
+                    </summary>
+                    <p class="text-gray-400 text-sm mt-3 leading-relaxed">AXYNTRAX es una plataforma SaaS con una flota de agentes de Inteligencia Artificial que automatizan ventas, marketing, atención al cliente y desarrollo de software para empresas en Perú y LATAM, operando 24/7 sin parar.</p>
+                </details>
+                <details class="glass-card rounded-xl p-5 cursor-pointer group">
+                    <summary class="text-white font-semibold flex justify-between items-center list-none">
+                        ¿Necesito saber de tecnología para usarlo?
+                        <span class="text-cyan-400 group-open:rotate-180 transition">▼</span>
+                    </summary>
+                    <p class="text-gray-400 text-sm mt-3 leading-relaxed">No. Nuestro equipo configura todo por ti. Solo necesitas saber qué parte de tu negocio quieres automatizar. El resto lo hacemos nosotros.</p>
+                </details>
+                <details class="glass-card rounded-xl p-5 cursor-pointer group">
+                    <summary class="text-white font-semibold flex justify-between items-center list-none">
+                        ¿Cómo funciona el bot de WhatsApp?
+                        <span class="text-cyan-400 group-open:rotate-180 transition">▼</span>
+                    </summary>
+                    <p class="text-gray-400 text-sm mt-3 leading-relaxed">El agente se conecta a tu número de WhatsApp Business y responde automáticamente según el flujo que definamos juntos. Puede calificar leads, agendar citas, enviar catálogos y derivar solo los casos complejos a un humano.</p>
+                </details>
+                <details class="glass-card rounded-xl p-5 cursor-pointer group">
+                    <summary class="text-white font-semibold flex justify-between items-center list-none">
+                        ¿Tienen planes para pequeñas empresas?
+                        <span class="text-cyan-400 group-open:rotate-180 transition">▼</span>
+                    </summary>
+                    <p class="text-gray-400 text-sm mt-3 leading-relaxed">Sí. El plan Starter desde S/.299/mes está diseñado para emprendedores y microempresas que quieren empezar a automatizar sin una gran inversión inicial.</p>
+                </details>
+                <details class="glass-card rounded-xl p-5 cursor-pointer group">
+                    <summary class="text-white font-semibold flex justify-between items-center list-none">
+                        ¿Mis datos están seguros?
+                        <span class="text-cyan-400 group-open:rotate-180 transition">▼</span>
+                    </summary>
+                    <p class="text-gray-400 text-sm mt-3 leading-relaxed">Sí. Cumplimos con la Ley 29733 (Perú), GDPR (UE) y CCPA (California). Utilizamos cifrado HTTPS en todas las comunicaciones y nuestros servidores cuentan con protección activa 24/7. Ver nuestra <a href="pages/politica-privacidad.html" class="text-cyan-400 underline">Política de Privacidad</a>.</p>
+                </details>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="px-6 py-20 text-center max-w-3xl mx-auto">
+            <div class="glass-card rounded-2xl p-12">
+                <h2 class="font-orbitron text-3xl font-bold text-white mb-4">¿Listo para <span class="text-cyan-400">automatizar</span>?</h2>
+                <p class="text-gray-400 mb-8">Únete a las empresas que ya operan en modo autónomo. Empieza gratis hoy.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="registro.html" class="glow-btn px-8 py-4 rounded-lg font-orbitron font-bold text-black tracking-widest">EMPEZAR AHORA</a>
+                    <a href="contacto.html" class="px-8 py-4 rounded-lg font-orbitron font-bold text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/10 transition">HABLAR CON VENTAS</a>
                 </div>
             </div>
-            <div class="test-card">
-                <p class="test-text">"El módulo de restaurante con facturación SUNAT integrada funciona a la perfección. La atención a mesas es 3 veces más rápida."</p>
-                <div class="test-author">
-                    <div class="author-info">
-                        <h4>Roberto Silva</h4>
-                        <p>Gerente, Restobar El Balcón (Cusco)</p>
-                    </div>
+        </section>
+    </main>
+
+    <!-- Cookie Banner -->
+    <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-t border-cyan-500/20 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-300 text-sm max-w-2xl">
+                🍪 Usamos cookies esenciales para el funcionamiento de la plataforma. Con tu consentimiento, también usamos cookies analíticas para mejorar tu experiencia. Ver nuestra <a href="pages/cookies.html" class="text-cyan-400 underline">Política de Cookies</a> y <a href="pages/politica-privacidad.html" class="text-cyan-400 underline">Política de Privacidad</a>.
+            </p>
+            <div class="flex gap-3 flex-shrink-0">
+                <button id="cookie-reject" class="px-4 py-2 text-sm font-orbitron text-gray-400 border border-gray-700 rounded hover:bg-gray-800 transition">Solo Esenciales</button>
+                <button id="cookie-accept" class="px-6 py-2 text-sm font-orbitron font-bold text-black bg-cyan-400 rounded hover:bg-cyan-300 transition">Aceptar Todo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full border-t border-white/5 bg-black/60 backdrop-blur-md pt-12 pb-8 mt-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="font-orbitron font-bold text-xl text-white mb-3">AXY<span class="text-cyan-400">NTRAX</span></div>
+                    <p class="text-gray-500 text-xs leading-relaxed">Automatización empresarial con IA para Perú y LATAM. Operando 24/7 desde Arequipa.</p>
+                    <p class="text-gray-600 text-xs mt-3">Arequipa, Perú 🇵🇪</p>
+                </div>
+                <div>
+                    <h4 class="font-orbitron text-white text-sm mb-4">PRODUCTO</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#servicios" class="hover:text-cyan-400 transition">Servicios</a></li>
+                        <li><a href="pricing.html" class="hover:text-cyan-400 transition">Precios</a></li>
+                        <li><a href="blog.html" class="hover:text-cyan-400 transition">Blog</a></li>
+                        <li><a href="registro.html" class="hover:text-cyan-400 transition">Registrarse</a></li>
+                        <li><a href="login.html" class="hover:text-cyan-400 transition">Iniciar Sesión</a></li>
+                        <li><a href="en/" class="hover:text-cyan-400 transition">🌐 English Version</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-orbitron text-white text-sm mb-4">EMPRESA</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="contacto.html" class="hover:text-cyan-400 transition">Contacto</a></li>
+                        <li><a href="pages/sla.html" class="hover:text-cyan-400 transition">SLA — 99.9% Uptime</a></li>
+                        <li><a href="pages/status.html" class="hover:text-cyan-400 transition">🟢 Estado del Sistema</a></li>
+                        <li><a href="sitemap.xml" class="hover:text-cyan-400 transition">Mapa del sitio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-orbitron text-white text-sm mb-4">LEGAL</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="pages/politica-privacidad.html" class="hover:text-cyan-400 transition">Política de Privacidad</a></li>
+                        <li><a href="pages/terminos.html" class="hover:text-cyan-400 transition">Términos y Condiciones</a></li>
+                        <li><a href="pages/cookies.html" class="hover:text-cyan-400 transition">Política de Cookies</a></li>
+                        <li><a href="pages/sla.html" class="hover:text-cyan-400 transition">SLA</a></li>
+                        <li><a href="pages/dpa.html" class="hover:text-cyan-400 transition">DPA (GDPR)</a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section class="cta">
-        <h2>Impulse su empresa hoy</h2>
-        <p>Automatice sus procesos con Inteligencia Artificial. Soporte local, tecnología de clase mundial.</p>
-        <a href="#contacto" class="btn-primary" style="padding: 15px 40px; font-size: 1.2rem;">Agendar Demostración Gratuita</a>
-    </section>
-
-    <footer id="contacto">
-        <div class="footer-content">
-            <div class="footer-col">
-                <h4 style="color: var(--accent-cyan); font-size: 1.5rem; font-weight: 800; letter-spacing: 1px;">AXYNTRAX</h4>
-                <p style="margin-bottom: 20px; color: #a0aabf; font-size: 0.9rem;">Tecnología creada en Arequipa para automatizar y revolucionar los negocios del Perú y LATAM.</p>
+            <div class="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-600 text-xs">© 2026 AXYNTRAX Automation. Todos los derechos reservados. Arequipa, Perú.</p>
+                <p class="text-gray-700 text-xs">
+                    <span class="text-gray-600">⚠️ Aviso IA (EU AI Act Art. 52):</span> Esta plataforma usa Inteligencia Artificial en sus procesos.
+                </p>
             </div>
-            <div class="footer-col">
-                <h4>Productos</h4>
-                <a href="pages/modulo-restaurante.html">Restaurantes</a>
-                <a href="pages/modulo-veterinaria.html">Veterinarias</a>
-                <a href="pages/modulo-bodega.html">Bodegas</a>
-                <a href="pricing.html">Ver Precios</a>
-            </div>
-            <div class="footer-col">
-                <h4>Empresa</h4>
-                <a href="#">Sobre Nosotros</a>
-                <a href="blog.html">Blog & Noticias</a>
-                <a href="#">Privacidad</a>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <a href="#">📍 Arequipa, Perú</a>
-                <a href="#">📞 +51 987 654 321</a>
-                <a href="#">✉️ ventas@axyntrax.net</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 AXYNTRAX Automation. Todos los derechos reservados.</p>
         </div>
     </footer>
 
+    <script>
+        // Cookie Banner Logic
+        const cookieBanner = document.getElementById('cookie-banner');
+        const cookieConsent = localStorage.getItem('axyntrax_cookie_consent');
+        if (cookieConsent) cookieBanner.style.display = 'none';
+        document.getElementById('cookie-accept').addEventListener('click', function() {
+            localStorage.setItem('axyntrax_cookie_consent', 'all');
+            cookieBanner.style.display = 'none';
+        });
+        document.getElementById('cookie-reject').addEventListener('click', function() {
+            localStorage.setItem('axyntrax_cookie_consent', 'essential');
+            cookieBanner.style.display = 'none';
+        });
+
+        // Mobile Menu
+        document.getElementById('menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        });
+    </script>
 </body>
 </html>
