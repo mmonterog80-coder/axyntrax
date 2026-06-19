@@ -267,52 +267,80 @@ async def reorder_skills(req: ReorderRequest, token: str = Depends(verify_token)
 
 # ============ JARVIS AX v3.0 MARK VII API (SWARM & MAIL) ============
 
+from corporate import CORPORATE_STRUCTURE
+
 @app.get("/api/swarm/status")
 async def swarm_status(token: str = Depends(verify_token)):
+    departments = []
+    
+    # Agrupar IAs por Tiers para el UI
+    ceo_agents = []
+    dev_agents = []
+    ops_agents = []
+    business_agents = []
+    support_agents = []
+
+    for name, data in CORPORATE_STRUCTURE.items():
+        agent = {
+            "id": name.lower(),
+            "name": name,
+            "role": data["title"],
+            "status": "ONLINE",
+            "mem": f"{len(data['skills']) * 12}MB", # Pseudo-métrica basada en la cantidad de skills (25)
+            "tier": data["llm_tier"]
+        }
+        
+        if name in ["JARVIS"]:
+            ceo_agents.append(agent)
+        elif name in ["FORGE", "STARK", "CYPHER", "NANO", "STITCH", "GHOST"]:
+            dev_agents.append(agent)
+        elif name in ["VIERNES", "SENTINEL"]:
+            ops_agents.append(agent)
+        elif name in ["ORACLE", "PHOENIX", "LEDGER", "NOVA", "PEPPER", "MURDOCK"]:
+            business_agents.append(agent)
+        elif name in ["BANANA2", "CORTANA"]:
+            support_agents.append(agent)
+            
     departments = [
         {
             "id": "ceo",
-            "name": "JARVIS Antigravity",
-            "role": "CEO / PC Controller",
+            "name": "Dirección Ejecutiva",
+            "role": "CEO",
             "status": "ONLINE",
             "mem": "Core",
-            "sub_agents": []
+            "sub_agents": ceo_agents
         },
         {
-            "id": "strategy",
-            "name": "Gemini 1.5",
-            "role": "Dir. Estrategia y Arquitectura",
-            "status": "ONLINE",
-            "mem": "1.2GB",
-            "sub_agents": [
-                {"id": "vision", "name": "Vision", "role": "Market & E-commerce", "status": "ONLINE", "mem": "300MB"},
-                {"id": "architect", "name": "Architect", "role": "Diseño B2B", "status": "IDLE", "mem": "0MB"},
-                {"id": "kimi", "name": "Kimi", "role": "UX/UI Expert", "status": "ONLINE", "mem": "450MB"}
-            ]
-        },
-        {
-            "id": "factory",
-            "name": "DeepSeek V3",
-            "role": "Dir. Fábrica de Software",
+            "id": "dev",
+            "name": "Fábrica de Software",
+            "role": "CTO / Ingeniería",
             "status": "PROCESSING",
-            "mem": "3.5GB",
-            "sub_agents": [
-                {"id": "stitch", "name": "Stitch", "role": "Frontend / React", "status": "PROCESSING", "mem": "1.1GB"},
-                {"id": "forge", "name": "Forge", "role": "Backend / DB", "status": "ONLINE", "mem": "800MB"},
-                {"id": "sentinel", "name": "Sentinel", "role": "QA & SecOps", "status": "IDLE", "mem": "0MB"}
-            ]
+            "mem": "4.2GB",
+            "sub_agents": dev_agents
         },
         {
-            "id": "operations",
-            "name": "Qwen 2.5",
-            "role": "Dir. Operaciones e Infra",
+            "id": "ops",
+            "name": "Operaciones & Seguridad",
+            "role": "DevOps / SecOps",
             "status": "ONLINE",
             "mem": "1.8GB",
-            "sub_agents": [
-                {"id": "nano", "name": "Nano", "role": "API & Tools Admin", "status": "ONLINE", "mem": "120MB"},
-                {"id": "devops", "name": "DevOps AI", "role": "Cloud Deployments", "status": "ONLINE", "mem": "200MB"},
-                {"id": "banana2", "name": "Banana2", "role": "Data Processing", "status": "PROCESSING", "mem": "950MB"}
-            ]
+            "sub_agents": ops_agents
+        },
+        {
+            "id": "business",
+            "name": "Negocios & Legal",
+            "role": "B2B / Finanzas",
+            "status": "ONLINE",
+            "mem": "2.5GB",
+            "sub_agents": business_agents
+        },
+        {
+            "id": "support",
+            "name": "Recursos y Soporte",
+            "role": "RRHH / Level 1",
+            "status": "ONLINE",
+            "mem": "900MB",
+            "sub_agents": support_agents
         }
     ]
     return {"swarm": departments}
