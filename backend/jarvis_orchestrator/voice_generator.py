@@ -7,12 +7,16 @@ def generar_audio(text, output="response.mp3"):
         logger.warning("FISH_API_KEY missing. Voice disabled safely.")
         return None
     try:
-        from fish_audio_sdk import FishAudioClient, TTSRequest, AudioFormat
-        client = FishAudioClient(key)
-        req = TTSRequest(text=str(text)[:500], audio_format=AudioFormat.MP3)
-        resp = client.synthesize(req)
+        from fish_audio_sdk import Session, TTSRequest
+        session = Session(key)
+        req = TTSRequest(text=str(text)[:500], format="mp3")
+        
+        audio_chunks = []
+        for chunk in session.tts(req):
+            audio_chunks.append(chunk)
+            
         with open(output, "wb") as f:
-            f.write(resp.audio)
+            f.write(b"".join(audio_chunks))
         return output
     except Exception as e:
         logger.error(f"Voice generation failed: {e}")
