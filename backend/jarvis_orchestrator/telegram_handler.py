@@ -29,32 +29,19 @@ REGLAS DE VOZ — OBLIGATORIAS:
 10. Responde siempre en español."""
 
 def call_deepseek(user_message: str) -> str:
-    """Usa DeepSeek para generar respuesta de JARVIS."""
-    try:
-        cached = llm_response_cache.get(user_message)
-        if cached:
-            return cached
-            
-        from openai import OpenAI
-        key = os.getenv("DEEPSEEK_API_KEY")
-        if not key:
-            return "Señor Miguel, el enlace con DeepSeek no está disponible en este momento."
+    """Usa DeepSeek para generar respuesta de JARVIS, orquestado con MCP."""
+    cached = llm_response_cache.get(user_message)
+    if cached:
+        return cached
         
-        client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
-        resp = client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[
-                {"role": "system", "content": JARVIS_TELEGRAM_PROMPT},
-                {"role": "user", "content": user_message}
-            ],
-            max_tokens=150
-        )
-        result = resp.choices[0].message.content.strip()
+    try:
+        from mcp_react_loop import call_deepseek as run_mcp_deepseek
+        result = run_mcp_deepseek(user_message)
         llm_response_cache.set(user_message, result)
         return result
     except Exception as e:
-        logger.error(f"DeepSeek error: {e}")
-        return "Señor Miguel, hay un problema de conexión temporal. En breve estará resuelto."
+        logger.error(f"DeepSeek MCP error: {e}")
+        return "Señor Miguel, el motor MCP de DeepSeek ha fallado temporalmente."
 
 def send_telegram_message(chat_id, text, parse_mode=None):
     if not TELEGRAM_TOKEN:
