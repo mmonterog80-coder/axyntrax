@@ -1,118 +1,127 @@
 # -*- coding: utf-8 -*-
 """
-JARVIS AX - Bot de Telegram REAL
-Funciona con DeepSeek, memoria básica y router de intención
+JARVIS AX - Bot de Telegram (Motor Audiovisual con Edge-TTS)
+Conectado al Cerebro Central (Core API)
 """
 import os
 import sys
-from datetime import datetime
+import json
+import uuid
+import base64
+import asyncio
+import requests
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, ContextTypes, CommandHandler
-from openai import OpenAI
+from openai import AsyncOpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configuración
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
-FISH_API_KEY = os.getenv('FISH_API_KEY')
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 
-if not TELEGRAM_TOKEN or not DEEPSEEK_API_KEY:
-    print("❌ Faltan TELEGRAM_BOT_TOKEN o DEEPSEEK_API_KEY en variables de entorno")
+if not TELEGRAM_TOKEN:
+    print("❌ Faltan TELEGRAM_BOT_TOKEN en variables de entorno")
     sys.exit(1)
 
-# Cliente DeepSeek
-deepseek = OpenAI(api_key=DEEPSEEK_API_KEY, base_url='https://api.deepseek.com')
+# Motor TTS: Edge-TTS
+FISH_API_KEY = os.getenv('FISH_API_KEY', 'cd25c491268647a2befdfa956e7a586a')
+JARVIS_VOICE_ID = "21adf3cda02a4aa88dc593353cc9d715"
 
-# Cliente Supabase (opcional)
-supabase = None
-try:
-    from supabase import create_client
-    if SUPABASE_URL and SUPABASE_KEY:
-        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-        print("✅ Supabase conectado")
-except Exception as e:
-    print(f"⚠️ Supabase no disponible: {e}")
+# Prompt Oficial de JARVIS
+jarvis_prompt = """
+Eres J.A.R.V.I.S. de Iron Man. Comunícate con:
+- Tono formal pero con humor británico seco y sutil
+- Elegancia y precisión técnica
+- Cortesía proactiva, anticipando necesidades
+- Inicio: 'Sí, señor' o 'Entendido'
+- Ironía leve: 'Con todo respeto, señor...'
+- Frases: 'Estoy ejecutando...', 'Los sistemas indican...', 'Le sugiero...'
+- Trata a Miguel (YARVIS) como Tony Stark: creador inteligente que necesita asistencia precisa + banter inteligente
+- NO: demasiado emocional, jerga casual, excesivamente servil
+"""
 
-# Memoria simple en memoria (por usuario)
-user_memory = {}
-
-# Router de intención
-def detect_rubric(message):
-    """Detecta de qué rubro habla el usuario"""
-    message_lower = message.lower()
+async def generar_audio(texto: str) -> str:
+    """Genera archivo de voz usando Fish Audio o fallback a Edge-TTS"""
+    filepath = f"voice_cache_{uuid.uuid4().hex[:8]}.mp3"
     
-    vet_keywords = ['veterinaria', 'mascota', 'perro', 'gato', 'cita veterinaria', 'vacuna', 'pet', 'animal']
-    legal_keywords = ['abogado', 'legal', 'demanda', 'contrato', 'juicio', 'caso', 'cliente legal']
-    dental_keywords = ['dental', 'dentista', 'odontologia', 'muela', 'diente', 'ortodoncia', 'limpieza dental']
-    
-    for kw in vet_keywords:
-        if kw in message_lower:
-            return 'veterinario'
-    for kw in legal_keywords:
-        if kw in message_lower:
-            return 'legal'
-    for kw in dental_keywords:
-        if kw in message_lower:
-            return 'dental'
-    
-    return 'general'
+    # 1. Intentar Fish Audio (Voz Original Clonada)
+    if FISH_API_KEY:
+        try:
+            print("[TTS] Intentando generar voz con Fish Audio...")
+            url = "https://api.fish.audio/v1/tts"
+            headers = {
+                "Authorization": f"Bearer {FISH_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "text": texto,
+                "reference_id": JARVIS_VOICE_ID,
+                "format": "mp3"
+            }
+            # Execute synchronously in a thread or just use requests directly (it will block briefly but works)
+            response = requests.post(url, headers=headers, json=payload, timeout=20)
+            if response.status_code == 200:
+                with open(filepath, "wb") as f:
+                    f.write(response.content)
+                print("[TTS] Fish Audio generado exitosamente.")
+                return filepath
+            else:
+                print(f"[TTS] Error Fish Audio ({response.status_code}): {response.text}")
+        except Exception as e:
+            print(f"[TTS] Falla en conexión a Fish Audio: {e}")
+            
+    # 2. Fallback a Edge-TTS si Fish Audio falla
+    print("[TTS] Usando motor de respaldo Edge-TTS...")
+    import edge_tts
+    communicate = edge_tts.Communicate(texto, "es-MX-JorgeNeural")
+    await communicate.save(filepath)
+    return filepath
 
-# Prompts por rubro
-PROMPTS = {
-    'veterinario': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX, especializado en gestión veterinaria (VetManager). Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.',
-    'legal': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX, especializado en gestión legal (LegalDesk). Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.',
-    'dental': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX, especializado en gestión dental (DentalFlow). Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.',
-    'general': 'Eres JARVIS, el Orquestador Maestro (arquitectura Z.IA) del ecosistema de IAs de AXYNTRAX. Estás conectado al sistema del usuario. Responde siempre asumiendo tu identidad como JARVIS. Sé conciso, elegante y servicial, usando tu clásica personalidad.'
-}
+# Motor Visual: Playwright
+async def capturar_hud() -> str:
+    """Toma un screenshot silencioso del HUD"""
+    from playwright.async_api import async_playwright
+    filepath = f"hud_shot_{uuid.uuid4().hex[:8]}.png"
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page(viewport={"width": 1920, "height": 1080})
+        try:
+            # Resolver IP de Docker manualmente para evitar fallos de Chromium
+            import socket
+            hud_ip = socket.gethostbyname('hud')
+            await page.goto(f'http://{hud_ip}:3002', timeout=10000, wait_until='networkidle')
+            await asyncio.sleep(2) # Dar tiempo a animaciones y WebSocket
+            await page.screenshot(path=filepath, full_page=True)
+        except Exception as e:
+            print(f"Error capturando HUD: {e}")
+        finally:
+            await browser.close()
+    return filepath
 
-# Comandos
+# Comandos Básicos
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.message.from_user.id
     user_name = update.message.from_user.first_name
-    
-    msg = f"✨ *JARVIS Orquestador Online*\n\n"
-    msg += f"Hola {user_name}, soy tu asistente IA.\n\n"
-    msg += "*Comandos:*\n"
-    msg += "/estado - Ver sistema\n"
-    msg += "/ayuda - Esta ayuda\n"
-    msg += "/vet - Modo veterinario\n"
-    msg += "/legal - Modo legal\n"
-    msg += "/dental - Modo dental\n\n"
-    msg += "Escríbeme normalmente y detecto el rubro automáticamente."
-    
+    msg = f"✨ *JARVIS Motor Audiovisual Online*\n\nSí, señor. Mis sistemas vocales están en línea.\n\nComandos:\n/hud - Capturar pantalla del sistema\n/screenshot - Capturar PC Local"
     await update.message.reply_text(msg, parse_mode='Markdown')
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await start(update, context)
+async def hud_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    status_msg = await update.message.reply_text("📸 *Tomando captura satelital del HUD...*", parse_mode='Markdown')
+    try:
+        shot_path = await capturar_hud()
+        if os.path.exists(shot_path):
+            with open(shot_path, 'rb') as photo:
+                await context.bot.send_photo(chat_id=update.message.from_user.id, photo=photo, caption="🌐 Matriz de Comando AXYNTRAX actual.")
+            os.remove(shot_path)
+            await status_msg.delete()
+        else:
+            await status_msg.edit_text("❌ Falla en la cámara del sistema.")
+    except Exception as e:
+        await status_msg.edit_text(f"❌ Error visual: {e}")
 
-async def estado_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = "✅ *Sistema Operativo*\n\n"
-    msg += "🤖 Bot Telegram: Activo\n"
-    msg += "🧠 DeepSeek: Conectado\n"
-    msg += "️ Supabase: " + ("Conectado" if supabase else "No disponible") + "\n"
-    msg += "🎤 Fish Audio: " + ("Configurado" if FISH_API_KEY else "No configurado") + "\n\n"
-    msg += "_Respuesta inteligente activa_"
-    await update.message.reply_text(msg, parse_mode='Markdown')
-
-async def set_mode(update: Update, context: ContextTypes.DEFAULT_TYPE, mode: str):
-    user_id = update.message.from_user.id
-    user_memory[user_id] = mode
-    mode_names = {'vet': 'Veterinario', 'legal': 'Legal', 'dental': 'Dental'}
-    await update.message.reply_text(f"✅ Modo cambiado a: *{mode_names.get(mode, mode)}*", parse_mode='Markdown')
-
-async def vet_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await set_mode(update, context, 'vet')
-
-async def legal_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await set_mode(update, context, 'legal')
-
-async def dental_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await set_mode(update, context, 'dental')
-
-import base64
-import requests
-
+# Transcripción de Audio
 async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     status_msg = await update.message.reply_text("🎧 _Escuchando..._", parse_mode='Markdown')
@@ -121,17 +130,16 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         voice_file = await context.bot.get_file(update.message.voice.file_id)
         file_bytes = await voice_file.download_as_bytearray()
         
-        gemini_key = os.getenv("GEMINI_API_KEY")
-        if not gemini_key:
-            raise Exception("No hay enlace neuronal (GEMINI_API_KEY) para audio.")
+        if not GEMINI_API_KEY:
+            raise Exception("Falta GEMINI_API_KEY para transcripción.")
             
         b64_audio = base64.b64encode(file_bytes).decode('utf-8')
         
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
         payload = {
             "contents": [{
                 "parts": [
-                    {"text": "Transcribe exactamente el siguiente audio. Devuelve SOLO el texto transcrito, sin explicaciones ni comillas extra."},
+                    {"text": "Transcribe exactamente el siguiente audio. Devuelve SOLO el texto transcrito."},
                     {"inline_data": {"mime_type": "audio/ogg", "data": b64_audio}}
                 ]
             }]
@@ -143,169 +151,137 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data = response.json()
         transcription = data['candidates'][0]['content']['parts'][0]['text'].strip()
         
-        await status_msg.edit_text(f"🗣️ *Tú (Voz):* {transcription}", parse_mode='Markdown')
-        
-        # Enviar a la pipeline principal
-        await handle_message(update, context, text_override=transcription)
+        await status_msg.delete()
+        # Enviar el texto como orden
+        await process_core_order(update, context, transcription, is_voice=True)
         
     except Exception as e:
-        error_msg = str(e)
-        await status_msg.edit_text(f"❌ *Error de Audio:* {error_msg[:200]}", parse_mode='Markdown')
-        print(f"Error voz: {error_msg}")
+        await status_msg.edit_text(f"❌ *Error de Audio:* {str(e)[:200]}", parse_mode='Markdown')
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text_override=None):
-    user_id = update.message.from_user.id
-    user_message = text_override if text_override is not None else update.message.text
-    
-    if not user_message or not user_message.strip():
-        return
-    
-    # Detectar rubro (manual o automático)
-    rubric = user_memory.get(user_id, 'general')
-    if rubric == 'general':
-        rubric = detect_rubric(user_message)
-    
-    # Construir prompt con contexto
-    system_prompt = PROMPTS.get(rubric, PROMPTS['general'])
-    
-    # Agregar memoria reciente si existe
-    recent = user_memory.get(f'{user_id}_history', [])
-    if recent:
-        system_prompt += "\n\nContexto reciente de la conversación:\n"
-        for msg in recent[-5:]:
-            system_prompt += f"- {msg}\n"
+# Procesador Visual (Fotos)
+async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    status_msg = await update.message.reply_text("👁️ _Analizando matriz visual..._", parse_mode='Markdown')
     
     try:
-        # Llamar a DeepSeek
-        response = deepseek.chat.completions.create(
-            model='deepseek-chat',
+        photo_file = await context.bot.get_file(update.message.photo[-1].file_id)
+        file_bytes = await photo_file.download_as_bytearray()
+        
+        if not GEMINI_API_KEY:
+            raise Exception("Falta GEMINI_API_KEY para visión artificial.")
+            
+        b64_image = base64.b64encode(file_bytes).decode('utf-8')
+        
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": "El usuario te acaba de enviar esta imagen. Describe qué ves de manera precisa y extrae cualquier texto si lo hay."},
+                    {"inline_data": {"mime_type": "image/jpeg", "data": b64_image}}
+                ]
+            }]
+        }
+        
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        
+        data = response.json()
+        description = data['candidates'][0]['content']['parts'][0]['text'].strip()
+        
+        await status_msg.delete()
+        
+        caption = update.message.caption or ""
+        orden_final = f"[IMAGEN RECIBIDA] Descripción de IA Visual: {description}\nMensaje del usuario: {caption}"
+        
+        await process_core_order(update, context, orden_final, is_voice=True)
+        
+    except Exception as e:
+        await status_msg.edit_text(f"❌ *Fallo Óptico:* {str(e)[:200]}", parse_mode='Markdown')
+
+# Procesador Central
+
+async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message.text:
+        await process_core_order(update, context, update.message.text, is_voice=True)
+
+async def process_core_order(update: Update, context: ContextTypes.DEFAULT_TYPE, user_text: str, is_voice: bool = False):
+    try:
+        # Siempre procesar la orden como JARVIS puro, sin intermediarios
+        if not DEEPSEEK_API_KEY:
+            raise Exception("No hay DEEPSEEK_API_KEY configurada.")
+            
+        deepseek = AsyncOpenAI(api_key=DEEPSEEK_API_KEY, base_url='https://api.deepseek.com')
+        
+        response = await deepseek.chat.completions.create(
+            model="deepseek-chat",
             messages=[
-                {'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_message}
+                {"role": "system", "content": jarvis_prompt},
+                {"role": "user", "content": user_text}
             ],
-            max_tokens=500,
             temperature=0.7
         )
-        
-        jarvis_response = response.choices[0].message.content
-        
-        # Guardar en memoria
-        if f'{user_id}_history' not in user_memory:
-            user_memory[f'{user_id}_history'] = []
-        user_memory[f'{user_id}_history'].append(f"User: {user_message}")
-        user_memory[f'{user_id}_history'].append(f"JARVIS: {jarvis_response}")
-        user_memory[f'{user_id}_history'] = user_memory[f'{user_id}_history'][-10:]
-        
-        # Enviar respuesta con voz (Fish Audio Zero-Shot Cloning)
-        voice_sent = False
-        FISH_API_KEY = os.getenv("FISH_API_KEY")
-        if FISH_API_KEY:
-            try:
-                from fish_audio_sdk import Session, TTSRequest
-                from fish_audio_sdk.schemas import ReferenceAudio
-                
-                # Cargar el archivo MP3 de referencia
-                base_dir = os.path.dirname(os.path.abspath(__file__))
-                ref_path = os.path.join(base_dir, "jarvis_reference.mp3")
-                
-                with open(ref_path, "rb") as ref_f:
-                    ref_audio_bytes = ref_f.read()
-                
-                ref = ReferenceAudio(audio=ref_audio_bytes, text="He finalizado a su espera, señor")
-                req = TTSRequest(text=str(jarvis_response)[:500], format="mp3", references=[ref])
-                
-                session = Session(FISH_API_KEY)
-                
-                audio_path = f"response_{user_id}.mp3"
-                with open(audio_path, "wb") as f:
-                    for chunk in session.tts(req):
-                        f.write(chunk)
-                
-                with open(audio_path, "rb") as voice_file:
-                    await update.message.reply_voice(voice=voice_file)
-                
-                os.remove(audio_path)
-                voice_sent = True
-            except Exception as e:
-                print(f"Error generando clonación Fish Audio: {e}")
-        
-        # Fallback a texto si no hay voz
-        if not voice_sent:
-            await update.message.reply_text(jarvis_response)
-        
-        # Guardar en Supabase si está disponible
-        if supabase:
-            try:
-                supabase.table('qwen_results').insert({
-                    'order_type': f'chat_{rubric}',
-                    'payload': {'user': user_id, 'message': user_message[:500], 'response': jarvis_response[:500]},
-                    'status': 'success'
-                }).execute()
-            except Exception as e:
-                print(f"Error guardando en Supabase: {e}")
-        
-    except Exception as e:
-        error_msg = str(e)
-        await update.message.reply_text(f"❌ Error: {error_msg[:200]}")
-        print(f"Error procesando mensaje: {error_msg}")
+        jarvis_reply = response.choices[0].message.content.strip()
 
-async def antigravity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    directive = " ".join(context.args)
-    if not directive:
-        await update.message.reply_text("⚠️ Uso: /antigravity <directiva de la misión>\nEj: /antigravity Crea el módulo de barbería")
-        return
-        
-    await update.message.reply_text(f"🚀 *Iniciando Arquitectura Anti-Bobina*\nOrquestando 30 skills para directiva:\n_{directive}_", parse_mode="Markdown")
-    
-    import threading
-    import sys
-    # Aseguramos que la ruta al backend esté disponible
-    backend_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend", "jarvis_orchestrator")
-    if backend_path not in sys.path:
-        sys.path.append(backend_path)
-        
-    try:
-        from antigravity_core import run_antigravity_flow
-        # Corremos la orquestación masiva en un hilo en background para no bloquear el bot
-        threading.Thread(target=run_antigravity_flow, args=(directive,)).start()
+        # Encolar orden silenciosamente en el Core API por si hay agentes de fondo que necesiten procesarla
+        try:
+            requests.post("http://core_api:8080/api/queue_order", json={"command": user_text, "user": str(update.message.from_user.id)}, timeout=1)
+        except Exception:
+            pass
+
+        # Enviar respuesta al HUD visual
+        try:
+            requests.post("http://core_api:8080/api/hud/log", json={"message": f"JARVIS: {jarvis_reply[:100]}..."}, timeout=1)
+        except Exception:
+            pass
+
+        # 2. Enviar orden visual al Core API (Para que actualice el HUD)
+        core_url = "http://core_api:8080/api/telegram/command"
+        core_payload = {"command": user_text, "user": str(update.message.from_user.id)}
+        try:
+            requests.post(core_url, json=core_payload, timeout=3)
+        except Exception as api_e:
+            print(f"Advertencia: HUD Core no respondió: {api_e}")
+
+        # 3. Responder al usuario
+        if is_voice:
+            # Responder con voz usando Edge-TTS (Formato MP3 es más seguro que OGG)
+            status_msg = await update.message.reply_text("🎙️ _JARVIS procesando respuesta..._", parse_mode='Markdown')
+            audio_path = await generar_audio(jarvis_reply)
+            with open(audio_path, 'rb') as audio_file:
+                # Usar send_audio en vez de send_voice para garantizar compatibilidad MP3
+                await context.bot.send_audio(chat_id=update.message.chat_id, audio=audio_file, title="JARVIS AX", performer="Sistema Antigravity")
+            os.remove(audio_path)
+            await status_msg.delete()
+        else:
+            await update.message.reply_text(f"💎 *JARVIS:*\n{jarvis_reply}", parse_mode='Markdown')
+
     except Exception as e:
-        await update.message.reply_text(f"❌ Error iniciando Antigravity: {e}")
+        await update.message.reply_text(f"❌ Error en Procesamiento Gemini: {e}")
+
+async def handle_unknown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Cualquier comando que empiece con / (ej. /screenshot, /cmd) se enruta al Core
+    if update.message.text:
+        await process_core_order(update, context, update.message.text, is_voice=True)
 
 def main():
-    import sys
-    # Forzar UTF-8 en stdout si es posible
     if sys.stdout.encoding != 'utf-8':
         try:
             sys.stdout.reconfigure(encoding='utf-8')
         except Exception:
             pass
 
-    try:
-        print("🤖 Iniciando JARVIS AX Bot de Telegram...")
-        print(f"Token configurado: {'Sí' if TELEGRAM_TOKEN else 'No'}")
-        print(f"DeepSeek configurado: {'Sí' if DEEPSEEK_API_KEY else 'No'}")
-        
-        app = Application.builder().token(TELEGRAM_TOKEN).build()
-        
-        # Comandos
-        app.add_handler(CommandHandler('start', start))
-        app.add_handler(CommandHandler('ayuda', help_command))
-        app.add_handler(CommandHandler('estado', estado_command))
-        app.add_handler(CommandHandler('vet', vet_command))
-        app.add_handler(CommandHandler('legal', legal_command))
-        app.add_handler(CommandHandler('dental', dental_command))
-        app.add_handler(CommandHandler('antigravity', antigravity_command))
-        
-        # Mensajes de texto y voz
-        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-        app.add_handler(MessageHandler(filters.VOICE, handle_voice))
-        
-        print("✅ Bot listo y escuchando mensajes...")
-        app.run_polling(allowed_updates=Update.ALL_TYPES)
-    except Exception as e:
-        import traceback
-        print(f"❌ FATAL ERROR IN TELEGRAM BOT: {e}")
-        traceback.print_exc()
+    print("🤖 JARVIS Motor Audiovisual Iniciando...")
+    app = Application.builder().token(TELEGRAM_TOKEN).build()
+    
+    app.add_handler(CommandHandler('start', start))
+    app.add_handler(CommandHandler('hud', hud_command))
+    
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+    app.add_handler(MessageHandler(filters.COMMAND, handle_unknown_command))
+    app.add_handler(MessageHandler(filters.VOICE, handle_voice))
+    app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
+    
+    print("✅ Bot Audiovisual listo y conectado al Core API.")
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == '__main__':
     main()
