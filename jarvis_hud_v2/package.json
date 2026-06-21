@@ -1,12 +1,16 @@
 {
-  "name": "jarvis_hud_v2",
+  "name": "axyntrax_hud_v2",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build"
   },
   "dependencies": {
+    "axios": "^1.18.0",
     "clsx": "^2.1.1",
+    "dotenv": "^17.4.2",
+    "form-data": "^4.0.6",
+    "framer-motion": "^6.5.1",
     "lucide-react": "^1.21.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
@@ -15,11 +19,12 @@
   "devDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.5.0",
+    "playwright": "^1.61.0",
     "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19",
     "typescript": "^4.1.2",
-    "vite": "^1.0.0-rc.13",
-    "vite-plugin-react": "^4.0.0"
+    "vite": "^5.0.0"
   }
 }

@@ -12,8 +12,9 @@ from datetime import datetime, timedelta
 from fastapi import FastAPI, Request, HTTPException, Depends
 from contextlib import asynccontextmanager
 from telemetry import router as telemetry_router
-from secrets_broker import router as secrets_router
 from whatsapp_bot import router as whatsapp_router
+from secrets_broker import router as secrets_router
+from agent_monitor import AgentMonitor
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -98,6 +99,14 @@ async def status(token: str = Depends(verify_token)):
         "fish_audio": "configurado" if os.getenv('FISH_API_KEY') else "no configurado",
         "timestamp": datetime.now().isoformat()
     }
+
+# Instancia del monitor de agentes
+agent_monitor = AgentMonitor()
+
+@app.get("/api/agents/status")
+async def get_agents_status():
+    """Retorna el estado en tiempo real de todos los agentes del escuadrón para el HUD Mark VII."""
+    return agent_monitor.get_all_status()
 
 # ============ HUD HTML ============
 
