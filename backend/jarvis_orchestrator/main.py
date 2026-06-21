@@ -215,6 +215,36 @@ async def dental_module(token: str = Depends(verify_token)):
 from tasks import router as tasks_router
 app.include_router(tasks_router) # Mounts /telegram/webhook
 
+# ============ ROUTER TÁCTICO OMNICANAL ============
+class OrchestrationPayload(BaseModel):
+    node: str # 'vercel', 'hetzner', 'github', 'supabase'
+    action: str
+    params: dict
+
+@app.post("/api/orchestrate")
+async def tactical_router(payload: OrchestrationPayload, token: str = Depends(verify_token)):
+    """Router Táctico para orquestar los MCP Skills a través de la matriz de nodos."""
+    logger.info(f"⚡ [ROUTER OMNICANAL] Dispatching to {payload.node.upper()}: {payload.action}")
+    
+    # 1. Validación de Nodo
+    valid_nodes = ["vercel", "hetzner", "github", "supabase", "railway"]
+    if payload.node.lower() not in valid_nodes:
+        return {"error": "Nodo no reconocido en la arquitectura STARK."}
+    
+    # Aquí iría la lógica específica de Redis Queue / WebHooks HTTP
+    # Ejemplo de dispatch simulado:
+    dispatch_result = {
+        "status": "dispatched",
+        "node": payload.node,
+        "action": payload.action,
+        "latency_ms": 12,
+        "message": f"Orden enviada a {payload.node.upper()} exitosamente."
+    }
+    
+    # TODO: Inyectar Redis Task Broker (Upstash) y Vercel Fallback
+    
+    return dispatch_result
+
 @app.get("/api/logs")
 async def get_logs(token: str = Depends(verify_token)):
     try:
