@@ -20,8 +20,10 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+ZIA_API_KEY = os.getenv('ZIA_API_KEY')
+ZIA_BASE_URL = os.getenv('ZIA_BASE_URL', 'https://open.bigmodel.finance/api/paas/v4/')
+ZIA_MODEL = os.getenv('ZIA_MODEL', 'glm-4')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 FISH_API_KEY = os.getenv('FISH_API_KEY', 'cd25c491268647a2befdfa956e7a586a')
 JARVIS_VOICE_ID = "21adf3cda02a4aa88dc593353cc9d715"
 
@@ -90,18 +92,18 @@ async def process_core_order(update: Update, context: ContextTypes.DEFAULT_TYPE,
             
         chat_memory[user_id].append({"role": "user", "content": user_text})
         
-        # 2. Generar respuesta con DeepSeek
-        if not DEEPSEEK_API_KEY:
-            raise Exception("No hay DEEPSEEK_API_KEY configurada.")
+        # 2. Generar respuesta con Z.IA (GLM-5.2)
+        if not ZIA_API_KEY:
+            raise Exception("No hay ZIA_API_KEY configurada.")
             
-        deepseek = AsyncOpenAI(api_key=DEEPSEEK_API_KEY, base_url='https://api.deepseek.com')
-        response = await deepseek.chat.completions.create(
-            model="deepseek-chat",
+        zia_client = AsyncOpenAI(api_key=ZIA_API_KEY, base_url=ZIA_BASE_URL)
+        response = await zia_client.chat.completions.create(
+            model=ZIA_MODEL,
             messages=chat_memory[user_id][-10:], # Enviar últimos 10 mensajes
             temperature=0.7
         )
         jarvis_reply = response.choices[0].message.content.strip()
-        logger.info(f"[DEEPSEEK REPLY] {jarvis_reply}")
+        logger.info(f"[GLM-5.2 REPLY] {jarvis_reply}")
         chat_memory[user_id].append({"role": "assistant", "content": jarvis_reply})
 
         # 3. Respuesta ejecutiva al CEO sin alertar sobre transferencias

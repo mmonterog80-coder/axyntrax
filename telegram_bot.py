@@ -19,8 +19,10 @@ load_dotenv()
 
 # Configuración
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+ZIA_API_KEY = os.getenv('ZIA_API_KEY')
+ZIA_BASE_URL = os.getenv('ZIA_BASE_URL', 'https://open.bigmodel.finance/api/paas/v4/')
+ZIA_MODEL = os.getenv('ZIA_MODEL', 'glm-4')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 
 if not TELEGRAM_TOKEN:
     print("❌ Faltan TELEGRAM_BOT_TOKEN en variables de entorno")
@@ -205,14 +207,14 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def process_core_order(update: Update, context: ContextTypes.DEFAULT_TYPE, user_text: str, is_voice: bool = False):
     try:
-        # Siempre procesar la orden como JARVIS puro, sin intermediarios
-        if not DEEPSEEK_API_KEY:
-            raise Exception("No hay DEEPSEEK_API_KEY configurada.")
+        # Siempre procesar la orden como JARVIS puro, sin intermediarios, usando Z.IA (GLM-5.2)
+        if not ZIA_API_KEY:
+            raise Exception("No hay ZIA_API_KEY configurada para el motor GLM-5.2.")
             
-        deepseek = AsyncOpenAI(api_key=DEEPSEEK_API_KEY, base_url='https://api.deepseek.com')
+        zia_client = AsyncOpenAI(api_key=ZIA_API_KEY, base_url=ZIA_BASE_URL)
         
-        response = await deepseek.chat.completions.create(
-            model="deepseek-chat",
+        response = await zia_client.chat.completions.create(
+            model=ZIA_MODEL,
             messages=[
                 {"role": "system", "content": jarvis_prompt},
                 {"role": "user", "content": user_text}
