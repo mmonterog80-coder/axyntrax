@@ -7,10 +7,11 @@ const deepseekClient = new OpenAI({
     baseURL: 'https://api.deepseek.com'
 });
 
-// 2. OLLAMA CLIENT (QWEN)
+// 2. OLLAMA CLIENT (QWEN / LLAMA3)
+// L99: Apuntando dinámicamente al Bare-Metal Hetzner (o servidor remoto) en lugar de localhost
 const ollamaClient = new OpenAI({
-    apiKey: 'dummy',
-    baseURL: 'http://localhost:11434/v1'
+    apiKey: process.env.OLLAMA_API_KEY || 'dummy',
+    baseURL: process.env.OLLAMA_API_BASE || 'http://localhost:11434/v1'
 });
 
 const SYSTEM_PROMPT = `Eres J.A.R.V.I.S (Orquestador Central de AXYNTRAX, Nivel L99). 
