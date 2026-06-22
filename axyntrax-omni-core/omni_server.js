@@ -72,14 +72,20 @@ const generateJarvisVoice = async (text) => {
 };
 
 const sendVoiceReply = async (ctx, aiResponse) => {
-    await ctx.telegram.sendChatAction(ctx.chat.id, 'record_voice');
-    const audioBuffer = await generateJarvisVoice(aiResponse.text);
-    
-    if (audioBuffer) {
-        // Enviar como Nota de Voz (replyWithVoice asegura que NO se vea como un archivo MP3 musical, sino como un Voice Note de Telegram)
-        await ctx.replyWithVoice({ source: Buffer.from(audioBuffer) });
-    } else {
-        await ctx.reply(aiResponse.text); // Fallback si falla la voz
+    try {
+        await ctx.telegram.sendChatAction(ctx.chat.id, 'record_voice');
+        const textToSpeech = aiResponse.text || "La matriz neuronal no pudo generar una respuesta.";
+        const audioBuffer = await generateJarvisVoice(textToSpeech);
+        
+        if (audioBuffer) {
+            // Enviar como Nota de Voz
+            await ctx.replyWithVoice({ source: Buffer.from(audioBuffer) });
+        } else {
+            await ctx.reply("⚠️ [ALERTA L99] El sistema de Voz de J.A.R.V.I.S falló (Status 401: Llave Inválida o Sin Créditos). Verifique su ELEVENLABS_API_KEY en master_keys.env.\n\nRespuesta de texto: " + textToSpeech); // Fallback si falla la voz
+        }
+    } catch (error) {
+        console.error("❌ Falla crítica en sendVoiceReply:", error);
+        await ctx.reply("⚠️ Error interno al intentar comunicar con los servidores de voz o texto.");
     }
 };
 

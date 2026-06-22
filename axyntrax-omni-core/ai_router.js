@@ -96,7 +96,7 @@ async function processOmniMessage(messageText, channel, senderId) {
         });
 
         const parsed = JSON.parse(response.choices[0].message.content);
-        return { agent: 'DeepSeek', intent: parsed.intent, text: parsed.text };
+        return { agent: 'DeepSeek', intent: parsed.intent || 'GENERAL_CHAT', text: parsed.text || parsed.response || parsed.respuesta || JSON.stringify(parsed) };
 
     } catch (e) {
         console.error("❌ [DeepSeek V4] Fallo Crítico o Timeout. Activando OLLAMA Fallback...", e.message);
