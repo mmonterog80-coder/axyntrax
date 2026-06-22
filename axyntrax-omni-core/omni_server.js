@@ -4,13 +4,12 @@ const { Server } = require('socket.io');
 const { Telegraf } = require('telegraf');
 const axios = require('axios');
 const fs = require('fs');
-const { Groq } = require('groq-sdk');
+const path = require('path');
 const { GoogleGenAI } = require('@google/genai');
 const { processOmniMessage } = require('./ai_router');
 
 // Inicializar Servidores de Escucha y Motores IA
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || 'dummy_token');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || 'dummy_key' });
 const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'dummy_key' });
 
 fastify.register(require('@fastify/cors'), {
@@ -27,7 +26,6 @@ fastify.ready(err => {
 
     io.on('connection', (socket) => {
         console.log(`[HUD] Nueva conexión de visor de solo lectura: ${socket.id}`);
-        // Se ha purgado 'hud_message' - Telegram es el único canal bidireccional L99
     });
 });
 
@@ -46,94 +44,126 @@ const broadcastLog = (type, user, message, response, preProcessor = null) => {
 };
 
 // ==========================================
+// MÓDULO DE VOZ J.A.R.V.I.S (ELEVENLABS)
+// ==========================================
+const generateJarvisVoice = async (text) => {
+    if (!process.env.ELEVENLABS_API_KEY) return null;
+    try {
+        const ttsResponse = await axios({
+            method: 'post',
+            url: 'https://api.elevenlabs.io/v1/text-to-speech/pNInz6obpgDQGcFmaJgB/stream', // Voz de Adam (J.A.R.V.I.S)
+            headers: {
+                'Accept': 'audio/mpeg',
+                'xi-api-key': process.env.ELEVENLABS_API_KEY,
+                'Content-Type': 'application/json'
+            },
+            data: {
+                text: text,
+                model_id: "eleven_multilingual_v2",
+                voice_settings: { stability: 0.5, similarity_boost: 0.8 }
+            },
+            responseType: 'arraybuffer' // Necesitamos el buffer crudo para enviarlo a Telegram
+        });
+        return ttsResponse.data;
+    } catch (error) {
+        console.error("❌ Fallo en síntesis TTS ElevenLabs:", error.message);
+        return null;
+    }
+};
+
+const sendVoiceReply = async (ctx, aiResponse) => {
+    await ctx.telegram.sendChatAction(ctx.chat.id, 'record_voice');
+    const audioBuffer = await generateJarvisVoice(aiResponse.text);
+    
+    if (audioBuffer) {
+        // Enviar como Nota de Voz (replyWithVoice asegura que NO se vea como un archivo MP3 musical, sino como un Voice Note de Telegram)
+        await ctx.replyWithVoice({ source: Buffer.from(audioBuffer) });
+    } else {
+        await ctx.reply(aiResponse.text); // Fallback si falla la voz
+    }
+};
+
+// ==========================================
 // CANALES DE ENTRADA (TELEGRAM MULTIMODAL)
 // ==========================================
 
-// 1. MANEJO DE TEXTO (Directo a DeepSeek)
+// 1. MANEJO DE TEXTO
 telegramBot.on('text', async (ctx) => {
+    await ctx.telegram.sendChatAction(ctx.chat.id, 'typing');
     const aiResponse = await processOmniMessage(ctx.message.text, 'TELEGRAM', ctx.from.id);
-    await ctx.reply(aiResponse.text);
+    await sendVoiceReply(ctx, aiResponse);
     broadcastLog('TEXTO', ctx.from.id, ctx.message.text, aiResponse);
 });
 
-// 2. MANEJO DE AUDIO (GROQ WHISPER + DEEPSEEK)
+// 2. MANEJO DE AUDIO (NATIVO CON GEMINI MULTIMODAL)
 telegramBot.on('voice', async (ctx) => {
     try {
-        await ctx.reply("🎙️ Escuchando audio...");
+        await ctx.reply("🎙️ Analizando frecuencia de audio...");
         const fileLink = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
-        const response = await axios({ url: fileLink.href, responseType: 'stream' });
+        const response = await axios({ url: fileLink.href, responseType: 'arraybuffer' });
         
-        // Guardar temporalmente el archivo OGG de Telegram
-        const tempFilePath = `temp_audio_${ctx.from.id}.ogg`;
-        const writer = fs.createWriteStream(tempFilePath);
-        response.data.pipe(writer);
-        
-        await new Promise((resolve) => writer.on('finish', resolve));
+        const audioBase64 = Buffer.from(response.data).toString('base64');
 
-        // Transcribir el audio usando Groq (Whisper V3 - Ultra rápido)
-        const transcription = await groq.audio.transcriptions.create({
-            file: fs.createReadStream(tempFilePath),
-            model: "whisper-large-v3",
-            response_format: "text",
-            language: "es" // Forzamos español para mayor precisión médica/comercial
+        // Usamos Gemini 1.5 Flash para escuchar directamente el audio sin Groq
+        const geminiResponse = await gemini.models.generateContent({
+            model: 'gemini-1.5-flash',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [
+                        { inlineData: { data: audioBase64, mimeType: "audio/ogg" } },
+                        { text: "Transcribe el contenido de este audio de la manera más fiel posible. Responde SOLAMENTE con la transcripción, sin saludos ni comentarios." }
+                    ]
+                }
+            ]
         });
 
-        fs.unlinkSync(tempFilePath); // Destruir rastro temporal
+        const transcription = geminiResponse.text;
 
-        // Enviar el texto transcrito al Cerebro Orquestador (DeepSeek V4)
-        const aiResponse = await processOmniMessage(`[NOTA DE VOZ TRANSCRITA]: ${transcription}`, 'TELEGRAM', ctx.from.id);
+        // Enviar el texto transcrito al Cerebro Orquestador
+        const aiResponse = await processOmniMessage(`[AUDIO TRANSCRITO DEL USUARIO]: ${transcription}`, 'TELEGRAM', ctx.from.id);
         
-        // --- MÓDULO TTS: ELEVENLABS (VOICE OUT) ---
-        if (process.env.ELEVENLABS_API_KEY) {
-            try {
-                await ctx.reply("🎙️ Generando síntesis vocal...");
-                const ttsResponse = await axios({
-                    method: 'post',
-                    url: 'https://api.elevenlabs.io/v1/text-to-speech/pNInz6obpgDQGcFmaJgB/stream', // Voz de Adam (Estilo J.A.R.V.I.S)
-                    headers: {
-                        'Accept': 'audio/mpeg',
-                        'xi-api-key': process.env.ELEVENLABS_API_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    data: {
-                        text: aiResponse.text,
-                        model_id: "eleven_multilingual_v2",
-                        voice_settings: { stability: 0.5, similarity_boost: 0.8 }
-                    },
-                    responseType: 'stream'
-                });
-                await ctx.replyWithVoice({ source: ttsResponse.data });
-            } catch (ttsError) {
-                console.error("❌ Fallo en síntesis TTS:", ttsError.message);
-                await ctx.reply(aiResponse.text); // Fallback a texto
-            }
-        } else {
-            await ctx.reply(aiResponse.text); // Fallback a texto si no hay API Key
-        }
-        
-        broadcastLog('VOICE', ctx.from.id, `(🎙️ Audio Transcrito) "${transcription}"`, aiResponse, 'Groq-Whisper');
+        await sendVoiceReply(ctx, aiResponse);
+        broadcastLog('VOICE', ctx.from.id, `(🎙️ Audio Transcrito) "${transcription}"`, aiResponse, 'Gemini-Audio');
     } catch (e) {
         console.error("Error en módulo de Audio:", e);
-        ctx.reply("❌ Error al procesar su nota de voz. Por favor, escriba su mensaje.");
+        ctx.reply("❌ Error al procesar su nota de voz. Intente nuevamente o use texto.");
     }
 });
 
-// 3. MANEJO DE IMÁGENES (VOUCHERS)
+// 3. MANEJO DE IMÁGENES (GEMINI VISION OCR)
 telegramBot.on('photo', async (ctx) => {
     try {
-        await ctx.reply("📷 Analizando comprobante...");
-        // Obtener foto en mayor resolución
+        await ctx.reply("📷 Escaneando estructura de imagen...");
         const photo = ctx.message.photo[ctx.message.photo.length - 1];
         const fileLink = await ctx.telegram.getFileLink(photo.file_id);
+        const response = await axios({ url: fileLink.href, responseType: 'arraybuffer' });
         
-        // Aquí conectamos con Gemini Vision para OCR
-        const aiResponse = await processOmniMessage(`[SISTEMA OCR]: El usuario ha enviado un comprobante de pago. Extraer datos y procesar.`, 'TELEGRAM', ctx.from.id);
+        const imageBase64 = Buffer.from(response.data).toString('base64');
+
+        // Conectar con Gemini Vision para OCR
+        const geminiResponse = await gemini.models.generateContent({
+            model: 'gemini-1.5-flash',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [
+                        { inlineData: { data: imageBase64, mimeType: "image/jpeg" } },
+                        { text: "Analiza esta imagen y describe todos sus detalles. Si es un documento o ticket, extrae el texto (OCR) y resume los datos clave." }
+                    ]
+                }
+            ]
+        });
+
+        const imageAnalysis = geminiResponse.text;
+
+        const aiResponse = await processOmniMessage(`[SISTEMA DE VISIÓN]: El usuario acaba de enviar una imagen. Análisis visual extraído:\n\n${imageAnalysis}\n\nRespondele al usuario en base a esto.`, 'TELEGRAM', ctx.from.id);
         
-        await ctx.reply(aiResponse.text);
-        broadcastLog('PHOTO', ctx.from.id, `[🖼️ Análisis de Comprobante]`, aiResponse, 'Gemini-OCR');
+        await sendVoiceReply(ctx, aiResponse);
+        broadcastLog('PHOTO', ctx.from.id, `[🖼️ Análisis de Imagen]`, aiResponse, 'Gemini-Vision');
     } catch (e) {
         console.error("Error en módulo de Imagen:", e);
-        ctx.reply("❌ Error al escanear la imagen.");
+        ctx.reply("❌ Falla en los sensores ópticos. No pude escanear la imagen.");
     }
 });
 
@@ -145,13 +175,13 @@ const start = async () => {
                 await telegramBot.launch();
                 console.log('[OMNI-CORE] Bot de Telegram Multimodal conectado.');
             } catch (tgError) {
-                console.warn(`[CRITICAL] Telegram rechazó el Token (Error: ${tgError.message}). Operando en Modo Degradado (Solo HUD).`);
+                console.warn(`[CRITICAL] Telegram rechazó el Token (Error: ${tgError.message}).`);
             }
         } else {
             console.warn('[OMNI-CORE] ALERTA: Falta TELEGRAM_BOT_TOKEN.');
         }
         await fastify.listen({ port: 3005, host: '0.0.0.0' });
-        console.log('[OMNI-CORE] Servidor Multimodal y WebSockets activos en el puerto 3005.');
+        console.log('[OMNI-CORE] Servidor Multimodal activo en el puerto 3005.');
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
