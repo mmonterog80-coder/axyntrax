@@ -44,29 +44,36 @@ const broadcastLog = (type, user, message, response, preProcessor = null) => {
 };
 
 // ==========================================
-// MÓDULO DE VOZ J.A.R.V.I.S (ELEVENLABS)
+// MÓDULO DE VOZ J.A.R.V.I.S (FISH AUDIO)
 // ==========================================
 const generateJarvisVoice = async (text) => {
-    if (!process.env.ELEVENLABS_API_KEY) return null;
+    const fishApiKey = process.env.FISH_AUDIO_API_KEY || process.env.ELEVENLABS_API_KEY;
+    if (!fishApiKey) return null;
+    
     try {
         const ttsResponse = await axios({
             method: 'post',
-            url: 'https://api.elevenlabs.io/v1/text-to-speech/pNInz6obpgDQGcFmaJgB/stream', // Voz de Adam (J.A.R.V.I.S)
+            url: 'https://api.fish.audio/v1/tts',
             headers: {
-                'Accept': 'audio/mpeg',
-                'xi-api-key': process.env.ELEVENLABS_API_KEY,
+                'Authorization': `Bearer ${fishApiKey}`,
                 'Content-Type': 'application/json'
             },
             data: {
                 text: text,
-                model_id: "eleven_multilingual_v2",
-                voice_settings: { stability: 0.5, similarity_boost: 0.8 }
+                format: 'mp3',
+                sample_rate: 44100
             },
             responseType: 'arraybuffer' // Necesitamos el buffer crudo para enviarlo a Telegram
         });
         return ttsResponse.data;
     } catch (error) {
-        console.error("❌ Fallo en síntesis TTS ElevenLabs:", error.message);
+        let errorMsg = error.message;
+        if (error.response && error.response.data) {
+            try {
+                errorMsg = Buffer.from(error.response.data).toString('utf8');
+            } catch(e) {}
+        }
+        console.error("❌ Fallo en síntesis TTS Fish Audio:", errorMsg);
         return null;
     }
 };
@@ -81,7 +88,7 @@ const sendVoiceReply = async (ctx, aiResponse) => {
             // Enviar como Nota de Voz
             await ctx.replyWithVoice({ source: Buffer.from(audioBuffer) });
         } else {
-            await ctx.reply("⚠️ [ALERTA L99] El sistema de Voz de J.A.R.V.I.S falló (Status 401: Llave Inválida o Sin Créditos). Verifique su ELEVENLABS_API_KEY en master_keys.env.\n\nRespuesta de texto: " + textToSpeech); // Fallback si falla la voz
+            await ctx.reply("⚠️ [ALERTA L99] El sistema de Voz de J.A.R.V.I.S falló (Llave Inválida o Sin Créditos en Fish Audio). Verifique sus credenciales en master_keys.env.\n\nRespuesta de texto: " + textToSpeech); // Fallback si falla la voz
         }
     } catch (error) {
         console.error("❌ Falla crítica en sendVoiceReply:", error);
