@@ -60,8 +60,7 @@ const generateJarvisVoice = async (text) => {
             },
             data: {
                 text: text,
-                format: 'mp3',
-                sample_rate: 44100
+                format: 'opus'
             },
             responseType: 'arraybuffer' // Necesitamos el buffer crudo para enviarlo a Telegram
         });
@@ -85,8 +84,8 @@ const sendVoiceReply = async (ctx, aiResponse) => {
         const audioBuffer = await generateJarvisVoice(textToSpeech);
         
         if (audioBuffer) {
-            // Enviar como Nota de Voz
-            await ctx.replyWithVoice({ source: Buffer.from(audioBuffer) });
+            // Enviar como Nota de Voz OGG/OPUS
+            await ctx.replyWithVoice({ source: Buffer.from(audioBuffer), filename: 'voice.ogg' });
         } else {
             await ctx.reply("⚠️ [ALERTA L99] El sistema de Voz de J.A.R.V.I.S falló (Llave Inválida o Sin Créditos en Fish Audio). Verifique sus credenciales en master_keys.env.\n\nRespuesta de texto: " + textToSpeech); // Fallback si falla la voz
         }
