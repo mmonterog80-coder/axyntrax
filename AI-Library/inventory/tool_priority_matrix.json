@@ -1,0 +1,21 @@
+{
+  "tool_priority": [
+    "Memory",
+    "Sequential Thinking",
+    "Filesystem",
+    "Git / GitHub",
+    "Playwright",
+    "Fetch",
+    "Time",
+    "Context tool",
+    "Observability tool"
+  ],
+  "enforcement_rules": {
+    "before_execution": "reason through Sequential Thinking",
+    "before_editing": "inspect Filesystem or Git state",
+    "before_claiming_ui_works": "validate with Playwright",
+    "before_claiming_fact": "use Fetch",
+    "before_closing_task": "write preventive review",
+    "memory_usage": "store validated facts and countermeasures"
+  }
+}

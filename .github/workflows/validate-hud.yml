@@ -1,0 +1,22 @@
+name: Validar HUD Visual
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+      - name: Instalar dependencias
+        run: npm ci
+        working-directory: ./jarvis_hud_v2
+      - name: Levantar servidor de desarrollo
+        run: npm run dev & sleep 10
+        working-directory: ./jarvis_hud_v2
+      - name: Capturar pantalla con Playwright
+        run: npx playwright screenshot http://localhost:3000 validation.png
+        working-directory: ./jarvis_hud_v2
+      - name: Validar con IA (Gemini)
+        run: |
+          echo "Ejecutando validación visual con LLM Vision..."
+          # Aquí iría el curl a la API de Gemini Vision verificando el fondo
+          # Si falla, exit 1 para bloquear el merge

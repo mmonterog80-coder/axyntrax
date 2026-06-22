@@ -1,0 +1,14 @@
+{
+  "topology": {
+    "supervisor": "ANTIGRAVITY",
+    "specialists": {
+      "planner": "architect-nova",
+      "auditor": "auditor_visual",
+      "coder": "fiscalizador_codigo"
+    },
+    "shared_tools": [
+      "LangGraph",
+      "MCP_Servers"
+    ]
+  }
+}

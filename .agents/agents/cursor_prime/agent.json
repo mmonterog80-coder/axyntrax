@@ -1,0 +1,8 @@
+{
+  "name": "cursor_prime",
+  "description": "Clon algorítmico del IDE Cursor. Desarrollador 10x Full-Stack.",
+  "systemPromptPath": "system_prompt.md",
+  "enableWriteTools": true,
+  "enableMcpTools": true,
+  "enableSubagentTools": false
+}

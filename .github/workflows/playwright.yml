@@ -1,0 +1,53 @@
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  deployment_status:
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    
+    - name: Instalar dependencias
+      run: npm ci
+      working-directory: ./axyntrax_landing_next
+    
+    - name: Instalar Playwright browsers
+      run: npx playwright install --with-deps
+      working-directory: ./axyntrax_landing_next
+    
+    - name: Build Next.js
+      run: npm run build
+      working-directory: ./axyntrax_landing_next
+    
+    - name: Iniciar servidor de desarrollo
+      run: npm run dev &
+      working-directory: ./axyntrax_landing_next
+      env:
+        NEXTAUTH_URL: http://localhost:3000
+    
+    - name: Esperar a que el servidor esté listo
+      run: npx wait-on http://localhost:3000
+    
+    - name: Ejecutar pruebas Playwright
+      run: npx playwright test
+      working-directory: ./axyntrax_landing_next
+      env:
+        BASE_URL: ${{ github.event.deployment_status.environment_url || 'http://localhost:3000' }}
+    
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: axyntrax_landing_next/playwright-report/
+        retention-days: 30

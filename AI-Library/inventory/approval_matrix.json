@@ -1,0 +1,10 @@
+{
+  "approval_matrix": {
+    "production_deployment": "REQUIRED",
+    "auth_changes": "REQUIRED",
+    "database_drop": "REQUIRED",
+    "memory_rule_override": "REQUIRED",
+    "code_refactor": "AUTO_APPROVED_WITH_ROLLBACK",
+    "log_reading": "NOT_REQUIRED"
+  }
+}

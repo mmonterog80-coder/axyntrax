@@ -1,0 +1,79 @@
+[
+  {
+    "name": "Memory",
+    "installed": true,
+    "validated": false,
+    "role": "Persistent state and rule learning",
+    "priority": 1,
+    "required_credentials": "None",
+    "fallback": "Local filesystem TXT files",
+    "notes": "Installed via npx @modelcontextprotocol/server-memory",
+    "risk_if_missing": "System amnesia, repeating resolved errors"
+  },
+  {
+    "name": "Sequential Thinking",
+    "installed": true,
+    "validated": false,
+    "role": "Complex logic breakdown before execution",
+    "priority": 2,
+    "required_credentials": "None",
+    "fallback": "In-prompt chain of thought",
+    "notes": "Installed via npx @modelcontextprotocol/server-sequential-thinking",
+    "risk_if_missing": "Rushed execution, poor planning"
+  },
+  {
+    "name": "Filesystem",
+    "installed": true,
+    "validated": false,
+    "role": "Safe local file interaction",
+    "priority": 3,
+    "required_credentials": "None",
+    "fallback": "Standard Python/Agent tools",
+    "notes": "Restricted to C:\\AXYNTRAX and Downloads",
+    "risk_if_missing": "Unsafe or unrestricted file access"
+  },
+  {
+    "name": "GitHub MCP",
+    "installed": false,
+    "validated": false,
+    "role": "Repository management",
+    "priority": 4,
+    "required_credentials": "GITHUB_PERSONAL_ACCESS_TOKEN",
+    "fallback": "Standard git CLI commands",
+    "notes": "Pending token insertion",
+    "risk_if_missing": "Manual PR/Issue management"
+  },
+  {
+    "name": "Playwright MCP",
+    "installed": true,
+    "validated": false,
+    "role": "Browser validation and UI testing",
+    "priority": 5,
+    "required_credentials": "None",
+    "fallback": "Manual verification by user",
+    "notes": "Installed globally via npm",
+    "risk_if_missing": "UI bugs pushed to production undetected"
+  },
+  {
+    "name": "Fetch",
+    "installed": true,
+    "validated": false,
+    "role": "Clean web scraping and API consumption",
+    "priority": 6,
+    "required_credentials": "None",
+    "fallback": "curl/python requests",
+    "notes": "Installed via npx @modelcontextprotocol/server-fetch",
+    "risk_if_missing": "Hallucinated data from stale weights"
+  },
+  {
+    "name": "Time",
+    "installed": true,
+    "validated": false,
+    "role": "Timezone and temporal awareness",
+    "priority": 7,
+    "required_credentials": "None",
+    "fallback": "System time tools",
+    "notes": "Installed via npx",
+    "risk_if_missing": "Failed scheduling or cron execution"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "asset": "GitHub MCP",
+    "primary": "@modelcontextprotocol/server-github",
+    "secondary": "Git CLI",
+    "offline_fallback": "Local filesystem state check",
+    "safe_noop": false
+  },
+  {
+    "asset": "Ollama Local Inference",
+    "primary": "qwen2.5-coder",
+    "secondary": "llama3.2",
+    "offline_fallback": "N/A",
+    "safe_noop": true
+  }
+]

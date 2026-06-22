@@ -1,0 +1,24 @@
+{
+  "short_term_memory": {
+    "engine": "LangGraph checkpointers",
+    "scope": "thread_scoped",
+    "required_fields": ["task_objective", "current_step", "completed_steps", "failed_steps", "retry_count", "last_verified_result", "open_blocker", "anomaly_flags", "next_safe_action"]
+  },
+  "long_term_memory": {
+    "engine": "LangGraph stores / Memory MCP",
+    "categories": [
+      "VERIFIED_ENVIRONMENT_FACT",
+      "REPEATED_FAILURE_PATTERN",
+      "APPROVED_COUNTERMEASURE",
+      "TOOL_BLOCKER",
+      "ROUTING_RULE",
+      "KNOWN_FRAGILITY",
+      "VALIDATED_FIX",
+      "PREFERRED_WORKFLOW",
+      "USER_CRITICAL_PREFERENCE",
+      "DO_NOT_REPEAT"
+    ],
+    "write_condition": "Only verified operational knowledge",
+    "required_fields": ["id", "timestamp", "category", "summary", "evidence", "scope", "status", "countermeasure", "review_due", "owner"]
+  }
+}

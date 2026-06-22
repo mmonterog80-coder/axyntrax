@@ -1,0 +1,12 @@
+[
+  {
+    "action": "NPM Install Global",
+    "risk_level": "LEVEL 2",
+    "policy": "ALLOW_WITH_VALIDATION"
+  },
+  {
+    "action": "Mass Delete Subdirectories",
+    "risk_level": "LEVEL 3",
+    "policy": "ALLOW_WITH_APPROVAL"
+  }
+]

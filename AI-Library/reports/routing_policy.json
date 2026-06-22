@@ -1,0 +1,26 @@
+{
+    "routing_policy": {
+        "system": "AXYNTRAX Local Swarm (32GB Config)",
+        "default_models": {
+            "orchestrator": "qwen3:30b",
+            "coding": "qwen3-coder:30b",
+            "reasoning": "deepseek-r1:14b",
+            "memory": "embeddinggemma",
+            "vision": "qwen3-vl:8b"
+        },
+        "premium_optional_models": {
+            "reasoning": {
+                "model": "deepseek-r1:32b",
+                "condition": "only if free resources exist"
+            },
+            "multimodal": {
+                "model": "gemma4:26b",
+                "condition": "only if validated and stable"
+            }
+        },
+        "fallback_policy": {
+            "orchestrator": "deepseek-r1:14b",
+            "coding": "deepseek-r1:14b"
+        }
+    }
+}

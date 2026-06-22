@@ -1,0 +1,10 @@
+[
+  {
+    "agent": "ANTIGRAVITY",
+    "tasks_completed": 1,
+    "verified_completion_rate": "100%",
+    "anomaly_rate": "0%",
+    "average_retries": 0,
+    "fallback_activations": 0
+  }
+]

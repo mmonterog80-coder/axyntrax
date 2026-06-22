@@ -1,0 +1,8 @@
+{
+  "governance": {
+    "default_policy": "DENY",
+    "least_privilege": true,
+    "segregation_of_duties": "PARTIAL (Agent is often both proposer and executor; requires extra logging)",
+    "memory_protection": "STRICT"
+  }
+}

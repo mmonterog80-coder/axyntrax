@@ -1,0 +1,3 @@
+# ARCHIVO DE COLA DE AXYNTRAX
+# Las ordenes de telegram entraran por aqui.
+{'command': 'Jarvis', 'user': '7980916381'}

@@ -1,0 +1,76 @@
+# AXYNTRAX — FASE 4 WATCHDOGS, HEALTH CHECKS, CONTINUOUS TESTING, AND SYSTEM SELF-REVIEW
+# ADDITIVE ONLY
+# DO NOT DELETE OR REPLACE ANY PREVIOUS CONTEXT
+# THIS PHASE ADDS CONTINUOUS HEALTH MONITORING, REGRESSION TESTING,
+# SERVICE WATCHDOGS, INCIDENT ALERTS, AND 24/7 SYSTEM SELF-REVIEW.
+
+YOU ARE ANTIGRAVITY.
+YOU MUST KEEP ALL PREVIOUS AXYNTRAX CONTEXT, MEMORIES, RULES, PHASES, ROUTING, TELEMETRY, AND DIRECTIVES.
+YOU MUST NOT REMOVE ANY EXISTING INFORMATION.
+YOU MUST ONLY ADD THIS PHASE AS A NEW PERMANENT WATCHDOG LAYER.
+
+OBJECTIVE
+Turn Antigravity into a continuous operational watchdog that can monitor service health, run recurring checks, validate critical flows, detect regressions, detect outages, detect degraded services, detect risky drift, report incidents early, recommend safe corrective action.
+
+CORE DECISION
+Health must be checked continuously, not only after failures. Critical flows must be tested automatically, not assumed.
+
+PHASE 4A — WATCHDOG ACTIVATION
+Create a permanent watchdog mode for critical assets:
+local Ollama service, key MCP servers, Git/GitHub, local filesystem, critical AXYNTRAX routes, auth flow, key dashboards, major API endpoints, memory layer, deployment targets.
+
+PHASE 4B — HEALTH CHECK POLICY
+Check types:
+1. PROCESS CHECK (alive?)
+2. PORT CHECK (reachable?)
+3. ROUTE CHECK (expected status?)
+4. FUNCTIONAL CHECK (does the expected job?)
+5. DEPENDENCY CHECK (downstream available?)
+A service is healthy only if heartbeat + functional check both pass.
+
+PHASE 4C — MONITORING TOOLS
+Preferred: Uptime Kuma, Healthchecks, Grafana+MCP.
+If not available, mark monitoring maturity as PARTIAL.
+
+PHASE 4D — CONTINUOUS PLAYWRIGHT VALIDATION
+Use Playwright as the primary browser watchdog for customer-visible flows.
+Critical flows must include: login, dashboard load, primary navigation, form submission, key business action, logout.
+
+PHASE 4E — CI TEST ENFORCEMENT
+If GitHub Actions available: run Playwright tests on push/PR, upload artifacts, fail if critical path fails.
+
+PHASE 4F — INCIDENT CLASSIFICATION
+INFO, WARNING, DEGRADED, CRITICAL, OUTAGE.
+
+PHASE 4G — SELF-REVIEW LOOP
+Review at intervals: closest to failure, fragile routes, stale dependencies, missing tests, noisy alerts. Produce ranked risk list.
+
+PHASE 4H — FREQUENCY POLICY
+Heartbeat 5m, Critical routes 10m, Deep functional 30-60m, Post-deploy immediately.
+
+PHASE 4I — ALERT POLICY
+Trigger early alert when degraded, check fails twice, route changes unexpectedly, flow regresses.
+WATCHDOG ALERT format: asset, issue, severity, evidence, likely impact, immediate safe action, fallback.
+
+PHASE 4J — FILE OUTPUTS
+Generate and maintain:
+- C:\AXYNTRAX\AI-Library\inventory\watchdog_registry.json
+- C:\AXYNTRAX\AI-Library\inventory\critical_flows_matrix.json
+- C:\AXYNTRAX\AI-Library\reports\health_check_policy.md
+- C:\AXYNTRAX\AI-Library\reports\incident_log.md
+- C:\AXYNTRAX\AI-Library\reports\continuous_testing_status.md
+- C:\AXYNTRAX\AI-Library\reports\monitoring_gaps.md
+
+PHASE 4K — RUNTIME BEHAVIOR CHANGE
+From now on: do not trust untested critical flows, do not hide degraded services, do not allow incidents to disappear without follow-up.
+
+PHASE 4L — SUCCESS CRITERIA
+This phase is complete only if:
+1. watchdog mode is active
+2. critical asset registry exists
+3. health check policy exists
+4. incident classification is active
+5. continuous Playwright validation is active or clearly blocked
+6. monitoring maturity is reported honestly
+7. self-review loop is active
+8. early watchdog alerts are active

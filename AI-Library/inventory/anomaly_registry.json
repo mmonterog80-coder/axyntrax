@@ -1,0 +1,26 @@
+[
+  {
+    "anomaly_id": "ANM-001",
+    "timestamp": "2026-06-21T11:43:00-05:00",
+    "symptom": "Telegram get_updates conflict with Webhook",
+    "root_cause": "Active webhook blocked local polling",
+    "affected_area": "Telegram Bot (telegram_bot.py)",
+    "severity": "HIGH",
+    "repeated": "no",
+    "immediate_countermeasure": "Run deleteWebhook via API",
+    "permanent_countermeasure_candidate": "Check webhook status on startup automatically",
+    "next_review_action": "Implement automatic deleteWebhook in bot startup script"
+  },
+  {
+    "anomaly_id": "ANM-002",
+    "timestamp": "2026-06-21T11:44:00-05:00",
+    "symptom": "Turbopack build failed for CRM_Gerencial",
+    "root_cause": "package.json defaulted to CommonJS instead of ESM",
+    "affected_area": "Next.js Build Process",
+    "severity": "CRITICAL",
+    "repeated": "no",
+    "immediate_countermeasure": "Change type to module in package.json",
+    "permanent_countermeasure_candidate": "Always set type: module for new Next.js 16 modular setups",
+    "next_review_action": "Verify all future package.json creations"
+  }
+]

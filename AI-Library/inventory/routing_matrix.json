@@ -1,0 +1,14 @@
+[
+  {
+    "task_type": "UI Validation",
+    "required_specialist": "auditor_visual",
+    "fallback_specialist": "ANTIGRAVITY",
+    "verification_path": "Playwright MCP"
+  },
+  {
+    "task_type": "Code Generation",
+    "required_specialist": "fiscalizador_codigo",
+    "fallback_specialist": "ANTIGRAVITY",
+    "verification_path": "npm run build"
+  }
+]

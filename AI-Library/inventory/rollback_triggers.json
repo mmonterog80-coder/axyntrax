@@ -1,0 +1,14 @@
+[
+  {
+    "asset": "Vercel Deployments",
+    "trigger": "Post-deploy health check failure",
+    "action": "Revert to previous commit / previous deployment URL",
+    "validation": "Playwright critical flow test"
+  },
+  {
+    "asset": "Database Schema",
+    "trigger": "Migration failure or severe latency spike",
+    "action": "Run down migration or restore from snapshot",
+    "validation": "Data integrity test script"
+  }
+]

@@ -1,0 +1,7 @@
+node_modules
+**/node_modules
+jarvis_hud_v2/node_modules
+dist
+**/dist
+.env
+**/.env
