@@ -1,0 +1,38 @@
+{
+  "currency": "PEN",
+  "base_rate": "Soles",
+  "segments": {
+    "micro": {
+      "name": "Microempresas (1-5 empleados)",
+      "pain_points": ["Bajo presupuesto", "Sin equipo técnico"],
+      "pricing_bands": {
+        "monthly_sub": { "min": 50, "max": 150 },
+        "setup_fee": { "min": 0, "max": 100 }
+      },
+      "recommended_tier": "SaaS Básico + Autogestión"
+    },
+    "pequena": {
+      "name": "Pequeñas Empresas (6-50 empleados)",
+      "pain_points": ["Necesitan escalabilidad", "Atención al cliente saturada"],
+      "pricing_bands": {
+        "monthly_sub": { "min": 250, "max": 600 },
+        "setup_fee": { "min": 300, "max": 800 }
+      },
+      "recommended_tier": "SaaS Pro + Onboarding"
+    },
+    "mediana": {
+      "name": "Mediana Empresa (51-200 empleados)",
+      "pain_points": ["Integración con ERPs", "Seguridad de datos"],
+      "pricing_bands": {
+        "monthly_sub": { "min": 800, "max": 2500 },
+        "setup_fee": { "min": 1500, "max": 5000 }
+      },
+      "recommended_tier": "Enterprise Custom + SLA"
+    }
+  },
+  "psychological_pricing_rules": [
+    "Evitar números redondos (ej. S/ 99 en lugar de S/ 100).",
+    "Ofrecer descuento del 20% en pago anual para flujo de caja inmediato.",
+    "Destacar ROI rápido para MYPES: 'Ahorra 10 horas semanales por S/ 99 al mes'."
+  ]
+}
