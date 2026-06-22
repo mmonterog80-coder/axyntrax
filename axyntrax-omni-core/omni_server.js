@@ -47,8 +47,11 @@ const broadcastLog = (type, user, message, response, preProcessor = null) => {
 // MÓDULO DE VOZ J.A.R.V.I.S (FISH AUDIO)
 // ==========================================
 const generateJarvisVoice = async (text) => {
-    const fishApiKey = process.env.FISH_AUDIO_API_KEY || process.env.ELEVENLABS_API_KEY;
-    if (!fishApiKey) return null;
+    const fishApiKey = process.env.FISH_AUDIO_API_KEY || process.env.FISH_API_KEY;
+    if (!fishApiKey) {
+        console.error("❌ Falta la llave FISH_AUDIO_API_KEY en master_keys.env");
+        return null;
+    }
     
     try {
         const ttsResponse = await axios({
