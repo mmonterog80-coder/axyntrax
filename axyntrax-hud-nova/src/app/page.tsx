@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, ChevronRight, Terminal, Brain, Shield, Zap } from 'lucide-react';
+import { ArrowRight, Brain, Shield, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
@@ -46,7 +46,7 @@ export default function Home() {
             <a href="#solutions" className="hover:text-white transition-colors uppercase hover:text-neon-cyan">Soluciones</a>
             <a href="#security" className="hover:text-white transition-colors uppercase hover:text-neon-cyan">Seguridad L99</a>
           </div>
-          <button className="neo-button hover:neo-button-active text-[#00f0ff] px-6 py-2.5 text-sm font-bold uppercase transition-all">
+          <button className="neo-button hover:neo-button-active text-[#00f0ff] px-6 py-2.5 text-sm font-bold uppercase transition-all cursor-pointer">
             Acceso Omni-Core
           </button>
         </div>
@@ -77,11 +77,11 @@ export default function Home() {
             </p>
 
             <div className="mt-12 flex flex-col sm:flex-row gap-6">
-              <button className="neo-button hover:neo-button-active group text-[#00f0ff] px-8 py-4 font-bold uppercase flex items-center justify-center gap-2 transition-all">
+              <button className="neo-button hover:neo-button-active group text-[#00f0ff] px-8 py-4 font-bold uppercase flex items-center justify-center gap-2 transition-all cursor-pointer">
                 Desplegar Arquitectura
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-[#00f0ff]" />
               </button>
-              <button className="neo-button hover:neo-button-active px-8 py-4 font-bold uppercase flex items-center justify-center gap-2 transition-all text-zinc-300">
+              <button className="neo-button hover:neo-button-active px-8 py-4 font-bold uppercase flex items-center justify-center gap-2 transition-all text-zinc-300 cursor-pointer">
                 Ver Telemetría
               </button>
             </div>
@@ -145,13 +145,13 @@ export default function Home() {
 
       </main>
 
-      <footer className="border-t border-white/10 bg-black mt-32">
+      <footer className="border-t border-white/10 bg-[#121214] mt-32">
         <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-[#00f0ff] rotate-45 flex items-center justify-center">
-                <div className="w-3 h-3 bg-black -rotate-45" />
+            <div className="w-6 h-6 rounded shadow-[inset_1px_1px_2px_#00f0ff] bg-[#121214] flex items-center justify-center">
+                <div className="w-2 h-2 bg-[#00f0ff] rounded-full" />
             </div>
-            <span className="text-lg font-black tracking-tighter uppercase">Axyntrax.AI</span>
+            <span className="text-lg font-black tracking-tighter uppercase">Axyntrax<span className="text-[#00f0ff]">.AI</span></span>
           </div>
           <div className="text-zinc-500 text-sm font-mono">
             &copy; {new Date().getFullYear()} AXYNTRAX CORPORATION. SISTEMA L99.
