@@ -1,7 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/AXYNTRAX_VAULT/(.*)", "destination": "/404" },
-    { "source": "/", "destination": "/web_axyntrax/index.html" },
-    { "source": "/(.*)", "destination": "/web_axyntrax/$1" }
-  ]
+  "buildCommand": "cd axyntrax-hud-nova && npm install && npm run build",
+  "outputDirectory": "axyntrax-hud-nova/.next",
+  "framework": "nextjs"
 }
